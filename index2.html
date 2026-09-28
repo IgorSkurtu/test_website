@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Сложение и вычитание рациональных дробей</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --bg: #f8f9fa;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --border: #dee2e6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1, h2, h3 { color: var(--primary); }
+        h1 { text-align: center; border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
+        
+        /* CSS для отрисовки дробей без картинок и внешних библиотек */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.1em;
+            margin: 0 4px;
+            line-height: 1.1;
+        }
+        .frac .num {
+            border-bottom: 1px solid #000;
+            padding: 0 2px 2px 2px;
+        }
+        .frac .den {
+            padding: 2px 2px 0 2px;
+        }
+        .op { font-weight: bold; margin: 0 4px; }
+        
+        /* Блоки с примерами */
+        .example-card {
+            background: #f1f8ff;
+            border-left: 5px solid var(--secondary);
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        .example-title { font-weight: bold; color: var(--secondary); margin-bottom: 10px; }
+        .step { margin: 8px 0; }
+        .step-result { font-weight: bold; margin-top: 10px; background: #e2f0fb; display: inline-block; padding: 5px 10px; border-radius: 4px; }
+        
+        /* Тест */
+        .quiz-card {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #fff;
+            transition: box-shadow 0.2s;
+        }
+        .quiz-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .options { margin-top: 15px; }
+        .option-label {
+            display: block;
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .option-label:hover { background: #e9ecef; }
+        input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
+        
+        .correct { border-color: var(--success); background: #d4edda !important; }
+        .incorrect { border-color: var(--danger); background: #f8d7da !important; }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            background: var(--success);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 30px;
+        }
+        .btn:hover { background: #219a52; }
+        .btn:disabled { background: #95a5a6; cursor: not-allowed; }
+        
+        #results-container {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .score { font-size: 2em; font-weight: bold; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Рациональные дроби: Сложение и вычитание</h1>
+    
+    <div id="theory">
+        <h2>Теоретическая справка</h2>
+        <p>Материал основан на учебнике «Макарычев, Алгебра 8 2023.pdf».</p>
+        <ul>
+            <li><strong>С одинаковыми знаменателями:</strong> Чтобы сложить рациональные дроби с одинаковыми знаменателями, надо сложить их числители, а знаменатель оставить тем же. Вычитание выполняется аналогично: из числителя первой дроби вычитается числитель второй.</li>
+            <li><strong>Противоположные знаменатели:</strong> Если изменить знак числителя (или знаменателя) дроби и знак перед дробью, то получится тождественно равное выражение.</li>
+            <li><strong>С разными знаменателями:</strong> Сложение и вычитание рациональных дробей с разными знаменателями сводится к приведению их к общему знаменателю. Преобразование выражения, содержащего сумму или разность целого выражения и дроби, сводится к преобразованию суммы или разности дробей.</li>
+        </ul>
+    </div>
+
+    <h2>примеры (обязательно к прочтению)</h2>
+    <div id="examples-container"></div>
+
+    <h2>Тест для закрепления (25 заданий)</h2>
+    <p>Решите предложенные примеры на черновике и выберите правильный вариант ответа.</p>
+    <div id="quiz-container"></div>
+    <button id="submit-btn" class="btn" onclick="checkAnswers()">Проверить результаты теста</button>
+    
+    <div id="results-container">
+        <h3>Ваш результат:</h3>
+        <div class="score" id="score-display">0 / 25</div>
+        <p id="score-message"></p>
+    </div>
+</div>
+
+<script>
+    // --- Вспомогательная функция генерации HTML для дроби ---
+    function f(num, den) {
+        return `<span class="frac"><span class="num">${num}</span><span class="den">${den}</span></span>`;
+    }
+    
+    const op = (sign) => `<span class="op">${sign}</span>`;
+
+    // --- БАЗА ПРИМЕРОВ (от простых к сложным) ---
+    const examples = [
+        {
+            title: "Пример 1: Простое сложение с одинаковыми знаменателями",
+            steps: [
+                `Сложим дроби ${f('x', '3')} и ${f('y', '3')}.`,
+                `По правилу сложения дробей с одинаковыми знаменателями складываем их числители:`,
+                `${f('x', '3')} ${op('+')} ${f('y', '3')} ${op('=')} ${f('x + y', '3')}.`
+            ]
+        },
+        {
+            title: "Пример 2: Простое вычитание с одинаковыми знаменателями",
+            steps: [
+                `Вычтем дроби: ${f('5b²', 'a')} ${op('-')} ${f('13b²', 'a')}.`,
+                `Знаменатель оставляем прежним, вычитаем числители:`,
+                `${f('5b² - 13b²', 'a')} ${op('=')} ${f('-8b²', 'a')} ${op('=')} -${f('8b²', 'a')}.`
+            ]
+        },
+        {
+            title: "Пример 3: Сложение многочленов в числителе",
+            steps: [
+                `Упростим: ${f('3a - 7b', '15ab')} ${op('+')} ${f('2a + 2b', '15ab')}.`,
+                `Складываем числители, приводя подобные слагаемые:`,
+                `${f('(3a - 7b) + (2a + 2b)', '15ab')} ${op('=')} ${f('5a - 5b', '15ab')}.`,
+                `Вынесем общий множитель в числителе и сократим дробь:`,
+                `${f('5(a - b)', '15ab')} ${op('=')} ${f('a - b', '3ab')}.`
+            ]
+        },
+        {
+            title: "Пример 4: Вычитание многочленов (осторожно со знаками)",
+            steps: [
+                `Вычтем из дроби ${f('a² + 9', '5a - 15')} дробь ${f('6a', '5a - 15')}.`,
+                `При вычитании записываем всё под общую черту:`,
+                `${f('a² + 9 - 6a', '5a - 15')} ${op('=')} ${f('a² - 6a + 9', '5(a - 3)')}.`,
+                `В числителе формула квадрата разности. Применим её и сократим:`,
+                `${f('(a - 3)²', '5(a - 3)')} ${op('=')} ${f('a - 3', '5')}.`
+            ]
+        },
+        {
+            title: "Пример 5: Совместное сложение и вычитание трех дробей",
+            steps: [
+                `Упростим: ${f('x² - 3', 'x² + 2x')} ${op('+')} ${f('2', 'x² + 2x')} ${op('-')} ${f('2x - 1', 'x² + 2x')}.`,
+                `Запишем под один знаменатель (внимание на знак минус перед скобками 2x-1):`,
+                `${f('x² - 3 + 2 - (2x - 1)', 'x² + 2x')} ${op('=')} ${f('x² - 1 - 2x + 1', 'x² + 2x')}.`,
+                `Приводим подобные и раскладываем на множители:`,
+                `${f('x² - 2x', 'x(x + 2)')} ${op('=')} ${f('x(x - 2)', 'x(x + 2)')} ${op('=')} ${f('x - 2', 'x + 2')}.`
+            ]
+        },
+        {
+            title: "Пример 6: Знаменатели являются противоположными выражениями",
+            steps: [
+                `Сложим дроби: ${f('3a', '2x - a')} ${op('+')} ${f('6x', 'a - 2x')}.`,
+                `Изменим знаки в знаменателе второй дроби и знак перед самой дробью:`,
+                `${f('6x', 'a - 2x')} ${op('=')} -${f('6x', '2x - a')}.`,
+                `Теперь применим правило для одинаковых знаменателей:`,
+                `${f('3a', '2x - a')} ${op('-')} ${f('6x', '2x - a')} ${op('=')} ${f('3a - 6x', '2x - a')}.`,
+                `Вынесем за скобки -3: ${f('-3(2x - a)', '2x - a')} ${op('=')} -3.`
+            ]
+        },
+        {
+            title: "Пример 7: Противоположные знаменатели (квадраты)",
+            steps: [
+                `Выполним вычитание: ${f('2a + b', '(a - b)²')} ${op('-')} ${f('2b - 5a', '(b - a)²')}.`,
+                `Заметим, что (b - a)² тождественно равно (a - b)². Знаменатели уже одинаковые!`,
+                `${f('2a + b - (2b - 5a)', '(a - b)²')} ${op('=')} ${f('2a + b - 2b + 5a', '(a - b)²')}.`,
+                `Приводим подобные: ${f('7a - b', '(a - b)²')}.`
+            ]
+        },
+        {
+            title: "Пример 8: Противоположные знаменатели (кубы)",
+            steps: [
+                `Сложим дроби: ${f('x²', '(x - 5)³')} ${op('+')} ${f('25', '(5 - x)³')}.`,
+                `Куб сохраняет знак. (5 - x)³ = -(x - 5)³. Меняем знак перед второй дробью:`,
+                `${f('x²', '(x - 5)³')} ${op('-')} ${f('25', '(x - 5)³')} ${op('=')} ${f('x² - 25', '(x - 5)³')}.`,
+                `Раскладываем числитель как разность квадратов и сокращаем:`,
+                `${f('(x - 5)(x + 5)', '(x - 5)³')} ${op('=')} ${f('x + 5', '(x - 5)²')}.`
+            ]
+        },
+        {
+            title: "Пример 9: Разные знаменатели (одночлены)",
+            steps: [
+                `Сложим дроби: ${f('x', '4a³b')} и ${f('5', '6ab⁴')}.`,
+                `Найдём общий знаменатель. НОК для 4 и 6 равно 12. Берем переменные с наибольшим показателем: 12a³b⁴.`,
+                `Дополнительный множитель для первой дроби: 3b³. Для второй: 2a².`,
+                `${f('x · 3b³ + 5 · 2a²', '12a³b⁴')} ${op('=')} ${f('3xb³ + 10a²', '12a³b⁴')}.`
+            ]
+        },
+        {
+            title: "Пример 10: Разные знаменатели (вычитание одночленов)",
+            steps: [
+                `Упростим: ${f('b', 'a²')} ${op('-')} ${f('1', 'a')}.`,
+                `Общий знаменатель — это a².`,
+                `Домножаем вторую дробь на a:`,
+                `${f('b', 'a²')} ${op('-')} ${f('a', 'a²')} ${op('=')} ${f('b - a', 'a²')}.`
+            ]
+        },
+        {
+            title: "Пример 11: Разные знаменатели (требуется разложение на множители)",
+            steps: [
+                `Преобразуем разность: ${f('a + 3', 'a² + ab')} ${op('-')} ${f('b - 3', 'ab + b²')}.`,
+                `Разложим знаменатели на множители: ${f('a + 3', 'a(a + b)')} ${op('-')} ${f('b - 3', 'b(a + b)')}.`,
+                `Общий знаменатель: ab(a + b). Дополнительные множители: b и a.`,
+                `${f('b(a + 3) - a(b - 3)', 'ab(a + b)')} ${op('=')} ${f('ab + 3b - ab + 3a', 'ab(a + b)')}.`,
+                `Приводим подобные и сокращаем: ${f('3(a + b)', 'ab(a + b)')} ${op('=')} ${f('3', 'ab')}.`
+            ]
+        },
+        {
+            title: "Пример 12: Вычитание дроби из целого выражения",
+            steps: [
+                `Упростим: a - 1 - ${f('a² - 3', 'a + 1')}.`,
+                `Представим целую часть как дробь со знаменателем 1: ${f('a - 1', '1')}.`,
+                `Общий знаменатель: a + 1. Домножаем (a - 1) на (a + 1):`,
+                `${f('(a - 1)(a + 1) - (a² - 3)', 'a + 1')} ${op('=')} ${f('a² - 1 - a² + 3', 'a + 1')}.`,
+                `Результат: ${f('2', 'a + 1')}.`
+            ]
+        },
+        {
+            title: "Пример 13: Разность дробей с квадратными трехчленами",
+            steps: [
+                `Вычтем: ${f('x + 1', 'x² - x')} ${op('-')} ${f('x - 1', 'x² + x')}.`,
+                `Разложим знаменатели: ${f('x + 1', 'x(x - 1)')} ${op('-')} ${f('x - 1', 'x(x + 1)')}.`,
+                `Общий знаменатель: x(x - 1)(x + 1).`,
+                `Числитель: (x + 1)(x + 1) - (x - 1)(x - 1) = (x² + 2x + 1) - (x² - 2x + 1) = 4x.`,
+                `Получаем: ${f('4x', 'x(x - 1)(x + 1)')}. Сокращаем на x: ${f('4', '(x - 1)(x + 1)')} ${op('=')} ${f('4', 'x² - 1')}.`
+            ]
+        },
+        {
+            title: "Пример 14: Сложение дроби и числа",
+            steps: [
+                `Выполним сложение: x + ${f('1', 'y')}.`,
+                `Представим x как дробь ${f('x', '1')}. Общий знаменатель — y.`,
+                `Домножаем числитель первой дроби на y:`,
+                `${f('xy', 'y')} ${op('+')} ${f('1', 'y')} ${op('=')} ${f('xy + 1', 'y')}.`
+            ]
+        },
+        {
+            title: "Пример 15: Разные знаменатели без общих множителей",
+            steps: [
+                `Упростим: ${f('a', 'a + 2')} ${op('-')} ${f('a', 'a - 2')}.`,
+                `Общий знаменатель равен произведению знаменателей: (a + 2)(a - 2).`,
+                `Домножаем крест-накрест:`,
+                `${f('a(a - 2) - a(a + 2)', '(a + 2)(a - 2)')} ${op('=')} ${f('a² - 2a - a² - 2a', 'a² - 4')}.`,
+                `Результат: ${f('-4a', 'a² - 4')}.`
+            ]
+        },
+        {
+            title: "Пример 16: Три дроби с разными знаменателями",
+            steps: [
+                `Сложим: ${f('1', 'ab')} ${op('+')} ${f('1', 'ac')} ${op('+')} ${f('1', 'bc')}.`,
+                `Общий знаменатель содержит все переменные по одному разу: abc.`,
+                `Дополнительные множители: c, b, a соответственно.`,
+                `Результат: ${f('c + b + a', 'abc')}.`
+            ]
+        },
+        {
+            title: "Пример 17: Изменение знака для поиска общего знаменателя",
+            steps: [
+                `Выполним вычитание: ${f('a', 'a² - 9')} ${op('+')} ${f('3', '9 - a²')}.`,
+                `Замечаем, что 9 - a² = -(a² - 9).`,
+                `Меняем знак: ${f('a', 'a² - 9')} ${op('-')} ${f('3', 'a² - 9')}.`,
+                `Объединяем: ${f('a - 3', 'a² - 9')}. Раскладываем знаменатель: ${f('a - 3', '(a - 3)(a + 3)')}.`,
+                `Сокращаем: ${f('1', 'a + 3')}.`
+            ]
+        },
+        {
+            title: "Пример 18: Сложение дроби с полным квадратом",
+            steps: [
+                `Упростим: ${f('b', '(a - b)²')} ${op('-')} ${f('a + b', 'b² - ab')}.`,
+                `Разложим второй знаменатель: b² - ab = -b(a - b).`,
+                `Тогда вторая дробь с учетом минуса превращается в плюс: ${op('+')} ${f('a + b', 'b(a - b)')}.`,
+                `Общий знаменатель: b(a - b)². Дополнительные множители: b для первой, (a - b) для второй.`,
+                `Числитель: b² + (a + b)(a - b) = b² + a² - b² = a².`,
+                `Ответ: ${f('a²', 'b(a - b)²')}.`
+            ]
+        },
+        {
+            title: "Пример 19: Сложение трех сложных дробей",
+            steps: [
+                `Выполним действие: ${f('4', 'y + 2')} ${op('-')} ${f('3', 'y - 2')} ${op('+')} ${f('12', 'y² - 4')}.`,
+                `Общий знаменатель: y² - 4 = (y - 2)(y + 2).`,
+                `Дополнительные множители: (y - 2) для первой, (y + 2) для второй, 1 для третьей.`,
+                `${f('4(y - 2) - 3(y + 2) + 12', 'y² - 4')} ${op('=')} ${f('4y - 8 - 3y - 6 + 12', 'y² - 4')}.`,
+                `Приводим подобные в числителе: ${f('y - 2', '(y - 2)(y + 2)')} ${op('=')} ${f('1', 'y + 2')}.`
+            ]
+        },
+        {
+            title: "Пример 20: Вычитание дроби с разностью кубов",
+            steps: [
+                `Упростим: ${f('x - 2', 'x² + 2x + 4')} ${op('-')} ${f('6x', 'x³ - 8')}.`,
+                `Заметим, что x³ - 8 = (x - 2)(x² + 2x + 4). Это и есть общий знаменатель.`,
+                `Домножаем первую дробь на (x - 2):`,
+                `${f('(x - 2)(x - 2) - 6x', 'x³ - 8')} ${op('=')} ${f('x² - 4x + 4 - 6x', 'x³ - 8')}.`,
+                `${f('x² - 10x + 4', 'x³ - 8')}. (Дальше не сокращается).`
+            ]
+        }
+    ];
+
+    // --- БАЗА ТЕСТОВ (ровно 25 вопросов) ---
+    const quiz = [
+        // Одинаковые знаменатели (1-5)
+        { q: `Выполните сложение: ${f('m', '2p')} ${op('+')} ${f('n', '2p')}`, opts: [f('m + n', '4p'), f('m + n', '2p'), f('mn', '2p'), f('m - n', '2p')], ans: 1 },
+        { q: `Упростите: ${f('5x', '8y')} ${op('-')} ${f('3x', '8y')}`, opts: [f('2x', '0'), f('x', '4y'), f('8x', '8y'), f('2x', '8y')], ans: 1 },
+        { q: `Представьте в виде дроби: ${f('x² + y²', 'x⁴')} ${op('-')} ${f('y²', 'x⁴')}`, opts: [f('x²', 'x⁴'), f('1', 'x²'), f('x² - y²', 'x⁴'), f('1', 'x')], ans: 1 },
+        { q: `Найдите разность: ${f('2c - x', 'b')} ${op('+')} ${f('x', 'b')}`, opts: [f('2c - 2x', 'b'), f('2c', 'b'), f('c', 'b'), f('2c + x', 'b')], ans: 1 },
+        { q: `Упростите: ${f('a - 2b', '6')} ${op('-')} ${f('a + b', '6')}`, opts: [f('-3b', '6'), f('-b', '2'), f('-b', '6'), f('a - b', '6')], ans: 1 },
+        
+        // Знаки и противоположные знаменатели (6-10)
+        { q: `Выполните действие: ${f('3a', '2x - a')} ${op('+')} ${f('6x', 'a - 2x')}`, opts: [f('3a + 6x', '2x - a'), f('3a - 6x', '2x - a'), f('3a + 6x', 'a - 2x'), f('3a - 6x', 'a - 2x')], ans: 1 },
+        { q: `Упростите: ${f('16', 'x - 4')} ${op('-')} ${f('x²', 'x - 4')}`, opts: [f('16 - x²', 'x - 4'), '-x - 4', '-x + 4', f('4 - x', '1')], ans: 1 },
+        { q: `Упростите выражение: ${f('a', 'c - 3')} ${op('-')} ${f('6', '3 - c')}`, opts: [f('a - 6', 'c - 3'), f('a + 6', 'c - 3'), f('a - 6', '3 - c'), f('a + 6', '3 - c')], ans: 1 },
+        { q: `Вычислите: ${f('x', 'y - 1')} ${op('+')} ${f('5', '1 - y')}`, opts: [f('x + 5', 'y - 1'), f('x - 5', 'y - 1'), f('x - 5', '1 - y'), f('x + 5', '1 - y')], ans: 1 },
+        { q: `Сократите результат: ${f('x²', '(x - 5)²')} ${op('-')} ${f('25', '(5 - x)²')}`, opts: [f('x + 5', 'x - 5'), f('x - 5', 'x + 5'), f('x - 5', 'x - 5'), f('x + 5', '5 - x')], ans: 0 },
+        
+        // Разные знаменатели - Одночлены (11-15)
+        { q: `Приведите к общему знаменателю и сложите: ${f('x', '4')} ${op('+')} ${f('y', '3')}`, opts: [f('x + y', '12'), f('3x + 4y', '7'), f('3x + 4y', '12'), f('x + y', '7')], ans: 2 },
+        { q: `Выполните вычитание: ${f('a', 'b')} ${op('-')} ${f('b²', 'a')}`, opts: [f('a - b²', 'ab'), f('a² - b³', 'ab'), f('a - b', 'a - b'), f('a² - b²', 'ab')], ans: 1 },
+        { q: `Упростите: ${f('5x', '8y')} ${op('+')} ${f('x', '4y')}`, opts: [f('6x', '12y'), f('7x', '8y'), f('6x', '8y'), f('7x', '12y')], ans: 1 },
+        { q: `Представьте в виде дроби: ${f('b', 'a²')} ${op('-')} ${f('1', 'a')}`, opts: [f('b - 1', 'a²'), f('b - a', 'a²'), f('b - a', 'a'), f('b - 1', 'a')], ans: 1 },
+        { q: `Выполните действие: ${f('1', '3a³')} ${op('-')} ${f('2', '5a⁵')}`, opts: [f('5a² - 6', '15a⁵'), f('5a - 6', '15a⁵'), f('1 - 2', '15a⁵'), f('5a³ - 6', '15a⁵')], ans: 0 },
+        
+        // Разные знаменатели - Многочлены (16-20)
+        { q: `Представьте в виде дроби: ${f('a', 'a + 2')} ${op('-')} ${f('a', 'a - 2')}`, opts: [f('0', 'a² - 4'), f('-4a', 'a² - 4'), f('4a', 'a² - 4'), f('2a', 'a² - 4')], ans: 1 },
+        { q: `Выполните сложение: ${f('6a', 'x - 2y')} ${op('+')} ${f('2a', 'x + y')}`, opts: [f('8ax - 2ay', '(x - 2y)(x + y)'), f('8a', '2x - y'), f('8ax + 2ay', '(x - 2y)(x + y)'), f('4ax + 4ay', '(x - 2y)(x + y)')], ans: 2 },
+        { q: `Вычтите: ${f('a + 3', 'a² - 1')} ${op('-')} ${f('1', 'a² + a')}`, opts: [f('a + 2', 'a(a - 1)'), f('a² + 2a + 1', 'a(a² - 1)'), f('a + 1', 'a(a - 1)'), f('a² + 2a + 1', 'a² - 1')], ans: 2 },
+        { q: `Упростите: ${f('1', 'a² + ab')} ${op('+')} ${f('1', 'ab + b²')}`, opts: [f('2', 'ab'), f('1', 'ab'), f('2', 'a² + b²'), f('1', 'a + b')], ans: 1 },
+        { q: `Преобразуйте выражение: ${f('c', 'b - c')} ${op('+')} ${f('b² - 3bc', 'b² - c²')}`, opts: [f('b', 'b + c'), f('c', 'b + c'), f('b - c', 'b + c'), f('b² - c²', 'b + c')], ans: 2 },
+
+        // Целые выражения и дроби (21-25)
+        { q: `Упростите выражение: x ${op('+')} ${f('1', 'y')}`, opts: [f('x + 1', 'y'), f('xy + 1', 'y'), f('xy + 1', 'x'), f('x + y', 'y')], ans: 1 },
+        { q: `Представьте в виде дроби: 5 ${op('-')} ${f('c', '2')}`, opts: [f('10 - c', '2'), f('5 - c', '2'), f('c - 10', '2'), f('10 - 2c', '2')], ans: 0 },
+        { q: `Упростите: 1 ${op('-')} ${f('a', '5')} ${op('-')} ${f('b', '4')}`, opts: [f('20 - 4a - 5b', '20'), f('20 - a - b', '20'), f('1 - 4a - 5b', '20'), f('20 - 5a - 4b', '20')], ans: 0 },
+        { q: `Выполните действие: a ${op('+')} b ${op('-')} ${f('a² + b²', 'a + b')}`, opts: [f('2ab', 'a + b'), f('a² + b²', 'a + b'), f('-2ab', 'a + b'), f('0', 'a + b')], ans: 0 },
+        { q: `Преобразуйте: x ${op('-')} ${f('x - y', '2')} ${op('+')} ${f('x + y', '4')}`, opts: [f('3x + 3y', '4'), f('3x - y', '4'), f('x + y', '4'), f('3x + y', '4')], ans: 0 }
+    ];
+
+    // --- Рендеринг интерфейса ---
+    window.onload = function() {
+        const exContainer = document.getElementById('examples-container');
+        examples.forEach(ex => {
+            let stepsHtml = ex.steps.map((step, i) => {
+                if (i === ex.steps.length - 1) {
+                    return `<div class="step step-result">${step}</div>`;
+                }
+                return `<div class="step">${step}</div>`;
+            }).join('');
+            
+            exContainer.innerHTML += `
+                <div class="example-card">
+                    <div class="example-title">${ex.title}</div>
+                    ${stepsHtml}
+                </div>
+            `;
+        });
+
+        const quizContainer = document.getElementById('quiz-container');
+        quiz.forEach((q, index) => {
+            let optionsHtml = q.opts.map((opt, optIndex) => `
+                <label class="option-label" id="label-q${index}-o${optIndex}">
+                    <input type="radio" name="q${index}" value="${optIndex}">
+                    ${opt}
+                </label>
+            `).join('');
+            
+            quizContainer.innerHTML += `
+                <div class="quiz-card" id="card-q${index}">
+                    <div style="font-weight: bold; margin-bottom: 10px;">Задание ${index + 1}.</div>
+                    <div style="font-size: 1.1em; margin-bottom: 15px;">${q.q}</div>
+                    <div class="options">${optionsHtml}</div>
+                </div>
+            `;
+        });
+    };
+
+    // --- Логика проверки теста ---
+    function checkAnswers() {
+        let score = 0;
+        
+        quiz.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            
+            // Сброс предыдущих стилей
+            for (let i = 0; i < q.opts.length; i++) {
+                document.getElementById(`label-q${index}-o${i}`).classList.remove('correct', 'incorrect');
+            }
+            
+            if (selected) {
+                const selectedVal = parseInt(selected.value);
+                if (selectedVal === q.ans) {
+                    score++;
+                    document.getElementById(`label-q${index}-o${selectedVal}`).classList.add('correct');
+                } else {
+                    document.getElementById(`label-q${index}-o${selectedVal}`).classList.add('incorrect');
+                    document.getElementById(`label-q${index}-o${q.ans}`).classList.add('correct');
+                }
+            } else {
+                // Если не ответил, просто подсвечиваем правильный
+                document.getElementById(`label-q${index}-o${q.ans}`).classList.add('correct');
+            }
+        });
+
+        // Блокируем радиокнопки
+        const inputs = document.querySelectorAll('input[type="radio"]');
+        inputs.forEach(input => input.disabled = true);
+        
+        // Отключаем кнопку
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        btn.innerText = "Тест завершен";
+
+        // Показываем результат
+        const resContainer = document.getElementById('results-container');
+        resContainer.style.display = 'block';
+        document.getElementById('score-display').innerText = `${score} / 25`;
+        
+        let msg = "";
+        if (score === 25) msg = "Отличная работа! Вы в совершенстве освоили материал.";
+        else if (score >= 20) msg = "Хороший результат! Вы хорошо понимаете тему.";
+        else if (score >= 13) msg = "Неплохо, но стоит еще раз повторить правила сложения и вычитания дробей.";
+        else msg = "Вам необходимо внимательно изучить разобранные примеры и попробовать еще раз.";
+        
+        document.getElementById('score-message').innerText = msg;
+        
+        resContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
