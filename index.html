@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Упрощение рациональных выражений (8 класс)</title>
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --success: #2ECC71;
+            --danger: #E74C3C;
+            --bg: #F5F7FA;
+            --text: #333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        h1 { text-align: center; font-size: 2em; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 30px; }
+        h2 { font-size: 1.6em; margin-top: 40px; border-left: 5px solid var(--primary); padding-left: 15px; }
+        
+        .explanation {
+            background-color: #E8F4F8;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+        .formula {
+            display: block;
+            text-align: center;
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #D35400;
+            margin: 15px 0;
+        }
+        
+        /* Стили для математических дробей */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 5px;
+            font-weight: bold;
+            color: #2C3E50;
+        }
+        .frac > span:first-child {
+            border-bottom: 2px solid #2C3E50;
+            padding: 0 4px;
+        }
+        .frac > span:last-child {
+            padding: 0 4px;
+        }
+
+        .examples-box {
+            background-color: #F9FBFC;
+            border: 1px solid #D6E3EA;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .examples-box ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .examples-box li {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 10px;
+        }
+        .examples-box li:last-child { border-bottom: none; }
+
+        .quiz-container {
+            background-color: #FFF9E6;
+            border: 2px solid #F1C40F;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .quiz-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #B7950B;
+        }
+        
+        .question-block {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            transition: background-color 0.3s;
+        }
+        .question-text {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .options label {
+            display: block;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #fdfdfd;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .options label:hover { background: #f1f1f1; }
+        .options input { margin-right: 10px; transform: scale(1.2); }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .btn:hover { background-color: #357ABD; }
+        .result-msg {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        #final-quiz {
+            background-color: #E8F8F5;
+            border: 2px solid #1ABC9C;
+        }
+        #final-quiz .quiz-title { color: #117A65; font-size: 1.5em; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Тренажер: Упрощение рациональных выражений (8 класс)</h1>
+   
+    <!-- РАЗДЕЛ 1 -->
+    <h2>Раздел 1: Разность квадратов</h2>
+    <div class="explanation">
+        <p><strong>Разность квадратов</strong> — это самая популярная формула для сокращения дробей. Она позволяет разложить выражение на две скобки (с минусом и с плюсом).</p>
+        <span class="formula">a<sup>2</sup> - b<sup>2</sup> = (a - b)(a + b)</span>
+        <p>Когда мы видим эту формулу в числителе или знаменателе дроби, мы раскладываем её на множители, чтобы найти одинаковую скобку и сократить её!</p>
+    </div>
+
+    <div class="examples-box">
+        <h3>10 решенных примеров (от простого к сложному):</h3>
+        <ol>
+            <li>x<sup>2</sup> - 25 = x<sup>2</sup> - 5<sup>2</sup> = (x - 5)(x + 5)</li>
+            <li>9y<sup>2</sup> - 16 = (3y)<sup>2</sup> - 4<sup>2</sup> = (3y - 4)(3y + 4)</li>
+            <li>100 - a<sup>2</sup>b<sup>2</sup> = (10 - ab)(10 + ab)</li>
+            <li><span class="frac"><span>x<sup>2</sup> - 9</span><span>x - 3</span></span> = <span class="frac"><span>(x - 3)(x + 3)</span><span>x - 3</span></span> = x + 3</li>
+            <li><span class="frac"><span>4a<sup>2</sup> - 1</span><span>2a + 1</span></span> = <span class="frac"><span>(2a - 1)(2a + 1)</span><span>2a + 1</span></span> = 2a - 1</li>
+            <li><span class="frac"><span>25 - y<sup>2</sup></span><span>y - 5</span></span> = <span class="frac"><span>(5 - y)(5 + y)</span><span>-(5 - y)</span></span> = -(5 + y) = -5 - y <i>(Внимание на вынос минуса!)</i></li>
+            <li><span class="frac"><span>a<sup>4</sup> - b<sup>4</sup></span><span>a<sup>2</sup> + b<sup>2</sup></span></span> = <span class="frac"><span>(a<sup>2</sup> - b<sup>2</sup>)(a<sup>2</sup> + b<sup>2</sup>)</span><span>a<sup>2</sup> + b<sup>2</sup></span></span> = a<sup>2</sup> - b<sup>2</sup></li>
+            <li><span class="frac"><span>x<sup>2</sup> - 0.04</span><span>x + 0.2</span></span> = <span class="frac"><span>(x - 0.2)(x + 0.2)</span><span>x + 0.2</span></span> = x - 0.2</li>
+            <li><span class="frac"><span>x - y</span><span>x<sup>2</sup> - y<sup>2</sup></span></span> = <span class="frac"><span>x - y</span><span>(x - y)(x + y)</span></span> = <span class="frac"><span>1</span><span>x + y</span></span></li>
+            <li><span class="frac"><span>36m<sup>2</sup> - 49n<sup>2</sup></span><span>6m - 7n</span></span> = <span class="frac"><span>(6m - 7n)(6m + 7n)</span><span>6m - 7n</span></span> = 6m + 7n</li>
+        </ol>
+    </div>
+
+    <div class="quiz-container">
+        <div class="quiz-title">Самостоятельная работа: Разность квадратов (5 примеров)</div>
+        <div id="q1-container"></div>
+    </div>
+
+
+    <!-- РАЗДЕЛ 2 -->
+    <h2>Раздел 2: Квадрат суммы</h2>
+    <div class="explanation">
+        <p><strong>Квадрат суммы</strong> позволяет "свернуть" длинный трехчлен обратно в скобку в квадрате. Это невероятно полезно, когда весь числитель или знаменатель выглядит как большая формула.</p>
+        <span class="formula">a<sup>2</sup> + 2ab + b<sup>2</sup> = (a + b)<sup>2</sup></span>
+        <p>Главное — найти квадраты по краям (a<sup>2</sup> и b<sup>2</sup>) и проверить, что посередине стоит их удвоенное произведение (2ab).</p>
+    </div>
+
+    <div class="examples-box">
+        <h3>10 решенных примеров (от простого к сложному):</h3>
+        <ol>
+            <li>x<sup>2</sup> + 6x + 9 = x<sup>2</sup> + 2·x·3 + 3<sup>2</sup> = (x + 3)<sup>2</sup></li>
+            <li>4a<sup>2</sup> + 12a + 9 = (2a)<sup>2</sup> + 2·2a·3 + 3<sup>2</sup> = (2a + 3)<sup>2</sup></li>
+            <li>25 + 10y + y<sup>2</sup> = (5 + y)<sup>2</sup></li>
+            <li><span class="frac"><span>x<sup>2</sup> + 8x + 16</span><span>x + 4</span></span> = <span class="frac"><span>(x + 4)<sup>2</sup></span><span>x + 4</span></span> = x + 4</li>
+            <li><span class="frac"><span>9a<sup>2</sup> + 6a + 1</span><span>3a + 1</span></span> = <span class="frac"><span>(3a + 1)<sup>2</sup></span><span>3a + 1</span></span> = 3a + 1</li>
+            <li><span class="frac"><span>a<sup>2</sup> + 2ab + b<sup>2</sup></span><span>a<sup>2</sup> - b<sup>2</sup></span></span> = <span class="frac"><span>(a + b)<sup>2</sup></span><span>(a - b)(a + b)</span></span> = <span class="frac"><span>a + b</span><span>a - b</span></span></li>
+            <li><span class="frac"><span>x + 1</span><span>x<sup>2</sup> + 2x + 1</span></span> = <span class="frac"><span>x + 1</span><span>(x + 1)<sup>2</sup></span></span> = <span class="frac"><span>1</span><span>x + 1</span></span></li>
+            <li><span class="frac"><span>16x<sup>2</sup> + 24x + 9</span><span>4x + 3</span></span> = <span class="frac"><span>(4x + 3)<sup>2</sup></span><span>4x + 3</span></span> = 4x + 3</li>
+            <li><span class="frac"><span>100m<sup>2</sup> + 20mn + n<sup>2</sup></span><span>10m + n</span></span> = <span class="frac"><span>(10m + n)<sup>2</sup></span><span>10m + n</span></span> = 10m + n</li>
+            <li><span class="frac"><span>x<sup>4</sup> + 2x<sup>2</sup>y + y<sup>2</sup></span><span>x<sup>2</sup> + y</span></span> = <span class="frac"><span>(x<sup>2</sup> + y)<sup>2</sup></span><span>x<sup>2</sup> + y</span></span> = x<sup>2</sup> + y</li>
+        </ol>
+    </div>
+
+    <div class="quiz-container">
+        <div class="quiz-title">Самостоятельная работа: Квадрат суммы (5 примеров)</div>
+        <div id="q2-container"></div>
+    </div>
+
+
+    <!-- РАЗДЕЛ 3 -->
+    <h2>Раздел 3: Квадрат разности</h2>
+    <div class="explanation">
+        <p><strong>Квадрат разности</strong> работает точно так же, как квадрат суммы, только перед удвоенным произведением стоит знак минус.</p>
+        <span class="formula">a<sup>2</sup> - 2ab + b<sup>2</sup> = (a - b)<sup>2</sup></span>
+        <p>Важное правило: (a - b)<sup>2</sup> абсолютно равно (b - a)<sup>2</sup>. Поэтому при сокращении дробей мы можем легко менять их местами внутри квадрата без вынесения минуса!</p>
+    </div>
+
+    <div class="examples-box">
+        <h3>10 решенных примеров (от простого к сложному):</h3>
+        <ol>
+            <li>y<sup>2</sup> - 10y + 25 = (y - 5)<sup>2</sup></li>
+            <li>16x<sup>2</sup> - 8x + 1 = (4x - 1)<sup>2</sup></li>
+            <li>p<sup>2</sup> - 14p + 49 = (p - 7)<sup>2</sup></li>
+            <li><span class="frac"><span>x<sup>2</sup> - 12x + 36</span><span>x - 6</span></span> = <span class="frac"><span>(x - 6)<sup>2</sup></span><span>x - 6</span></span> = x - 6</li>
+            <li><span class="frac"><span>9a<sup>2</sup> - 12a + 4</span><span>3a - 2</span></span> = <span class="frac"><span>(3a - 2)<sup>2</sup></span><span>3a - 2</span></span> = 3a - 2</li>
+            <li><span class="frac"><span>a<sup>2</sup> - 2ab + b<sup>2</sup></span><span>b - a</span></span> = <span class="frac"><span>(b - a)<sup>2</sup></span><span>b - a</span></span> = b - a <i>(Применили правило смены мест в квадрате)</i></li>
+            <li><span class="frac"><span>x<sup>2</sup> - 4x + 4</span><span>x<sup>2</sup> - 4</span></span> = <span class="frac"><span>(x - 2)<sup>2</sup></span><span>(x - 2)(x + 2)</span></span> = <span class="frac"><span>x - 2</span><span>x + 2</span></span></li>
+            <li><span class="frac"><span>4 - 4x + x<sup>2</sup></span><span>x - 2</span></span> = <span class="frac"><span>(2 - x)<sup>2</sup></span><span>x - 2</span></span> = <span class="frac"><span>(x - 2)<sup>2</sup></span><span>x - 2</span></span> = x - 2</li>
+            <li><span class="frac"><span>36 - 12m + m<sup>2</sup></span><span>6 - m</span></span> = <span class="frac"><span>(6 - m)<sup>2</sup></span><span>6 - m</span></span> = 6 - m</li>
+            <li><span class="frac"><span>x<sup>2</sup> - 20x + 100</span><span>2x - 20</span></span> = <span class="frac"><span>(x - 10)<sup>2</sup></span><span>2(x - 10)</span></span> = <span class="frac"><span>x - 10</span><span>2</span></span></li>
+        </ol>
+    </div>
+
+    <div class="quiz-container">
+        <div class="quiz-title">Самостоятельная работа: Квадрат разности (5 примеров)</div>
+        <div id="q3-container"></div>
+    </div>
+
+
+    <!-- РАЗДЕЛ 4 -->
+    <h2>Раздел 4: Сумма и разность кубов</h2>
+    <div class="explanation">
+        <p><strong>Сумма и разность кубов</strong> раскладываются на две скобки: "маленькую" (без степеней) и "большую" (неполный квадрат, где удвоенное произведение становится просто произведением с обратным знаком).</p>
+        <span class="formula">a<sup>3</sup> - b<sup>3</sup> = (a - b)(a<sup>2</sup> + ab + b<sup>2</sup>)</span>
+        <span class="formula">a<sup>3</sup> + b<sup>3</sup> = (a + b)(a<sup>2</sup> - ab + b<sup>2</sup>)</span>
+        <p>Эти формулы часто встречаются в сложных дробях, где одна из скобок полностью сокращается со знаменателем или числителем.</p>
+    </div>
+
+    <div class="examples-box">
+        <h3>10 решенных примеров (от простого к сложному):</h3>
+        <ol>
+            <li>x<sup>3</sup> - 8 = x<sup>3</sup> - 2<sup>3</sup> = (x - 2)(x<sup>2</sup> + 2x + 4)</li>
+            <li>y<sup>3</sup> + 27 = y<sup>3</sup> + 3<sup>3</sup> = (y + 3)(y<sup>2</sup> - 3y + 9)</li>
+            <li><span class="frac"><span>x<sup>3</sup> - 1</span><span>x - 1</span></span> = <span class="frac"><span>(x - 1)(x<sup>2</sup> + x + 1)</span><span>x - 1</span></span> = x<sup>2</sup> + x + 1</li>
+            <li><span class="frac"><span>a<sup>3</sup> + b<sup>3</sup></span><span>a + b</span></span> = a<sup>2</sup> - ab + b<sup>2</sup></li>
+            <li><span class="frac"><span>8m<sup>3</sup> - n<sup>3</sup></span><span>2m - n</span></span> = <span class="frac"><span>(2m - n)(4m<sup>2</sup> + 2mn + n<sup>2</sup>)</span><span>2m - n</span></span> = 4m<sup>2</sup> + 2mn + n<sup>2</sup></li>
+            <li><span class="frac"><span>x<sup>3</sup> + 64</span><span>x<sup>2</sup> - 4x + 16</span></span> = <span class="frac"><span>(x + 4)(x<sup>2</sup> - 4x + 16)</span><span>x<sup>2</sup> - 4x + 16</span></span> = x + 4</li>
+            <li><span class="frac"><span>125 - y<sup>3</sup></span><span>25 + 5y + y<sup>2</sup></span></span> = <span class="frac"><span>(5 - y)(25 + 5y + y<sup>2</sup>)</span><span>25 + 5y + y<sup>2</sup></span></span> = 5 - y</li>
+            <li><span class="frac"><span>x<sup>3</sup> - y<sup>3</sup></span><span>x<sup>2</sup> - y<sup>2</sup></span></span> = <span class="frac"><span>(x - y)(x<sup>2</sup> + xy + y<sup>2</sup>)</span><span>(x - y)(x + y)</span></span> = <span class="frac"><span>x<sup>2</sup> + xy + y<sup>2</sup></span><span>x + y</span></span></li>
+            <li><span class="frac"><span>27a<sup>3</sup> + 1</span><span>3a + 1</span></span> = <span class="frac"><span>(3a + 1)(9a<sup>2</sup> - 3a + 1)</span><span>3a + 1</span></span> = 9a<sup>2</sup> - 3a + 1</li>
+            <li><span class="frac"><span>p<sup>3</sup> - 1000</span><span>p<sup>2</sup> + 10p + 100</span></span> = <span class="frac"><span>(p - 10)(p<sup>2</sup> + 10p + 100)</span><span>p<sup>2</sup> + 10p + 100</span></span> = p - 10</li>
+        </ol>
+    </div>
+
+    <div class="quiz-container">
+        <div class="quiz-title">Самостоятельная работа: Кубы (5 примеров)</div>
+        <div id="q4-container"></div>
+    </div>
+
+
+    <!-- ИТОГОВЫЙ ТЕСТ -->
+    <h2 style="text-align: center; font-size: 2em; margin-top: 60px;">🏆 Финальное испытание</h2>
+    <div class="explanation" style="text-align: center;">
+        <p>Молодец, ты дошел до конца! Теперь давай закрепим все формулы в одном большом итоговом тесте на 20 вопросов.</p>
+        <p>Внимательно смотри на знаки и не забывай правила сокращения.</p>
+    </div>
+
+    <div class="quiz-container" id="final-quiz">
+        <div class="quiz-title">Итоговый тест (20 вопросов)</div>
+        <div id="qfinal-container"></div>
+    </div>
+
+</div>
+
+<script>
+    // База данных всех вопросов для интерактивных проверок
+    const quizzes = {
+        q1: [
+            { q: "Сократите дробь: <span class='frac'><span>x<sup>2</sup> - 49</span><span>x + 7</span></span>", options: ["x + 7", "x - 7", "7 - x", "x<sup>2</sup> - 7"], ans: 1 },
+            { q: "Сократите дробь: <span class='frac'><span>100 - y<sup>2</sup></span><span>10 - y</span></span>", options: ["10 - y", "y - 10", "10 + y", "100 + y"], ans: 2 },
+            { q: "Сократите дробь: <span class='frac'><span>4a<sup>2</sup> - 9</span><span>2a - 3</span></span>", options: ["2a + 3", "2a - 3", "4a + 3", "2a + 9"], ans: 0 },
+            { q: "Сократите дробь: <span class='frac'><span>x - 5</span><span>x<sup>2</sup> - 25</span></span>", options: ["x + 5", "x - 5", "<span class='frac'><span>1</span><span>x - 5</span></span>", "<span class='frac'><span>1</span><span>x + 5</span></span>"], ans: 3 },
+            { q: "С подвохом! Сократите: <span class='frac'><span>81 - x<sup>2</sup></span><span>x - 9</span></span>", options: ["9 + x", "-x - 9", "x - 9", "9 - x"], ans: 1 }
+        ],
+        q2: [
+            { q: "Сократите дробь: <span class='frac'><span>a<sup>2</sup> + 10a + 25</span><span>a + 5</span></span>", options: ["a - 5", "a + 5", "a + 25", "5a"], ans: 1 },
+            { q: "Сократите дробь: <span class='frac'><span>p<sup>2</sup> + 2pq + q<sup>2</sup></span><span>p + q</span></span>", options: ["p - q", "p<sup>2</sup> + q", "p + q", "2pq"], ans: 2 },
+            { q: "Сократите дробь: <span class='frac'><span>36 + 12y + y<sup>2</sup></span><span>y + 6</span></span>", options: ["y - 6", "6 - y", "36 + y", "y + 6"], ans: 3 },
+            { q: "Сократите дробь: <span class='frac'><span>x<sup>2</sup> + 4x + 4</span><span>x<sup>2</sup> - 4</span></span>", options: ["<span class='frac'><span>x + 2</span><span>x - 2</span></span>", "<span class='frac'><span>x - 2</span><span>x + 2</span></span>", "1", "x + 2"], ans: 0 },
+            { q: "Сократите дробь: <span class='frac'><span>9x<sup>2</sup> + 6x + 1</span><span>3x + 1</span></span>", options: ["3x - 1", "3x + 1", "9x + 1", "x + 1"], ans: 1 }
+        ],
+        q3: [
+            { q: "Сократите дробь: <span class='frac'><span>x<sup>2</sup> - 14x + 49</span><span>x - 7</span></span>", options: ["x + 7", "x - 7", "7 - x", "-x - 7"], ans: 1 },
+            { q: "Сократите дробь: <span class='frac'><span>m<sup>2</sup> - 2mn + n<sup>2</sup></span><span>m - n</span></span>", options: ["m + n", "m - n", "n - m", "-m - n"], ans: 1 },
+            { q: "Сократите дробь: <span class='frac'><span>y<sup>2</sup> - 16y + 64</span><span>8 - y</span></span>", options: ["y - 8", "y + 8", "8 - y", "-y - 8"], ans: 2 },
+            { q: "Сократите дробь: <span class='frac'><span>4x<sup>2</sup> - 4x + 1</span><span>1 - 2x</span></span>", options: ["2x - 1", "1 - 2x", "1 + 2x", "2x + 1"], ans: 1 },
+            { q: "Сократите дробь: <span class='frac'><span>x<sup>2</sup> - 20x + 100</span><span>x<sup>2</sup> - 100</span></span>", options: ["<span class='frac'><span>x - 10</span><span>x + 10</span></span>", "<span class='frac'><span>x + 10</span><span>x - 10</span></span>", "1", "x - 10"], ans: 0 }
+        ],
+        q4: [
+            { q: "Сократите дробь: <span class='frac'><span>x<sup>3</sup> - 27</span><span>x - 3</span></span>", options: ["x<sup>2</sup> - 3x + 9", "x<sup>2</sup> + 3x + 9", "x<sup>2</sup> + 9", "x - 3"], ans: 1 },
+            { q: "Сократите дробь: <span class='frac'><span>y<sup>3</sup> + 8</span><span>y<sup>2</sup> - 2y + 4</span></span>", options: ["y - 2", "y + 4", "y + 2", "y<sup>2</sup> + 2"], ans: 2 },
+            { q: "Сократите дробь: <span class='frac'><span>a<sup>3</sup> - b<sup>3</sup></span><span>a<sup>2</sup> + ab + b<sup>2</sup></span></span>", options: ["a + b", "a - b", "b - a", "a<sup>2</sup> - b<sup>2</sup>"], ans: 1 },
+            { q: "Сократите дробь: <span class='frac'><span>64 + p<sup>3</sup></span><span>4 + p</span></span>", options: ["16 + 4p + p<sup>2</sup>", "16 - 4p + p<sup>2</sup>", "4 - p", "16 + p<sup>2</sup>"], ans: 1 },
+            { q: "Сократите дробь: <span class='frac'><span>x<sup>3</sup> - 1</span><span>1 - x</span></span>", options: ["x<sup>2</sup> + x + 1", "-x<sup>2</sup> - x - 1", "x<sup>2</sup> - x + 1", "x - 1"], ans: 1 }
+        ],
+        qfinal: [
+            { q: "Чему равно выражение: x<sup>2</sup> - 81?", options: ["(x-9)(x-9)", "(x-81)(x+81)", "(x-9)(x+9)", "x(x-81)"], ans: 2 },
+            { q: "Разложите на множители: a<sup>2</sup> + 12a + 36", options: ["(a+6)<sup>2</sup>", "(a-6)<sup>2</sup>", "(a+6)(a-6)", "(a+36)<sup>2</sup>"], ans: 0 },
+            { q: "Разложите на множители: 25 - 10y + y<sup>2</sup>", options: ["(5+y)<sup>2</sup>", "(5-y)<sup>2</sup>", "(y-25)<sup>2</sup>", "5(5-y)"], ans: 1 },
+            { q: "Чему равна маленькая скобка в формуле x<sup>3</sup> + 125?", options: ["x - 5", "x + 25", "x + 5", "x - 25"], ans: 2 },
+            { q: "Сократите: <span class='frac'><span>x<sup>2</sup> - 16</span><span>x + 4</span></span>", options: ["x + 4", "x - 4", "4 - x", "1"], ans: 1 },
+            { q: "Сократите: <span class='frac'><span>a<sup>2</sup> + 2ab + b<sup>2</sup></span><span>a + b</span></span>", options: ["a - b", "1", "a + b", "a<sup>2</sup>+b<sup>2</sup>"], ans: 2 },
+            { q: "Сократите: <span class='frac'><span>m<sup>2</sup> - 6m + 9</span><span>m - 3</span></span>", options: ["m - 3", "m + 3", "3 - m", "-m - 3"], ans: 0 },
+            { q: "Сократите: <span class='frac'><span>100 - x<sup>2</sup></span><span>x - 10</span></span>", options: ["10 + x", "10 - x", "-10 - x", "x - 10"], ans: 2 },
+            { q: "Сократите: <span class='frac'><span>p<sup>3</sup> - 8</span><span>p<sup>2</sup> + 2p + 4</span></span>", options: ["p + 2", "p - 2", "p<sup>2</sup> - 2", "2 - p"], ans: 1 },
+            { q: "Сократите: <span class='frac'><span>y - x</span><span>x<sup>2</sup> - 2xy + y<sup>2</sup></span></span>", options: ["<span class='frac'><span>1</span><span>x - y</span></span>", "<span class='frac'><span>-1</span><span>x - y</span></span>", "x - y", "y - x"], ans: 1 },
+            { q: "Сократите: <span class='frac'><span>4a<sup>2</sup> - 12a + 9</span><span>2a - 3</span></span>", options: ["2a + 3", "2a - 3", "4a - 3", "3 - 2a"], ans: 1 },
+            { q: "Сократите: <span class='frac'><span>x<sup>4</sup> - 1</span><span>x<sup>2</sup> + 1</span></span>", options: ["x<sup>2</sup> + 1", "x - 1", "x + 1", "x<sup>2</sup> - 1"], ans: 3 },
+            { q: "Сократите: <span class='frac'><span>27 + y<sup>3</sup></span><span>3 + y</span></span>", options: ["9 + 3y + y<sup>2</sup>", "9 - 3y + y<sup>2</sup>", "3 - y", "9 - y<sup>2</sup>"], ans: 1 },
+            { q: "Сократите: <span class='frac'><span>x<sup>2</sup> - 8x + 16</span><span>16 - x<sup>2</sup></span></span>", options: ["<span class='frac'><span>x - 4</span><span>4 + x</span></span>", "<span class='frac'><span>4 - x</span><span>4 + x</span></span>", "<span class='frac'><span>x - 4</span><span>x + 4</span></span>", "-1"], ans: 1 },
+            { q: "Сократите: <span class='frac'><span>x + 5</span><span>x<sup>2</sup> + 10x + 25</span></span>", options: ["x + 5", "1", "<span class='frac'><span>1</span><span>x + 5</span></span>", "x - 5"], ans: 2 },
+            { q: "Сократите: <span class='frac'><span>49 - y<sup>2</sup></span><span>y<sup>2</sup> - 14y + 49</span></span>", options: ["<span class='frac'><span>7 + y</span><span>7 - y</span></span>", "<span class='frac'><span>7 + y</span><span>y - 7</span></span>", "<span class='frac'><span>y + 7</span><span>y - 7</span></span>", "1"], ans: 0 },
+            { q: "Какое выражение равно (2x - 5)<sup>2</sup>?", options: ["4x<sup>2</sup> - 25", "4x<sup>2</sup> - 10x + 25", "4x<sup>2</sup> - 20x + 25", "2x<sup>2</sup> - 20x + 25"], ans: 2 },
+            { q: "Сократите: <span class='frac'><span>3x<sup>2</sup> - 27</span><span>x - 3</span></span> <i>(Подсказка: вынеси 3)</i>", options: ["3x - 9", "3(x + 3)", "3(x - 3)", "x + 3"], ans: 1 },
+            { q: "Сократите: <span class='frac'><span>x<sup>3</sup> - y<sup>3</sup></span><span>x - y</span></span>", options: ["x<sup>2</sup> - xy + y<sup>2</sup>", "x<sup>2</sup> + xy + y<sup>2</sup>", "x<sup>2</sup> + y<sup>2</sup>", "x + y"], ans: 1 },
+            { q: "Сократите: <span class='frac'><span>(a + b)<sup>2</sup> - c<sup>2</sup></span><span>a + b - c</span></span> <i>(Разность квадратов!)</i>", options: ["a + b + c", "a - b - c", "a + c", "b + c"], ans: 0 }
+        ]
+    };
+
+    // Функция для отрисовки тестов
+    function renderQuiz(quizId, containerId) {
+        const container = document.getElementById(containerId);
+        let html = '';
+        quizzes[quizId].forEach((item, index) => {
+            html += `<div class="question-block" id="${quizId}-q${index}">`;
+            html += `<div class="question-text">${index + 1}. ${item.q}</div>`;
+            html += `<div class="options">`;
+            item.options.forEach((opt, optIdx) => {
+                html += `<label><input type="radio" name="${quizId}-ans${index}" value="${optIdx}"> ${opt}</label>`;
+            });
+            html += `</div></div>`;
+        });
+        html += `<button class="btn" onclick="checkQuiz('${quizId}')">Проверить ответы</button>`;
+        html += `<div class="result-msg" id="${quizId}-result"></div>`;
+        container.innerHTML = html;
+    }
+
+    // Функция для проверки тестов
+    function checkQuiz(quizId) {
+        let score = 0;
+        const questions = quizzes[quizId];
+        questions.forEach((item, index) => {
+            const selected = document.querySelector(`input[name="${quizId}-ans${index}"]:checked`);
+            const qBlock = document.getElementById(`${quizId}-q${index}`);
+            
+            // Сброс цветов
+            qBlock.style.backgroundColor = '#fff';
+            qBlock.style.borderColor = '#eee';
+
+            if (selected) {
+                if (parseInt(selected.value) === item.ans) {
+                    score++;
+                    qBlock.style.backgroundColor = '#E8F8F5'; // Нежно-зеленый
+                    qBlock.style.borderColor = '#2ECC71';
+                } else {
+                    qBlock.style.backgroundColor = '#FDEDEC'; // Нежно-красный
+                    qBlock.style.borderColor = '#E74C3C';
+                }
+            } else {
+                qBlock.style.backgroundColor = '#FEF9E7'; // Желтый (пропущено)
+                qBlock.style.borderColor = '#F1C40F';
+            }
+        });
+
+        const resDiv = document.getElementById(`${quizId}-result`);
+        resDiv.style.display = 'block';
+        
+        let msg = `Ваш результат: ${score} из ${questions.length}`;
+        if (score === questions.length) {
+            msg += ' 🏆 Идеально! Так держать!';
+            resDiv.style.color = '#27AE60';
+        } else if (score >= questions.length / 2) {
+            msg += ' 👍 Хорошо, но есть куда расти. Посмотри ошибки (красные блоки).';
+            resDiv.style.color = '#D35400';
+        } else {
+            msg += ' 📚 Нужно еще немного повторить правила. Не сдавайся!';
+            resDiv.style.color = '#C0392B';
+        }
+        resDiv.innerHTML = msg;
+    }
+
+    // Инициализация всех тестов при загрузке страницы
+    window.onload = function() {
+        renderQuiz('q1', 'q1-container');
+        renderQuiz('q2', 'q2-container');
+        renderQuiz('q3', 'q3-container');
+        renderQuiz('q4', 'q4-container');
+        renderQuiz('qfinal', 'qfinal-container');
+    };
+</script>
+
+</body>
+</html>
