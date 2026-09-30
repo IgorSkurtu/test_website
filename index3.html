@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер по математике (6 класс, до стр. 38)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .question-card {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+        .question-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .options {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .options li {
+            margin-bottom: 10px;
+        }
+        .options label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .options label:hover {
+            background: #eef2f5;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        .btn-check {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background 0.3s;
+        }
+        .btn-check:hover {
+            background-color: #2980b9;
+        }
+        .correct {
+            background-color: #d4edda !important;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+        }
+        #result {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Тренажер: Делимость чисел, НОД и НОК</h1>
+    <div id="quiz-container"></div>
+    <button class="btn-check" onclick="checkAnswers()">Проверить ответы</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    const questions = [
+        // --- ИСХОДНЫЕ 30 ВОПРОСОВ ---
+        // Тема 1: Делители и кратные
+        {
+            q: "Какое из чисел является делителем числа 20?",
+            options: ["3", "4", "6", "8"],
+            answer: 1
+        },
+        {
+            q: "Выберите число, кратное числу 8:",
+            options: ["4", "18", "24", "30"],
+            answer: 2
+        },
+        {
+            q: "Сколько делителей у натурального числа 12?",
+            options: ["4", "5", "6", "бесконечно много"],
+            answer: 2
+        },
+        {
+            q: "Какое число является делителем любого натурального числа?",
+            options: ["0", "1", "само число", "2"],
+            answer: 1
+        },
+        {
+            q: "Продавец связывает морковь в одинаковые пучки. Сколько пучков он может навязать из 30 штук моркови?",
+            options: ["4", "6", "7", "8"],
+            answer: 1
+        },
+        // Тема 2: Признаки делимости на 10, 5 и 2
+        {
+            q: "Какое из этих чисел делится на 10 без остатка?",
+            options: ["283", "205", "280", "101"],
+            answer: 2
+        },
+        {
+            q: "Какое из чисел делится на 5?",
+            options: ["872", "870", "873", "871"],
+            answer: 1
+        },
+        {
+            q: "Какая цифра должна стоять в разряде единиц, чтобы число было нечётным?",
+            options: ["0", "2", "4", "5"],
+            answer: 3
+        },
+        {
+            q: "Выберите чётное число:",
+            options: ["509", "85", "96", "51"],
+            answer: 2
+        },
+        {
+            q: "Коля принёс несколько коробок с вегетарианскими бургерами, по 10 штук в каждой коробке. Сколько всего бургеров могло быть?",
+            options: ["35", "43", "50", "52"],
+            answer: 2
+        },
+        // Тема 3: Признаки делимости на 9 и 3
+        {
+            q: "Какое из этих чисел делится на 9?",
+            options: ["51634", "76455", "8461", "1111"],
+            answer: 1
+        },
+        {
+            q: "Какое из этих чисел делится на 3?",
+            options: ["75432", "2772826", "5402071", "13"],
+            answer: 0
+        },
+        {
+            q: "Если сумма цифр числа делится на 9, то...",
+            options: ["число делится на 2", "число не делится на 9", "число делится на 9", "число оканчивается на 9"],
+            answer: 2
+        },
+        {
+            q: "Какую цифру нужно поставить вместо *, чтобы число 2*5 делилось на 3?",
+            options: ["1", "2", "3", "4"],
+            answer: 1
+        },
+        {
+            q: "Собрали 200 кг яблок и часть из них разложили в 9 одинаковых ящиков. Могло ли после этого остаться 56 кг яблок?",
+            options: ["Да", "Нет", "Неизвестно", "Только если ящики пустые"],
+            answer: 0
+        },
+        // Тема 4: Простые и составные числа
+        {
+            q: "Что такое простое число?",
+            options: ["Имеет один делитель", "Имеет только два делителя: 1 и само себя", "Имеет больше двух делителей", "Любое нечётное число"],
+            answer: 1
+        },
+        {
+            q: "Укажите составное число:",
+            options: ["7", "9", "11", "13"],
+            answer: 1
+        },
+        {
+            q: "Является ли число 1 простым или составным?",
+            options: ["Простым", "Составным", "Ни простым, ни составным", "Чётным"],
+            answer: 2
+        },
+        {
+            q: "Сколько простых чисел в первом десятке (от 1 до 10)?",
+            options: ["3", "4", "5", "6"],
+            answer: 1
+        },
+        {
+            q: "Какое из этих чисел является простым?",
+            options: ["21", "25", "31", "33"],
+            answer: 2
+        },
+        // Тема 5: Разложение на простые множители
+        {
+            q: "Каково правильное разложение числа 210 на простые множители?",
+            options: ["2 * 105", "3 * 70", "2 * 3 * 5 * 7", "6 * 35"],
+            answer: 2
+        },
+        {
+            q: "Какого множителя недостаёт в разложении 105 = 3 * _ * 5?",
+            options: ["2", "5", "7", "9"],
+            answer: 2
+        },
+        {
+            q: "Какое число разложено на простые множители как 2 * 2 * 3 * 3?",
+            options: ["24", "36", "48", "72"],
+            answer: 1
+        },
+        {
+            q: "Сколько двоек содержится в разложении числа 128 на простые множители?",
+            options: ["5", "6", "7", "8"],
+            answer: 2
+        },
+        // Тема 6: НОД и взаимно простые числа
+        {
+            q: "Найдите наибольший общий делитель (НОД) чисел 48 и 36:",
+            options: ["6", "8", "12", "24"],
+            answer: 2
+        },
+        {
+            q: "Как называются натуральные числа, чей наибольший общий делитель равен 1?",
+            options: ["Простые", "Составные", "Взаимно простые", "Кратные"],
+            answer: 2
+        },
+        {
+            q: "Какая из этих пар содержит взаимно простые числа?",
+            options: ["15 и 45", "24 и 35", "12 и 18", "16 и 24"],
+            answer: 1
+        },
+        {
+            q: "В вегетарианском кафе приготовили наборы для салатов из 84 помидоров и 112 огурцов (использовали все овощи без остатка). Какое наибольшее количество одинаковых наборов получилось?",
+            options: ["12", "14", "28", "4"],
+            answer: 2
+        },
+        // Тема 7: НОК
+        {
+            q: "Найдите наименьшее общее кратное (НОК) чисел 75 и 60:",
+            options: ["150", "300", "450", "600"],
+            answer: 1
+        },
+        {
+            q: "Шаг Володи 75 см, а шаг Кати 60 см. На каком наименьшем расстоянии они сделают по целому числу шагов?",
+            options: ["150 см", "300 см", "450 см", "600 см"],
+            answer: 1
+        },
+        
+        // --- ДОБАВЛЕННЫЕ 10 ВОПРОСОВ (НОК, признаки на 4 и на 6) ---
+        {
+            q: "Какое условие должно выполняться одновременно, чтобы число делилось на 6 без остатка?",
+            options: ["Оно должно делиться на 2 и на 4", "Оно должно делиться на 2 и на 3", "Оно должно оканчиваться на 6", "Оно должно делиться на 3 и на 9"],
+            answer: 1
+        },
+        {
+            q: "Какую цифру можно поставить вместо *, чтобы число 445* делилось на 6?",
+            options: ["1", "2", "3", "5"],
+            answer: 1
+        },
+        {
+            q: "Как звучит признак делимости на 4?",
+            options: ["Сумма всех цифр числа делится на 4", "Число оканчивается на 4 или 8", "Две последние цифры образуют число, кратное 4", "Первая и последняя цифры делятся на 4"],
+            answer: 2
+        },
+        {
+            q: "Какое из следующих чисел делится на 4?",
+            options: ["234854", "1094178", "4895436", "7358130"],
+            answer: 2
+        },
+        {
+            q: "Какое из чисел делится одновременно на 3 и на 4 (то есть на 12)?",
+            options: ["3552", "4714", "1111", "2002"],
+            answer: 0
+        },
+        {
+            q: "Найдите наименьшее общее кратное (НОК) чисел 6 и 8:",
+            options: ["12", "16", "24", "48"],
+            answer: 2
+        },
+        {
+            q: "Вдоль дороги через каждые 30 м стояли старые деревянные столбы. Их заменяют на новые, расставляя через каждые 50 м. На каком наименьшем расстоянии от первого столба новый столб впервые окажется на месте старого?",
+            options: ["80 м", "100 м", "150 м", "300 м"],
+            answer: 2
+        },
+        {
+            q: "Из порта одновременно вышли три экскурсионных катера. У первого рейс длится 15 суток, у второго — 20 суток, у третьего — 12 суток. Через сколько суток они впервые снова встретятся в порту?",
+            options: ["30 суток", "45 суток", "60 суток", "120 суток"],
+            answer: 2
+        },
+        {
+            q: "Для детского праздника купили яблоки. Если их раздавать детям по 4 или по 6 штук, то каждый раз яблок не останется. Какое наименьшее количество яблок могло быть куплено?",
+            options: ["8", "12", "16", "24"],
+            answer: 1
+        },
+        {
+            q: "Чему равно наименьшее общее кратное (НОК) двух взаимно простых чисел (например, 11 и 13)?",
+            options: ["Единице", "Большему из них", "Их сумме", "Их произведению"],
+            answer: 3
+        }
+    ];
+
+    const quizContainer = document.getElementById('quiz-container');
+
+    function renderQuiz() {
+        questions.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-card';
+            questionDiv.id = `question-${index}`;
+            
+            const title = document.createElement('div');
+            title.className = 'question-title';
+            title.innerText = `${index + 1}. ${q.q}`;
+            questionDiv.appendChild(title);
+
+            const optionsList = document.createElement('ul');
+            optionsList.className = 'options';
+
+            q.options.forEach((opt, optIndex) => {
+                const li = document.createElement('li');
+                const label = document.createElement('label');
+                label.id = `label-${index}-${optIndex}`;
+                
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = `q${index}`;
+                radio.value = optIndex;
+
+                label.appendChild(radio);
+                label.appendChild(document.createTextNode(opt));
+                li.appendChild(label);
+                optionsList.appendChild(li);
+            });
+
+            questionDiv.appendChild(optionsList);
+            quizContainer.appendChild(questionDiv);
+        });
+    }
+
+    function checkAnswers() {
+        let score = 0;
+        
+        questions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            
+            // Сбрасываем стили
+            for(let i=0; i<4; i++) {
+                document.getElementById(`label-${index}-${i}`).classList.remove('correct', 'incorrect');
+            }
+
+            if (selected) {
+                const selectedValue = parseInt(selected.value);
+                if (selectedValue === q.answer) {
+                    score++;
+                    document.getElementById(`label-${index}-${selectedValue}`).classList.add('correct');
+                } else {
+                    document.getElementById(`label-${index}-${selectedValue}`).classList.add('incorrect');
+                    document.getElementById(`label-${index}-${q.answer}`).classList.add('correct');
+                }
+            } else {
+                // Если ничего не выбрано, просто подсвечиваем правильный ответ
+                document.getElementById(`label-${index}-${q.answer}`).classList.add('correct');
+            }
+
+            // Блокируем радио-кнопки после проверки
+            const radios = document.querySelectorAll(`input[name="q${index}"]`);
+            radios.forEach(radio => radio.disabled = true);
+        });
+
+        const resultDiv = document.getElementById('result');
+        resultDiv.style.display = 'block';
+        
+        if (score === questions.length) {
+            resultDiv.style.backgroundColor = '#d4edda';
+            resultDiv.style.color = '#155724';
+            resultDiv.innerText = `Отлично! Вы ответили правильно на все ${score} вопросов.`;
+        } else if (score >= questions.length * 0.7) {
+            resultDiv.style.backgroundColor = '#fff3cd';
+            resultDiv.style.color = '#856404';
+            resultDiv.innerText = `Хороший результат! Ваш балл: ${score} из ${questions.length}.`;
+        } else {
+            resultDiv.style.backgroundColor = '#f8d7da';
+            resultDiv.style.color = '#721c24';
+            resultDiv.innerText = `Нужно повторить материал. Ваш балл: ${score} из ${questions.length}.`;
+        }
+        
+        window.scrollTo({
+            top: resultDiv.offsetTop - 20,
+            behavior: 'smooth'
+        });
+    }
+
+    // Инициализация при загрузке
+    window.onload = renderQuiz;
+</script>
+
+</body>
+</html>
