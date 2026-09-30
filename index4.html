@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер по неравенствам (Уровень: Algebra 8)</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            padding-top: 80px; /* Space for fixed header */
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        #score-board {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .intro {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            header h1 {
+                font-size: 1.1rem;
+            }
+        }
+
+        .option {
+            background: #fafafa;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            border-color: var(--secondary);
+            background: #ebf5fb;
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: var(--success);
+            color: #155724;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: var(--danger);
+            color: #721c24;
+            pointer-events: none;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .result-message {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 40px;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.15em;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Тренажер по неравенствам</h1>
+        <div id="score-board">Решено: 0 / 30</div>
+    </header>
+
+    <div class="container">
+        <div class="intro">
+            <strong>Инструкция:</strong> Решите представленные ниже 30 заданий. Тренажер покрывает линейные неравенства, двойные неравенства, системы, графические области и текстовые задачи. Нажмите на вариант ответа, чтобы проверить себя. Сразу после нажатия правильный ответ загорится зеленым. Удачи!
+        </div>
+
+        <div id="quiz-container">
+            <!-- Questions will be injected here by JS -->
+        </div>
+
+        <div id="final-result" class="result-message">
+            Поздравляем! Вы завершили тренажер!<br>
+            <span id="final-score" style="color: var(--secondary); font-size: 2rem;"></span>
+        </div>
+    </div>
+
+    <script>
+        // Data for 30 questions
+        const quizData = [
+            { q: "Решите неравенство: 2x + 1 &le; 7", opts: ["x &ge; 3", "x < 3", "x &le; 3", "x &le; 4"], ans: 2 },
+            { q: "Решите неравенство: 3(x - 2) > x + 4", opts: ["x &le; 5", "x > 5", "x > 1", "x &ge; 5"], ans: 1 },
+            { q: "Решите неравенство: 5 - 2x < 11", opts: ["x < -3", "x < 3", "x > 3", "x > -3"], ans: 3 },
+            { q: "Решите неравенство: 4(x + 1) &ge; 2(x - 3)", opts: ["x &ge; -5", "x &le; -5", "x &ge; 5", "x &le; 5"], ans: 0 },
+            { q: "Решите двойное неравенство: 2 < x - 3 < 5", opts: ["-1 < x < 2", "5 &le; x &le; 8", "-5 < x < -8", "5 < x < 8"], ans: 3 },
+            { q: "Решите двойное неравенство: -1 &le; 2x + 1 &le; 7", opts: ["0 &le; x &le; 4", "-1 < x < 3", "-1 &le; x &le; 3", "-2 &le; x &le; 6"], ans: 2 },
+            { q: "Решите двойное неравенство: 10 &le; 3x - 2 < 19", opts: ["4 < x &le; 7", "4 &le; x < 7", "3 &le; x < 6", "4 &le; x &le; 7"], ans: 1 },
+            { q: "Найдите наибольшее целое решение неравенства: 3x + 2 < 14", opts: ["4", "2", "3", "5"], ans: 2 },
+            { q: "Найдите наименьшее целое решение неравенства: 5 - x &le; 2", opts: ["2", "4", "5", "3"], ans: 3 },
+            { q: "Укажите количество целых решений неравенства: -2 < 2x &le; 6", opts: ["3", "4", "5", "2"], ans: 1 },
+            { q: "Решите неравенство: x/2 + 3 > 5", opts: ["x > 1", "x < 4", "x > 4", "x &ge; 4"], ans: 2 },
+            { q: "Решите неравенство: (x - 1) / 3 &le; (x + 2) / 2", opts: ["x &ge; -8", "x &le; -8", "x &ge; 8", "x &le; 8"], ans: 0 },
+            { q: "Решите систему неравенств: x > 2 и 2x < 10", opts: ["2 < x < 10", "x > 5", "x < 2", "2 < x < 5"], ans: 3 },
+            { q: "Решите систему неравенств: 3x - 1 &ge; 5 и x - 4 < 0", opts: ["2 < x < 4", "2 &le; x &le; 4", "2 &le; x < 4", "x &ge; 2"], ans: 2 },
+            { q: "Какая из данных точек принадлежит области, заданной неравенством y > x + 2?", opts: ["(0; 0)", "(2; 2)", "(3; 1)", "(1; 4)"], ans: 3 },
+            { q: "Какая точка удовлетворяет системе неравенств: x + y < 5 и y &ge; 0?", opts: ["(2; 4)", "(3; 1)", "(6; -2)", "(4; 2)"], ans: 1 },
+            { q: "Найдите все целые положительные решения неравенства: 4a + 1 < 17", opts: ["1, 2, 3, 4", "0, 1, 2, 3", "1, 2, 3", "1, 2"], ans: 2 },
+            { q: "У Ани есть 500 рублей. Она хочет купить книгу за 200 рублей и несколько блокнотов по 40 рублей. Какое наибольшее количество блокнотов она может купить?", opts: ["6", "8", "9", "7"], ans: 3 },
+            { q: "Велосипедист едет со скоростью 15 км/ч. Ему нужно проехать более 60 км, но он не может быть в пути дольше 5 часов. В каком интервале времени (t, в часах) он может находиться в пути?", opts: ["4 &le; t &le; 5", "4 < t < 5", "4 < t &le; 5", "t > 4"], ans: 2 },
+            { q: "Решите двойное неравенство: 2(x - 1) < 4x < 2(x + 3)", opts: ["-1 < x < 3", "-2 < x < 3", "-1 < x &le; 3", "1 < x < 3"], ans: 0 },
+            { q: "Решите неравенство: 1 - 3x &ge; 10", opts: ["x &ge; -3", "x &le; 3", "x &ge; 3", "x &le; -3"], ans: 3 },
+            { q: "Укажите наименьшее натуральное решение неравенства: 7x - 5 > 16", opts: ["3", "4", "5", "2"], ans: 1 },
+            { q: "Решите двойное неравенство: 0 &le; 4 - x &le; 3", opts: ["1 < x < 4", "-4 &le; x &le; -1", "x &ge; 4", "1 &le; x &le; 4"], ans: 3 },
+            { q: "Точка (x; y) лежит в области x &ge; 0, y &ge; 0, x + y &le; 4. Какое максимальное значение может принимать y?", opts: ["0", "2", "4", "8"], ans: 2 },
+            { q: "Решите систему неравенств: 2x + 3 &le; 9 и 3x + 1 &ge; 4", opts: ["1 < x < 3", "1 &le; x &le; 3", "x &ge; 1", "x &le; 3"], ans: 1 },
+            { q: "Фермер сажает яблони и груши. Всего он хочет посадить не более 30 деревьев, причем яблонь должно быть как минимум в 2 раза больше, чем груш. Какое наибольшее число груш он может посадить?", opts: ["10", "15", "20", "5"], ans: 0 },
+            { q: "Укажите наибольшее целое отрицательное решение неравенства: 5x + 12 > 2x + 1", opts: ["-3", "-4", "0", "-1"], ans: 3 },
+            { q: "Решите неравенство: -4(x - 2) &le; 2 - x", opts: ["x &le; 2", "x &ge; -2", "x &ge; 2", "x &le; -2"], ans: 2 },
+            { q: "Решите двойное неравенство: 5 < (3x + 1) / 2 < 8", opts: ["3 &le; x &le; 5", "3 < x < 5", "2 < x < 4", "4 < x < 6"], ans: 1 },
+            { q: "Пекарня печет пироги с капустой и яблоками. На пирог с капустой уходит 200 г муки, а на пирог с яблоками - 300 г. Всего есть 3 кг муки. Если нужно испечь ровно 5 пирогов с капустой, какое максимальное количество пирогов с яблоками можно испечь?", opts: ["5", "7", "6", "8"], ans: 2 }
+        ];
+
+        const container = document.getElementById('quiz-container');
+        const scoreBoard = document.getElementById('score-board');
+        const finalResult = document.getElementById('final-result');
+        const finalScoreSpan = document.getElementById('final-score');
+        
+        let score = 0;
+        let answeredQuestions = 0;
+        const totalQuestions = quizData.length;
+        const answeredState = new Array(totalQuestions).fill(false);
+
+        // Replace x, y, a, t with nice italic math font
+        function formatMath(text) {
+            return text.replace(/([xyat])/g, '<span class="math">$1</span>');
+        }
+
+        // Render questions
+        quizData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            
+            const questionTitle = document.createElement('div');
+            questionTitle.className = 'question-title';
+            questionTitle.innerHTML = `${index + 1}. ${formatMath(item.q)}`;
+            card.appendChild(questionTitle);
+
+            const optionsGrid = document.createElement('div');
+            optionsGrid.className = 'options-grid';
+            optionsGrid.id = 'opts-' + index;
+
+            item.opts.forEach((optText, optIndex) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = 'option';
+                optDiv.innerHTML = formatMath(optText);
+                optDiv.onclick = () => handleAnswer(index, optIndex);
+                optionsGrid.appendChild(optDiv);
+            });
+
+            card.appendChild(optionsGrid);
+            container.appendChild(card);
+        });
+
+        function handleAnswer(qIndex, selectedOptIndex) {
+            if (answeredState[qIndex]) return; // Already answered
+            
+            answeredState[qIndex] = true;
+            answeredQuestions++;
+            
+            const qData = quizData[qIndex];
+            const optionsDivs = document.getElementById('opts-' + qIndex).children;
+
+            if (selectedOptIndex === qData.ans) {
+                optionsDivs[selectedOptIndex].classList.add('correct');
+                score++;
+            } else {
+                optionsDivs[selectedOptIndex].classList.add('incorrect');
+                optionsDivs[qData.ans].classList.add('correct');
+            }
+
+            // Disable all other options
+            for (let i = 0; i < 4; i++) {
+                if (i !== selectedOptIndex && i !== qData.ans) {
+                    optionsDivs[i].classList.add('disabled');
+                }
+            }
+
+            updateScore();
+        }
+
+        function updateScore() {
+            scoreBoard.innerText = `Решено: ${score} / ${totalQuestions}`;
+            
+            if (answeredQuestions === totalQuestions) {
+                finalResult.style.display = 'block';
+                finalScoreSpan.innerText = `Ваш результат: ${score} из ${totalQuestions}`;
+                // Smooth scroll to bottom
+                setTimeout(() => {
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>
