@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Округление натуральных чисел (5 класс)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f4f8; /* Soft blue-gray background */
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        /* Smooth transitions for interactive elements */
+        .task-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Input highlight animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+        .shake-error {
+            animation: shake 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen pb-20">
+
+    <div class="max-w-4xl mx-auto px-4 pt-10">
+        
+        <!-- Header Section -->
+        <div class="bg-white rounded-3xl shadow-lg p-8 mb-8 text-center border-t-8 border-blue-500">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-600 mb-4">
+                Тренажер: Округление чисел
+            </h1>
+            <p class="text-lg text-slate-600 font-semibold mb-2">
+                Математика, 5 класс
+            </p>
+            <p class="text-slate-500">
+                Внимательно прочитай задание и впиши округленное число в поле. 
+                Ты можешь проверять каждое задание отдельно или нажать кнопку проверки в самом конце!
+            </p>
+        </div>
+
+        <!-- Tasks Container (will be populated by JS) -->
+        <div id="tasks-container" class="space-y-4">
+            <!-- Tasks will be injected here -->
+        </div>
+
+        <!-- Final Overall Check Button -->
+        <div class="mt-12 bg-white rounded-3xl shadow-lg p-8 text-center border-t-8 border-purple-500">
+            <h2 class="text-2xl font-bold mb-4 text-purple-700">Готов узнать свой итоговый результат?</h2>
+            <button onclick="checkAllTasks()" class="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold text-xl py-4 px-10 rounded-full shadow-lg transform transition hover:scale-105 active:scale-95 w-full md:w-auto">
+                Проверить общий результат
+            </button>
+        </div>
+    </div>
+
+    <!-- Result Modal (Hidden by default) -->
+    <div id="result-modal" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 text-center transform scale-95 transition-transform" id="modal-content">
+            <div id="modal-icon" class="text-6xl mb-4 text-center w-full flex justify-center">
+                <!-- Emoji injected by JS -->
+            </div>
+            <h3 id="modal-title" class="text-3xl font-extrabold mb-2 text-slate-800">Результат</h3>
+            <p id="modal-score" class="text-xl font-bold text-slate-600 mb-6">
+                Вы решили правильно: <span id="score-number" class="text-blue-600 text-2xl">0</span> из 30
+            </p>
+            <p id="modal-message" class="text-slate-500 mb-8 font-medium">
+                <!-- Message injected by JS -->
+            </p>
+            <button onclick="closeModal()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-xl shadow transition w-full">
+                Продолжить
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 30 Unique Tasks generated in code
+        const tasksData = [
+            { id: 1, text: "Округлите 3456 до сотен", answer: 3500 },
+            { id: 2, text: "Округлите 192 до десятков", answer: 190 },
+            { id: 3, text: "Округлите 56789 до тысяч", answer: 57000 },
+            { id: 4, text: "Округлите 83 до десятков", answer: 80 },
+            { id: 5, text: "Округлите 415 до сотен", answer: 400 },
+            { id: 6, text: "Округлите 9876 до тысяч", answer: 10000 },
+            { id: 7, text: "Округлите 12345 до десятков тысяч", answer: 10000 },
+            { id: 8, text: "Округлите 765 до десятков", answer: 770 },
+            { id: 9, text: "Округлите 304 до десятков", answer: 300 },
+            { id: 10, text: "Округлите 999 до десятков", answer: 1000 },
+            { id: 11, text: "Округлите 4501 до сотен", answer: 4500 },
+            { id: 12, text: "Округлите 87654 до тысяч", answer: 88000 },
+            { id: 13, text: "Округлите 35 до десятков", answer: 40 },
+            { id: 14, text: "Округлите 149 до сотен", answer: 100 },
+            { id: 15, text: "Округлите 150 до сотен", answer: 200 },
+            { id: 16, text: "Округлите 2871 до сотен", answer: 2900 },
+            { id: 17, text: "Округлите 654321 до сотен тысяч", answer: 700000 },
+            { id: 18, text: "Округлите 7499 до тысяч", answer: 7000 },
+            { id: 19, text: "Округлите 7500 до тысяч", answer: 8000 },
+            { id: 20, text: "Округлите 2024 до десятков", answer: 2020 },
+            { id: 21, text: "Округлите 99 до десятков", answer: 100 },
+            { id: 22, text: "Округлите 105 до десятков", answer: 110 },
+            { id: 23, text: "Округлите 8888 до сотен", answer: 8900 },
+            { id: 24, text: "Округлите 1234567 до миллионов", answer: 1000000 },
+            { id: 25, text: "Округлите 54321 до тысяч", answer: 54000 },
+            { id: 26, text: "Округлите 981 до десятков", answer: 980 },
+            { id: 27, text: "Округлите 4321 до сотен", answer: 4300 },
+            { id: 28, text: "Округлите 67890 до десятков тысяч", answer: 70000 },
+            { id: 29, text: "Округлите 1250 до сотен", answer: 1300 },
+            { id: 30, text: "Округлите 1001 до десятков", answer: 1000 }
+        ];
+
+        const tasksContainer = document.getElementById('tasks-container');
+
+        // Render all tasks on page load
+        function renderTasks() {
+            tasksData.forEach((task, index) => {
+                const taskCard = document.createElement('div');
+                taskCard.className = 'task-card bg-white rounded-2xl shadow-sm p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 border-l-4 border-slate-200';
+                taskCard.id = `task-card-${task.id}`;
+
+                taskCard.innerHTML = `
+                    <div class="flex items-center gap-4 w-full md:w-auto flex-grow">
+                        <div class="bg-blue-100 text-blue-700 font-bold rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                            ${index + 1}
+                        </div>
+                        <p class="text-lg font-semibold text-slate-700">${task.text}</p>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
+                        <div class="relative w-full md:w-40">
+                            <input type="number" id="input-${task.id}" 
+                                class="w-full border-2 border-slate-300 rounded-xl py-2 px-3 text-center text-lg font-bold text-slate-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                                placeholder="Ответ">
+                        </div>
+                        <button onclick="checkSingleTask(${task.id})" class="w-full md:w-auto bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 font-bold py-2 px-6 rounded-xl transition whitespace-nowrap">
+                            Проверить
+                        </button>
+                        <div id="feedback-${task.id}" class="w-full md:w-24 flex items-center justify-center font-bold text-lg min-h-[40px]">
+                            <!-- Feedback icon/text goes here -->
+                        </div>
+                    </div>
+                `;
+                tasksContainer.appendChild(taskCard);
+            });
+        }
+
+        // Check a single specific task
+        function checkSingleTask(id) {
+            const task = tasksData.find(t => t.id === id);
+            const inputEl = document.getElementById(`input-${id}`);
+            const feedbackEl = document.getElementById(`feedback-${id}`);
+            const cardEl = document.getElementById(`task-card-${id}`);
+            
+            const userAnswer = parseInt(inputEl.value.trim(), 10);
+
+            // Reset previous styling
+            inputEl.classList.remove('border-green-500', 'border-red-500', 'ring-green-200', 'ring-red-200', 'shake-error');
+            cardEl.classList.remove('border-green-400', 'border-red-400', 'border-slate-200');
+
+            if (isNaN(userAnswer)) {
+                feedbackEl.innerHTML = `<span class="text-orange-500 text-sm">Пусто!</span>`;
+                inputEl.classList.add('shake-error');
+                return false;
+            }
+
+            if (userAnswer === task.answer) {
+                // Correct answer
+                inputEl.classList.add('border-green-500', 'ring-2', 'ring-green-200');
+                cardEl.classList.add('border-green-400');
+                feedbackEl.innerHTML = `<span class="text-green-500 flex items-center gap-1">✅ Верно</span>`;
+                return true;
+            } else {
+                // Incorrect answer
+                inputEl.classList.add('border-red-500', 'ring-2', 'ring-red-200', 'shake-error');
+                cardEl.classList.add('border-red-400');
+                feedbackEl.innerHTML = `<span class="text-red-500 flex items-center gap-1">❌ Ошибка</span>`;
+                
+                // Remove shake animation class after it completes so it can be triggered again
+                setTimeout(() => {
+                    inputEl.classList.remove('shake-error');
+                }, 400);
+                
+                return false;
+            }
+        }
+
+        // Check all tasks and show final result
+        function checkAllTasks() {
+            let correctCount = 0;
+            let attemptedCount = 0;
+
+            tasksData.forEach(task => {
+                const inputEl = document.getElementById(`input-${task.id}`);
+                if (inputEl.value.trim() !== '') {
+                    attemptedCount++;
+                }
+                
+                // Trigger individual check visually
+                const isCorrect = checkSingleTask(task.id);
+                if (isCorrect) {
+                    correctCount++;
+                }
+            });
+
+            showResultModal(correctCount, tasksData.length, attemptedCount);
+        }
+
+        // Show the custom modal with results
+        function showResultModal(correct, total, attempted) {
+            const modal = document.getElementById('result-modal');
+            const modalContent = document.getElementById('modal-content');
+            const scoreNumber = document.getElementById('score-number');
+            const modalMessage = document.getElementById('modal-message');
+            const modalIcon = document.getElementById('modal-icon');
+            
+            scoreNumber.textContent = correct;
+            
+            // Set message and styling based on score
+            if (correct === total) {
+                modalIcon.textContent = "🏆";
+                modalMessage.innerHTML = "Потрясающе! Ты настоящий гений математики. Ни одной ошибки!";
+                scoreNumber.className = "text-green-500 text-3xl";
+            } else if (correct >= 25) {
+                modalIcon.textContent = "🌟";
+                modalMessage.innerHTML = "Отличная работа! Совсем немного до идеала.";
+                scoreNumber.className = "text-green-500 text-3xl";
+            } else if (correct >= 15) {
+                modalIcon.textContent = "👍";
+                modalMessage.innerHTML = "Хороший результат! Но стоит еще немного потренироваться.";
+                scoreNumber.className = "text-blue-500 text-3xl";
+            } else {
+                modalIcon.textContent = "📚";
+                modalMessage.innerHTML = "Пока есть ошибки. Рекомендуем повторить правила округления и попробовать снова!";
+                scoreNumber.className = "text-orange-500 text-3xl";
+            }
+
+            if (attempted < total) {
+                modalMessage.innerHTML += `<br><br><span class="text-sm text-red-400">Внимание: не все задания были решены (заполнено ${attempted} из ${total}).</span>`;
+            }
+
+            // Show modal with animation
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
+        }
+
+        // Close the modal
+        function closeModal() {
+            const modal = document.getElementById('result-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 150);
+        }
+
+        // Initialize the app on load
+        window.onload = () => {
+            renderTasks();
+        };
+    </script>
+</body>
+</html>
