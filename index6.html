@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Решение уравнений (3 типа)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        p.subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        .task-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fafbfc;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .task-row:hover {
+            background-color: #f1f8ff;
+        }
+        .equation-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            width: 320px;
+            letter-spacing: 1px;
+        }
+        .input-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .var-label {
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-style: italic;
+        }
+        input[type="number"] {
+            width: 70px;
+            padding: 8px;
+            font-size: 1.1rem;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            outline: none;
+        }
+        input[type="number"]:focus {
+            border-color: #3498db;
+        }
+        button {
+            padding: 8px 15px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: #3498db;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .status {
+            width: 30px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .correct { color: #2ecc71; }
+        .incorrect { color: #e74c3c; }
+        
+        .final-check-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .final-btn {
+            background-color: #2ecc71;
+            font-size: 1.3rem;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .final-btn:hover {
+            background-color: #27ae60;
+        }
+        #final-result {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Тренажер: Решение уравнений</h1>
+    <p class="subtitle">Приведи подобные слагаемые и найди неизвестное (50 заданий)</p>
+    <div id="tasks-container"></div>
+
+    <div class="final-check-container">
+        <button class="final-btn" onclick="checkAll()">Узнать общий результат</button>
+        <div id="final-result"></div>
+    </div>
+</div>
+
+<script>
+    const totalTasks = 50;
+    const tasks = [];
+    const variables = ['x', 'y', 'a', 'b', 'c'];
+
+    for (let i = 0; i < totalTasks; i++) {
+        // Выбираем случайную переменную и случайный ответ от 2 до 12
+        let v = variables[Math.floor(Math.random() * variables.length)];
+        let xVal = Math.floor(Math.random() * 11) + 2; 
+        
+        let type = Math.floor(Math.random() * 3); // 3 типа уравнений
+        let eqStr = "";
+        
+        // Генерируем коэффициенты для сложения или вычитания (чтобы в сумме давали число от 3 до 15)
+        let isPlus = Math.random() > 0.5;
+        let c1, c2, A;
+        
+        if (isPlus) {
+            c1 = Math.floor(Math.random() * 7) + 2; // от 2 до 8
+            c2 = Math.floor(Math.random() * 7) + 2; // от 2 до 8
+            A = c1 + c2;
+        } else {
+            c1 = Math.floor(Math.random() * 10) + 6; // от 6 до 15
+            c2 = Math.floor(Math.random() * (c1 - 3)) + 2; // меньше c1
+            A = c1 - c2;
+        }
+        
+        let terms = isPlus ? `${c1}${v} + ${c2}${v}` : `${c1}${v} - ${c2}${v}`;
+        let Ax = A * xVal; // Значение скобки (приведенных слагаемых) при подстановке x
+
+        if (type === 0) {
+            // ТИП 1: Поиск множителя ( c1*v +- c2*v = S )
+            let S = Ax;
+            eqStr = `${terms} = ${S}`;
+        } 
+        else if (type === 1) {
+            // ТИП 2: Поиск делимого ( (c1*v +- c2*v) : D = V )
+            // Подбираем делитель D (от 2 до 10), на который Ax делится без остатка
+            let possibleDs = [];
+            for (let d = 2; d <= 10; d++) {
+                if (Ax % d === 0) possibleDs.push(d);
+            }
+            if (possibleDs.length === 0) possibleDs.push(1); // Резервный случай
+            
+            let D = possibleDs[Math.floor(Math.random() * possibleDs.length)];
+            let V = Ax / D;
+            eqStr = `(${terms}) : ${D} = ${V}`;
+        } 
+        else {
+            // ТИП 3: Поиск делителя ( S : (c1*v +- c2*v) = V )
+            // Задаем частное V (от 2 до 8), тогда делимое S = V * Ax
+            let V = Math.floor(Math.random() * 7) + 2;
+            let S = V * Ax;
+            eqStr = `${S} : (${terms}) = ${V}`;
+        }
+        
+        tasks.push({
+            id: i,
+            equation: eqStr.replace(/\*/g, ''), // на всякий случай очищаем лишние звездочки
+            variable: v,
+            answer: xVal
+        });
+    }
+
+    // Отрисовка на странице
+    const container = document.getElementById('tasks-container');
+    tasks.forEach((task, index) => {
+        const taskRow = document.createElement('div');
+        taskRow.className = 'task-row';
+        // Знак двоеточия (:) используем для деления, как принято в школе
+        taskRow.innerHTML = `
+            <div class="equation-text">${index + 1}) ${task.equation}</div>
+            <div class="input-area">
+                <span class="var-label">${task.variable} =</span>
+                <input type="number" id="input-${task.id}" placeholder="?">
+                <button onclick="checkSingle(${task.id})">Проверить</button>
+            </div>
+            <div class="status" id="status-${task.id}"></div>
+        `;
+        container.appendChild(taskRow);
+    });
+
+    // Проверка одного задания
+    function checkSingle(id) {
+        const inputVal = document.getElementById(`input-${id}`).value;
+        const statusDiv = document.getElementById(`status-${id}`);
+        const correctAnswer = tasks[id].answer;
+
+        if (inputVal === "") {
+            statusDiv.innerHTML = "";
+            return;
+        }
+
+        if (parseInt(inputVal) === correctAnswer) {
+            statusDiv.innerHTML = "✓";
+            statusDiv.className = "status correct";
+        } else {
+            statusDiv.innerHTML = "✗";
+            statusDiv.className = "status incorrect";
+        }
+    }
+
+    // Проверка всех заданий
+    function checkAll() {
+        let correctCount = 0;
+        let attemptedCount = 0;
+
+        tasks.forEach(task => {
+            const inputVal = document.getElementById(`input-${task.id}`).value;
+            const statusDiv = document.getElementById(`status-${task.id}`);
+            
+            if (inputVal !== "") {
+                attemptedCount++;
+                if (parseInt(inputVal) === task.answer) {
+                    correctCount++;
+                    statusDiv.innerHTML = "✓";
+                    statusDiv.className = "status correct";
+                } else {
+                    statusDiv.innerHTML = "✗";
+                    statusDiv.className = "status incorrect";
+                }
+            } else {
+                statusDiv.innerHTML = "";
+            }
+        });
+
+        const finalDiv = document.getElementById('final-result');
+        if (attemptedCount === 0) {
+            finalDiv.style.color = "#e74c3c";
+            finalDiv.innerText = "Вы не решили ни одного уравнения!";
+        } else if (correctCount === totalTasks) {
+            finalDiv.style.color = "#2ecc71";
+            finalDiv.innerText = `Потрясающе! Всё верно: ${correctCount} из ${totalTasks}.`;
+        } else {
+            finalDiv.style.color = "#2c3e50";
+            finalDiv.innerText = `Ваш результат: ${correctCount} правильных из ${totalTasks}.`;
+        }
+    }
+</script>
+
+</body>
+</html>
