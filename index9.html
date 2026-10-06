@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер по устному счету</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Небольшие кастомные стили для плавных переходов */
+        .task-input {
+            transition: all 0.2s ease-in-out;
+        }
+        /* Убираем стрелочки у input type="number", хотя мы будем использовать text для запятых */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <div class="max-w-6xl mx-auto px-4 py-10">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-indigo-700 mb-4">Тренажер по устному счету</h1>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Решите 50 заданий на таблицу умножения и действия с десятичными дробями. 
+                Вводите ответы в поля (можно использовать как точку, так и запятую). 
+                Цвет поля подскажет, верно ли решен пример!
+            </p>
+        </header>
+
+        <!-- Контейнер, куда будут динамически добавляться карточки с заданиями -->
+        <main>
+            <div id="tasks-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-12">
+                <!-- Задания генерируются через JavaScript -->
+            </div>
+        </main>
+
+        <section class="text-center pb-16">
+            <button id="calculate-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-10 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 text-xl">
+                Подсчитать правильные ответы
+            </button>
+
+            <!-- Блок с результатами (изначально скрыт) -->
+            <div id="result-message" class="hidden mt-8 max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 border-t-4 border-indigo-500">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Итог</h2>
+                <p id="result-text" class="text-2xl font-medium text-indigo-600"></p>
+                <p class="text-slate-500 mt-4 text-sm">Проверьте красные поля, чтобы исправить ошибки, и нажмите кнопку снова, если хотите улучшить результат.</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Состояние приложения
+        const TOTAL_TASKS = 50;
+        const MULTIPLICATION_COUNT = 25;
+        const DECIMALS_COUNT = 25;
+        let tasksData = []; // Массив для хранения сгенерированных заданий
+
+        // Утилита для получения случайного целого числа в диапазоне (включительно)
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Утилита для форматирования числа с запятой (русский формат)
+        function formatNumber(num) {
+            return num.toString().replace('.', ',');
+        }
+
+        function generateMultiplicationTasks() {
+            const tasks = [];
+            for (let i = 0; i < MULTIPLICATION_COUNT; i++) {
+                const a = getRandomInt(2, 9);
+                const b = getRandomInt(2, 9);
+                tasks.push({
+                    question: `${a} &times; ${b} =`,
+                    answer: a * b
+                });
+            }
+            return tasks;
+        }
+
+        function generateDecimalTasks() {
+            const tasks = [];
+            for (let i = 0; i < DECIMALS_COUNT; i++) {
+                // Выбираем случайный тип операции: 0: сложение, 1: вычитание, 2: умножение, 3: деление
+                const opType = getRandomInt(0, 3);
+                
+                if (opType === 0) {
+                    // Сложение (например, 1.2 + 3.4)
+                    const aStr = getRandomInt(1, 99); // 0.1 до 9.9
+                    const bStr = getRandomInt(1, 99);
+                    const a = aStr / 10;
+                    const b = bStr / 10;
+                    tasks.push({
+                        question: `${formatNumber(a)} + ${formatNumber(b)} =`,
+                        answer: (aStr + bStr) / 10 // Избегаем ошибок округления JS
+                    });
+                } 
+                else if (opType === 1) {
+                    // Вычитание (например, 5.4 - 2.1)
+                    const aStr = getRandomInt(11, 99); // 1.1 до 9.9
+                    const bStr = getRandomInt(1, aStr - 1); // чтобы ответ был положительным
+                    const a = aStr / 10;
+                    const b = bStr / 10;
+                    tasks.push({
+                        question: `${formatNumber(a)} &minus; ${formatNumber(b)} =`,
+                        answer: (aStr - bStr) / 10
+                    });
+                }
+                
+                else if (opType === 2) {
+                    // Умножение на целое (например, 1.2 * 3)
+                    const aStr = getRandomInt(1, 50); // 0.1 до 5.0
+                    const b = getRandomInt(2, 9);
+                    const a = aStr / 10;
+                    tasks.push({
+                        question: `${formatNumber(a)} &times; ${b} =`,
+                        answer: (aStr * b) / 10
+                    });
+                }
+                else {
+                    // Деление на целое (например, 4.8 : 2)
+                    const ansStr = getRandomInt(1, 50); // ответ будет от 0.1 до 5.0
+                    const b = getRandomInt(2, 9); // делитель
+                    const aStr = ansStr * b; // делимое (целое число, которое потом разделим на 10)
+                    const a = aStr / 10;
+                    const ans = ansStr / 10;
+                    tasks.push({
+                        question: `${formatNumber(a)} : ${b} =`,
+                        answer: ans
+                    });
+                }
+            }
+            return tasks;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasks-container');
+            container.innerHTML = ''; // Очистка перед рендером
+
+            tasksData.forEach((task, index) => {
+                // Создаем карточку задания
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between hover:shadow-md transition-shadow';
+                
+                // HTML структура внутри карточки
+                taskDiv.innerHTML = `
+                    <div class="text-lg font-medium text-slate-700 whitespace-nowrap mr-3">
+                        ${index + 1}. <span class="inline-block w-16 text-right">${task.question}</span>
+                    </div>
+                    <input 
+                        type="text" 
+                        data-index="${index}" 
+                        class="task-input w-20 px-3 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-indigo-500 text-center font-bold text-lg"
+                        autocomplete="off"
+                    >
+                `;
+                container.appendChild(taskDiv);
+            });
+
+            // Навешиваем слушатели событий на все инпуты для мгновенной проверки
+            document.querySelectorAll('.task-input').forEach(input => {
+                input.addEventListener('input', handleInputValidation);
+            });
+        }
+
+        function handleInputValidation(e) {
+            const input = e.target;
+            let val = input.value.trim();
+            const taskIndex = input.getAttribute('data-index');
+            const correctAnswer = tasksData[taskIndex].answer;
+
+            // Сброс стилей, если поле пустое
+            if (val === '') {
+                input.className = 'task-input w-20 px-3 py-2 border-2 border-slate-300 rounded-lg focus:outline-none focus:border-indigo-500 text-center font-bold text-lg';
+                return;
+            }
+
+            // Заменяем запятую на точку для правильного парсинга дробного числа
+            val = val.replace(',', '.');
+            const numVal = parseFloat(val);
+
+            // Проверка правильности
+            if (!isNaN(numVal) && numVal === correctAnswer) {
+                // Правильный ответ: зеленая рамка и фон
+                input.className = 'task-input w-20 px-3 py-2 border-2 border-green-500 bg-green-50 text-green-700 rounded-lg focus:outline-none text-center font-bold text-lg';
+            } else {
+                // Неправильный ответ: красная рамка и фон
+                input.className = 'task-input w-20 px-3 py-2 border-2 border-red-500 bg-red-50 text-red-700 rounded-lg focus:outline-none text-center font-bold text-lg';
+            }
+        }
+
+        document.getElementById('calculate-btn').addEventListener('click', () => {
+            const inputs = document.querySelectorAll('.task-input');
+            let correctCount = 0;
+
+            inputs.forEach(input => {
+                let val = input.value.trim().replace(',', '.');
+                const taskIndex = input.getAttribute('data-index');
+                const correctAnswer = tasksData[taskIndex].answer;
+                
+                if (val !== '' && !isNaN(parseFloat(val)) && parseFloat(val) === correctAnswer) {
+                    correctCount++;
+                }
+            });
+
+            // Отображение результата
+            const resultBox = document.getElementById('result-message');
+            const resultText = document.getElementById('result-text');
+            
+            resultText.innerText = `Ваш результат: ${correctCount} из ${TOTAL_TASKS}!`;
+            resultBox.classList.remove('hidden');
+            
+            // Плавная прокрутка к результату
+            resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // Точка входа: генерация при загрузке страницы
+        window.onload = () => {
+            const multiTasks = generateMultiplicationTasks();
+            const decimalTasks = generateDecimalTasks();
+            
+            // Объединяем и перемешиваем
+            tasksData = shuffleArray([...multiTasks, ...decimalTasks]);
+            
+            // Рендерим на страницу
+            renderTasks();
+        };
+    </script>
+</body>
+</html>
