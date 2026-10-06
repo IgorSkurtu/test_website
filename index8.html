@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Делимость чисел (6 класс)</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            line-height: 1.6;
+            background-color: #fafafa;
+            color: #333;
+        }
+        h1 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #2980b9; margin-top: 30px; }
+        .theory { background-color: #e8f4f8; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .example { background-color: #fef9e7; padding: 20px; border-left: 5px solid #f39c12; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .task { background-color: #ffffff; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .task p { margin-top: 0; font-size: 1.05em; }
+        .radio-label { display: block; margin: 8px 0; cursor: pointer; padding: 5px; border-radius: 4px; transition: background-color 0.2s; }
+        .radio-label:hover { background-color: #f1f1f1; }
+        input[type="text"] { padding: 10px; width: 60%; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        button { padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 15px; font-size: 16px; transition: background-color 0.2s; }
+        button:hover { background-color: #2980b9; }
+        .btn-check-all { background-color: #27ae60; font-size: 18px; padding: 15px 30px; width: 100%; font-weight: bold; margin-bottom: 40px; }
+        .btn-check-all:hover { background-color: #219653; }
+        .feedback { margin-top: 10px; font-weight: bold; display: none; padding: 10px; border-radius: 4px; }
+        .correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .incorrect { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .hint-text { font-size: 0.9em; font-style: italic; margin-top: 5px; color: #666; font-weight: normal; }
+        .score-display { text-align: center; font-size: 24px; font-weight: bold; margin-top: 20px; padding: 20px; border-radius: 8px; display: none; }
+    </style>
+</head>
+<body>
+    <h1>Интерактивный тренажер: Делимость чисел (6 класс)</h1>
+
+    <div class="theory">
+        <h2>§1. Делители и кратные</h2>
+        <p>Делителем натурального числа a называют натуральное число, на которое a делится без остатка. Кратным натурального числа a называют натуральное число, которое делится без остатка на a. Число 1 является делителем любого натурального числа. Любое натуральное число имеет бесконечно много кратных. Наименьшим из кратных натурального числа является само это число.</p>
+    </div>
+    <div class="example">
+        <strong>Разбор примера:</strong>
+        <p>Число 12 имеет шесть делителей: 1, 2, 3, 4, 6 и 12. Первые пять чисел, кратных 8, такие: 8, 16, 24, 32, 40.</p>
+    </div>
+
+    <div class="theory">
+        <h2>§2. Признаки делимости на 10, на 5 и на 2</h2>
+        <p>Если запись натурального числа оканчивается цифрой 0, то это число делится без остатка на 10. Если запись натурального числа оканчивается цифрой 0 или 5, то это число делится без остатка на 5. Если запись натурального числа оканчивается чётной цифрой, то это число чётно (делится без остатка на 2). Если запись натурального числа оканчивается нечётной цифрой, то это число нечётно.</p>
+    </div>
+    <div class="example">
+        <strong>Разбор примера:</strong>
+        <p>Числа 870 и 875 делятся без остатка на 5, а числа 872 и 873 на 5 без остатка не делятся.</p>
+    </div>
+
+    <div class="theory">
+        <h2>§3. Признаки делимости на 9 и на 3</h2>
+        <p>Если сумма цифр числа делится на 9, то и число делится на 9. Если сумма цифр числа не делится на 9, то и число не делится на 9. Если сумма цифр числа делится на 3, то и число делится на 3.</p>
+    </div>
+    <div class="example">
+        <strong>Разбор примера:</strong>
+        <p>Число 76 455 делится на 9, так как сумма его цифр: 7 + 6 + 4 + 5 + 5 = 27 — делится на 9. Число 51 634 не делится на 9, так как сумма его цифр: 5 + 1 + 6 + 3 + 4 = 19 — не делится на 9.</p>
+    </div>
+
+    <div class="theory">
+        <h2>§4. Простые и составные числа</h2>
+        <p>Натуральное число называют простым, если оно имеет только два делителя: единицу и само это число. Натуральное число называют составным, если оно имеет более двух делителей. Число 1 имеет только один делитель: само это число. Поэтому его не относят ни к составным, ни к простым числам.</p>
+    </div>
+    <div class="example">
+        <strong>Разбор примера:</strong>
+        <p>Число 7 делится только на 1 и само на себя. Другими словами, число 7 имеет только два делителя: 1 и 7. У числа 9 три делителя: 1, 3 и 9.</p>
+    </div>
+
+    <div class="theory">
+        <h2>§5. Разложение на простые множители</h2>
+        <p>Всякое составное число можно разложить на простые множители. При любом способе получается одно и то же разложение, если не учитывать порядка записи множителей.</p>
+    </div>
+    <div class="example">
+        <strong>Разбор примера:</strong>
+        <p>Число 210 является произведением чисел 21 и 10. Число 210 можно разложить на простые множители: 210 = 2 · 3 · 5 · 7. Обычно записывают множители в порядке их возрастания.</p>
+    </div>
+
+    <div class="theory">
+        <h2>§6. Наибольший общий делитель (НОД). Взаимно простые числа</h2>
+        <p>Наибольшее натуральное число, на которое делятся без остатка несколько чисел, называют наибольшим общим делителем этих чисел. Натуральные числа называют взаимно простыми, если их наибольший общий делитель равен 1.</p>
+    </div>
+    <div class="example">
+        <strong>Разбор примера:</strong>
+        <p>Общими делителями чисел 48 и 36 будут: 1, 2, 3, 4, 6, 12. Видим, что наибольшим из этих чисел является 12. Его называют наибольшим общим делителем чисел 48 и 36.</p>
+    </div>
+
+    <div class="theory">
+        <h2>§7. Наименьшее общее кратное (НОК)</h2>
+        <p>Наименьшим общим кратным натуральных чисел a и b называют наименьшее натуральное число, которое кратно и a, и b.</p>
+    </div>
+    <div class="example">
+        <strong>Разбор примера:</strong>
+        <p>Шаг Володи 75 см, а шаг Кати 60 см. На каком наименьшем расстоянии они сделают по целому числу шагов? Общими кратными чисел 75 и 60 будут числа 300, 600, ... Наименьшим из них является 300. Это число называют наименьшим общим кратным чисел 75 и 60.</p>
+    </div>
+
+    <h2>Тренажер (30 заданий для подготовки к контрольной работе)</h2>
+    <p>Все задачи можно решать неограниченное количество раз. Вы можете проверять задания по одному или сразу нажать кнопку подсчета баллов в самом низу.</p>
+    
+    <div id="tasks-container"></div>
+
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+        <button class="btn-check-all" onclick="calculateTotalScore()">Подсчитать правильные ответы</button>
+        <div id="total-score-display" class="score-display"></div>
+    </div>
+
+    <script>
+        const tasksData = [
+            { type: "radio", q: "Найдите все делители числа 42.", options: ["1, 2, 3, 6, 7, 14, 21, 42", "2, 3, 6, 7, 14, 21", "1, 2, 4, 6, 7, 14, 21, 42"], a: "1, 2, 3, 6, 7, 14, 21, 42", hint: "Делители числа - это числа, на которые оно делится без остатка, включая 1 и само число." },
+            { type: "radio", q: "Запишите три наименьших числа, которые кратны числу 14.", options: ["1, 2, 7", "14, 28, 42", "28, 42, 56"], a: "14, 28, 42", hint: "Кратные 14 получаются умножением 14 на 1, 2, 3 и т.д." },
+            { type: "radio", q: "Делится ли число 135 без остатка на 2?", options: ["Да", "Нет"], a: "Нет", hint: "Посмотрите на последнюю цифру. У чётных чисел она делится на 2." },
+            { type: "radio", q: "Делится ли число 240 без остатка на 5?", options: ["Да", "Нет"], a: "Да", hint: "Число делится на 5, если оно оканчивается на 0 или 5." },
+            { type: "radio", q: "Делится ли число 780 без остатка на 10?", options: ["Да", "Нет"], a: "Да", hint: "Число делится на 10, если оно оканчивается нулём." },
+            { type: "radio", q: "Делится ли число 396 без остатка на 2?", options: ["Да", "Нет"], a: "Да", hint: "Обратите внимание на последнюю цифру (6). Она чётная." },
+            { type: "radio", q: "Какую наименьшую цифру нужно поставить вместо звёздочки в числе 45*7, чтобы полученное число делилось на 3?", options: ["0", "1", "2", "5"], a: "2", hint: "Сумма цифр (4+5+*+7 = 16+*) должна делиться на 3. Ближайшее число, кратное 3 — это 18." },
+            { type: "radio", q: "Какую цифру нужно поставить вместо звёздочки в числе 45*7, чтобы полученное число делилось на 3, но НЕ делилось на 9? (наименьший вариант)", options: ["2", "5", "8"], a: "5", hint: "Если поставить 2, сумма 18 (делится на 9). Если поставить 5, сумма 21 (делится на 3, но не на 9)." },
+            { type: "radio", q: "Является ли число 414 составным?", options: ["Да", "Нет"], a: "Да", hint: "Составное число имеет больше двух делителей. Это число чётное, значит уже делится на 2." },
+            { type: "radio", q: "Является ли число 41 простым?", options: ["Да", "Нет"], a: "Да", hint: "Оно делится только на 1 и само на себя. Проверьте делимость на 2, 3, 5, 7." },
+            { type: "radio", q: "Укажите правильное разложение на простые множители числа 156.", options: ["2, 2, 3, 13", "4, 3, 13", "2, 3, 26"], a: "2, 2, 3, 13", hint: "Множители должны быть только простыми числами (4 и 26 - составные)." },
+            { type: "radio", q: "Укажите правильное разложение на простые множители числа 234.", options: ["2, 9, 13", "2, 3, 3, 13", "2, 3, 39"], a: "2, 3, 3, 13", hint: "234 = 2 * 117 = 2 * 3 * 39 = 2 * 3 * 3 * 13." },
+            { type: "radio", q: "Найдите наибольший общий делитель (НОД) чисел 156 и 234.", options: ["39", "78", "156"], a: "78", hint: "Перемножьте их общие простые множители: 2 * 3 * 13 = 78." },
+            { type: "radio", q: "Являются ли числа 185 и 123 взаимно простыми?", options: ["Да", "Нет"], a: "Да", hint: "Разложите их на множители: 185 = 5 * 37; 123 = 3 * 41. У них нет общих делителей (кроме 1)." },
+            { type: "radio", q: "Найдите наименьшее общее кратное (НОК) чисел 24 и 36.", options: ["12", "72", "144"], a: "72", hint: "Выпишите кратные большего числа (36, 72...) и проверьте делимость на 24." },
+            { type: "radio", q: "Найдите наименьшее общее кратное (НОК) чисел 36 и 48.", options: ["72", "144", "288"], a: "144", hint: "Число должно делиться и на 36, и на 48." },
+            { type: "radio", q: "Найдите наименьшее общее кратное (НОК) чисел 24, 36 и 48.", options: ["72", "144", "288"], a: "144", hint: "Наименьшее число, которое делится без остатка на все три числа." },
+            { type: "radio", q: "Два автобуса отправляются одновременно. Первый возвращается каждые 40 минут, второй — каждые 45 минут. Через какое наименьшее время (в минутах) они снова встретятся на остановке?", options: ["180", "360", "720"], a: "360", hint: "Задача на нахождение НОК чисел 40 и 45." },
+            { type: "radio", q: "Для составления праздничных подарков закупили 96 яблок, 72 апельсина и 120 конфет. Какое наибольшее количество абсолютно одинаковых подарков можно составить?", options: ["12", "24", "48"], a: "24", hint: "Вам необходимо найти НОД чисел 96, 72 и 120." },
+            { type: "radio", q: "Сколько конфет будет в каждом таком подарке (из предыдущей задачи, где всего 24 подарка)?", options: ["3", "4", "5"], a: "5", hint: "Разделите общее количество конфет (120) на количество подарков (24)." },
+            { type: "radio", q: "Делителем натурального числа 'a' называют натуральное число, на которое 'a' делится...", options: ["С остатком", "Без остатка"], a: "Без остатка", hint: "Вспомните базовое правило из §1." },
+            { type: "radio", q: "Если запись натурального числа оканчивается цифрой 0, то это число обязательно делится без остатка на...", options: ["Только на 10", "На 2, 5 и 10", "Только на 2 и 10"], a: "На 2, 5 и 10", hint: "Так как 10 = 2 * 5, то число, кратное 10, кратно и 2, и 5." },
+            { type: "radio", q: "Если сумма цифр числа делится на 9, то и само число делится на...", options: ["Только на 3", "На 9 (и, следовательно, на 3)", "На 6"], a: "На 9 (и, следовательно, на 3)", hint: "Это признак делимости на 9." },
+            { type: "radio", q: "Делится ли число 76455 без остатка на 9?", options: ["Да", "Нет"], a: "Да", hint: "Сумма цифр 7+6+4+5+5 = 27. 27 делится на 9." },
+            { type: "radio", q: "Делится ли число 51634 без остатка на 9?", options: ["Да", "Нет"], a: "Нет", hint: "Сумма цифр 5+1+6+3+4 = 19. 19 не делится на 9." },
+            { type: "text", q: "Какое натуральное число имеет только один делитель и не относится ни к простым, ни к составным?", a: "1", hint: "Особое число, с которого начинается натуральный ряд." },
+            { type: "text", q: "Натуральные числа называют взаимно простыми, если их наибольший общий делитель (НОД) равен... (введите число)", a: "1", hint: "Вспомните определение из §6." },
+            { type: "text", q: "Шаг Володи 75 см, а шаг Кати 60 см. На каком наименьшем расстоянии (в см) они оба сделают по целому числу шагов?", a: "300", hint: "Нужно найти НОК(75, 60)." },
+            { type: "text", q: "Чему равно наименьшее общее кратное (НОК) двух взаимно простых чисел? (введите два слова: 'их ...')", a: "их произведению", hint: "Так как общих делителей нет, нужно перемножить сами числа." },
+            { type: "text", q: "Являются ли числа 15 и 28 взаимно простыми? (введите 'да' или 'нет')", a: "да", hint: "15 = 3*5, 28 = 2*2*7. Есть ли у них общие делители?" }
+        ];
+
+        const container = document.getElementById('tasks-container');
+
+        tasksData.forEach((task, index) => {
+            const taskElement = document.createElement('div');
+            taskElement.className = 'task';
+            
+            let inputHTML = '';
+            
+            if (task.type === 'radio') {
+                task.options.forEach((opt, optIndex) => {
+                    inputHTML += `
+                        <label class="radio-label">
+                            <input type="radio" name="task_${index}" value="${opt}"> ${opt}
+                        </label>`;
+                });
+            } else {
+                inputHTML = `<input type="text" id="input_${index}" placeholder="Введите ваш ответ..." onkeypress="handleKeyPress(event, ${index})">`;
+            }
+
+            taskElement.innerHTML = `
+                <p><strong>Задание ${index + 1}:</strong> ${task.q}</p>
+                ${inputHTML}
+                <br>
+                <button onclick="checkAnswer(${index})">Проверить</button>
+                <div id="feedback_${index}" class="feedback"></div>
+            `;
+            container.appendChild(taskElement);
+        });
+
+        function handleKeyPress(e, index) {
+            if (e.keyCode === 13) {
+                checkAnswer(index);
+            }
+        }
+
+        function isAnswerCorrect(index, answerToCheck) {
+            const task = tasksData[index];
+            if (!answerToCheck && answerToCheck !== "0") return false;
+
+            if (task.type === 'radio') {
+                return answerToCheck === task.a;
+            } else {
+                const formattedUser = answerToCheck.trim().toLowerCase().replace(/\s+/g, '');
+                const formattedCorrect = task.a.trim().toLowerCase().replace(/\s+/g, '');
+                return formattedUser === formattedCorrect;
+            }
+        }
+
+        function checkAnswer(index) {
+            const task = tasksData[index];
+            const feedback = document.getElementById('feedback_' + index);
+            let userAnswer = "";
+
+            if (task.type === 'radio') {
+                const checked = document.querySelector(`input[name="task_${index}"]:checked`);
+                if (checked) {
+                    userAnswer = checked.value;
+                }
+            } else {
+                userAnswer = document.getElementById('input_' + index).value;
+            }
+
+            if (!userAnswer && userAnswer !== "0") {
+                feedback.innerHTML = "Пожалуйста, выберите или введите вариант ответа.";
+                feedback.className = "feedback incorrect";
+                feedback.style.display = "block";
+                return;
+            }
+
+            if (isAnswerCorrect(index, userAnswer)) {
+                feedback.textContent = "Верно! Отличная работа.";
+                feedback.className = "feedback correct";
+            } else {
+                feedback.innerHTML = `Неверно, попробуйте еще раз. <div class="hint-text">Подсказка: ${task.hint}</div>`;
+                feedback.className = "feedback incorrect";
+            }
+            feedback.style.display = "block";
+        }
+
+        function calculateTotalScore() {
+            let correctCount = 0;
+            let answeredCount = 0;
+
+            tasksData.forEach((task, index) => {
+                let userAnswer = "";
+                if (task.type === 'radio') {
+                    const checked = document.querySelector(`input[name="task_${index}"]:checked`);
+                    if (checked) userAnswer = checked.value;
+                } else {
+                    userAnswer = document.getElementById('input_' + index).value;
+                }
+
+                if (userAnswer || userAnswer === "0") {
+                    answeredCount++;
+                    if (isAnswerCorrect(index, userAnswer)) {
+                        correctCount++;
+                    }
+                }
+                
+                // Автоматически запускаем визуальную проверку для каждого блока
+                if (userAnswer || userAnswer === "0") {
+                    checkAnswer(index);
+                }
+            });
+
+            const scoreDisplay = document.getElementById('total-score-display');
+            
+            if (answeredCount === 0) {
+                scoreDisplay.innerHTML = "Вы еще не ответили ни на одно задание!";
+                scoreDisplay.style.backgroundColor = "#fff3cd";
+                scoreDisplay.style.color = "#856404";
+                scoreDisplay.style.border = "1px solid #ffeeba";
+            } else {
+                let percentage = Math.round((correctCount / tasksData.length) * 100);
+                scoreDisplay.innerHTML = `Вы правильно решили ${correctCount} из ${tasksData.length} заданий (${percentage}%).<br>`;
+                
+                if (correctCount === tasksData.length) {
+                    scoreDisplay.style.backgroundColor = "#d4edda";
+                    scoreDisplay.style.color = "#155724";
+                    scoreDisplay.style.border = "1px solid #c3e6cb";
+                    scoreDisplay.innerHTML += "Идеальный результат! Вы отлично готовы к контрольной.";
+                } else if (percentage >= 70) {
+                    scoreDisplay.style.backgroundColor = "#d1ecf1";
+                    scoreDisplay.style.color = "#0c5460";
+                    scoreDisplay.style.border = "1px solid #bee5eb";
+                    scoreDisplay.innerHTML += "Хороший результат! Но есть над чем поработать.";
+                } else {
+                    scoreDisplay.style.backgroundColor = "#f8d7da";
+                    scoreDisplay.style.color = "#721c24";
+                    scoreDisplay.style.border = "1px solid #f5c6cb";
+                    scoreDisplay.innerHTML += "Нужно еще потренироваться. Повторите теорию и попробуйте снова.";
+                }
+            }
+            
+            scoreDisplay.style.display = "block";
+            scoreDisplay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>
