@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Степень с натуральным и целым показателями</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --background: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .question-number {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .options-container {
+            margin-bottom: 16px;
+        }
+
+        .option-label {
+            display: block;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #f3f4f6;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, opacity 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.correct {
+            display: block;
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .feedback.incorrect {
+            display: block;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .final-btn-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        #final-btn {
+            background-color: var(--success);
+            font-size: 1.2rem;
+            padding: 16px 32px;
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        #final-btn:hover {
+            background-color: #059669;
+        }
+
+        #result-display {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: none;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .question-card {
+                padding: 16px;
+            }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Тренажер по алгебре (7 класс)</h1>
+        <p class="subtitle">Степень с натуральным и целым показателями. 50 заданий.</p>
+    </header>
+
+    <div id="questions-container">
+        <!-- Сюда будут динамически загружены вопросы -->
+    </div>
+
+    <div class="final-btn-container">
+        <button id="final-btn">Узнать общий результат</button>
+    </div>
+
+    <div id="result-display"></div>
+</div>
+
+<script>
+    const questions = [
+        // Вопросы 1-10: Определение степени, нулевой и отрицательный показатель
+        {
+            id: 1,
+            type: 'radio',
+            text: 'Какое выражение тождественно равно 7<sup>4</sup>?',
+            options: ['7 &middot; 4', '7 + 7 + 7 + 7', '7 &middot; 7 &middot; 7 &middot; 7', '4<sup>7</sup>'],
+            correctIndex: 2
+        },
+        {
+            id: 2,
+            type: 'text',
+            text: 'Вычислите: 5<sup>0</sup>',
+            answers: ['1']
+        },
+        {
+            id: 3,
+            type: 'text',
+            text: 'Вычислите: (-3)<sup>2</sup>',
+            answers: ['9']
+        },
+        {
+            id: 4,
+            type: 'text',
+            text: 'Вычислите: (-2)<sup>3</sup>',
+            answers: ['-8']
+        },
+        {
+            id: 5,
+            type: 'radio',
+            text: 'Представьте в виде дроби: 3<sup>-4</sup>',
+            options: ['-12', '1/81', '-81', '1/12'],
+            correctIndex: 1
+        },
+        {
+            id: 6,
+            type: 'text',
+            text: 'Запишите 10<sup>-3</sup> в виде десятичной дроби:',
+            answers: ['0.001', '0,001']
+        },
+        {
+            id: 7,
+            type: 'text',
+            text: 'Найдите значение степени: 0,5<sup>-2</sup>',
+            answers: ['4']
+        },
+        {
+            id: 8,
+            type: 'radio',
+            text: 'Вычислите: (2/3)<sup>-1</sup>',
+            options: ['-2/3', '1,5', '0,6', '-1.5'],
+            correctIndex: 1
+        },
+        {
+            id: 9,
+            type: 'text',
+            text: 'Найдите значение выражения: (-1)<sup>8</sup>',
+            answers: ['1']
+        },
+        {
+            id: 10,
+            type: 'text',
+            text: 'Найдите значение выражения: (-1)<sup>9</sup>',
+            answers: ['-1']
+        },
+
+        // Вопросы 11-20: Стандартный вид числа
+        {
+            id: 11,
+            type: 'radio',
+            text: 'В корзине 89000 вишен. Выберите запись этого числа в стандартном виде:',
+            options: ['89 &middot; 10<sup>3</sup>', '0,89 &middot; 10<sup>5</sup>', '8,9 &middot; 10<sup>4</sup>', '8,9 &middot; 10<sup>-4</sup>'],
+            correctIndex: 2
+        },
+        {
+            id: 12,
+            type: 'radio',
+            text: 'Запишите число 0,0000089 в стандартном виде:',
+            options: ['8,9 &middot; 10<sup>-6</sup>', '8,9 &middot; 10<sup>6</sup>', '89 &middot; 10<sup>-7</sup>', '0,89 &middot; 10<sup>-5</sup>'],
+            correctIndex: 0
+        },
+        {
+            id: 13,
+            type: 'text',
+            text: 'Определите порядок числа 4,5 &middot; 10<sup>13</sup>',
+            answers: ['13']
+        },
+        {
+            id: 14,
+            type: 'text',
+            text: 'Определите порядок числа 1,067 &middot; 10<sup>-4</sup>',
+            answers: ['-4']
+        },
+        {
+            id: 15,
+            type: 'text',
+            text: 'У фермера 2,5 &middot; 10<sup>3</sup> яблок. Запишите это количество обычным натуральным числом:',
+            answers: ['2500']
+        },
+        {
+            id: 16,
+            type: 'text',
+            text: 'Запишите число 4,1 &middot; 10<sup>-2</sup> в виде десятичной дроби:',
+            answers: ['0.041', '0,041']
+        },
+        {
+            id: 17,
+            type: 'radio',
+            text: 'Какое из чисел больше: 3 &middot; 10<sup>5</sup> или 9 &middot; 10<sup>4</sup>?',
+            options: ['Они равны', '3 &middot; 10<sup>5</sup>', '9 &middot; 10<sup>4</sup>', 'Невозможно определить'],
+            correctIndex: 1
+        },
+        {
+            id: 18,
+            type: 'radio',
+            text: 'Выполните умножение и запишите результат в стандартном виде: (2 &middot; 10<sup>3</sup>) &middot; (3 &middot; 10<sup>2</sup>)',
+            options: ['6 &middot; 10<sup>5</sup>', '5 &middot; 10<sup>5</sup>', '6 &middot; 10<sup>6</sup>', '5 &middot; 10<sup>6</sup>'],
+            correctIndex: 0
+        },
+        {
+            id: 19,
+            type: 'radio',
+            text: 'Выполните деление и запишите результат в стандартном виде: (8 &middot; 10<sup>6</sup>) : (2 &middot; 10<sup>2</sup>)',
+            options: ['4 &middot; 10<sup>3</sup>', '6 &middot; 10<sup>4</sup>', '4 &middot; 10<sup>4</sup>', '16 &middot; 10<sup>8</sup>'],
+            correctIndex: 2
+        },
+        {
+            id: 20,
+            type: 'radio',
+            text: 'Представьте дробь 1/10000 в стандартном виде:',
+            options: ['1 &middot; 10<sup>-4</sup>', '1 &middot; 10<sup>4</sup>', '10 &middot; 10<sup>-5</sup>', '0,1 &middot; 10<sup>-3</sup>'],
+            correctIndex: 0
+        },
+
+        // Вопросы 21-35: Свойства степени с целым показателем
+        {
+            id: 21,
+            type: 'radio',
+            text: 'Представьте в виде степени: a<sup>5</sup> &middot; a<sup>3</sup>',
+            options: ['a<sup>15</sup>', 'a<sup>8</sup>', 'a<sup>2</sup>', 'a<sup>-2</sup>'],
+            correctIndex: 1
+        },
+        {
+            id: 22,
+            type: 'radio',
+            text: 'Представьте в виде степени: b<sup>10</sup> : b<sup>2</sup>',
+            options: ['b<sup>12</sup>', 'b<sup>5</sup>', 'b<sup>8</sup>', 'b<sup>20</sup>'],
+            correctIndex: 2
+        },
+        {
+            id: 23,
+            type: 'radio',
+            text: 'Представьте в виде степени: (c<sup>4</sup>)<sup>3</sup>',
+            options: ['c<sup>7</sup>', 'c<sup>1</sup>', 'c<sup>12</sup>', 'c<sup>64</sup>'],
+            correctIndex: 2
+        },
+        {
+            id: 24,
+            type: 'text',
+            text: 'Упростите выражение x<sup>-5</sup> &middot; x<sup>8</sup> и введите полученный показатель степени для x:',
+            answers: ['3']
+        },
+        {
+            id: 25,
+            type: 'text',
+            text: 'Упростите выражение m<sup>12</sup> : m<sup>-4</sup> и введите полученный показатель степени для m:',
+            answers: ['16']
+        },
+        {
+            id: 26,
+            type: 'text',
+            text: 'Упростите выражение (n<sup>-3</sup>)<sup>-2</sup> и введите полученный показатель степени для n:',
+            answers: ['6']
+        },
+        {
+            id: 27,
+            type: 'radio',
+            text: 'Представьте в виде произведения степеней: (ab)<sup>5</sup>',
+            options: ['a<sup>5</sup>b', 'ab<sup>5</sup>', 'a<sup>5</sup>b<sup>5</sup>', '5ab'],
+            correctIndex: 2
+        },
+        {
+            id: 28,
+            type: 'text',
+            text: 'Вычислите: 2<sup>7</sup> &middot; 2<sup>-5</sup>',
+            answers: ['4']
+        },
+        {
+            id: 29,
+            type: 'text',
+            text: 'Вычислите: 3<sup>-2</sup> &middot; 3<sup>4</sup>',
+            answers: ['9']
+        },
+        {
+            id: 30,
+            type: 'text',
+            text: 'Упростите a<sup>5</sup> &middot; a<sup>-8</sup> : a<sup>-2</sup> и введите полученный показатель степени:',
+            answers: ['-1']
+        },
+        {
+            id: 31,
+            type: 'radio',
+            text: 'Вычислите: 5<sup>12</sup> : 5<sup>14</sup>',
+            options: ['25', '1/25', '-25', '-1/25'],
+            correctIndex: 1
+        },
+        {
+            id: 32,
+            type: 'radio',
+            text: 'Упростите: (-x)<sup>2</sup>',
+            options: ['-x<sup>2</sup>', 'x<sup>2</sup>', '2x', '-2x'],
+            correctIndex: 1
+        },
+        {
+            id: 33,
+            type: 'radio',
+            text: 'Упростите: (-y)<sup>3</sup>',
+            options: ['y<sup>3</sup>', '-y<sup>3</sup>', '-3y', '3y'],
+            correctIndex: 1
+        },
+        {
+            id: 34,
+            type: 'radio',
+            text: 'Упростите: (2a)<sup>3</sup>',
+            options: ['6a<sup>3</sup>', '2a<sup>3</sup>', '8a', '8a<sup>3</sup>'],
+            correctIndex: 3
+        },
+        {
+            id: 35,
+            type: 'text',
+            text: 'Упростите выражение (x<sup>-2</sup>)<sup>4</sup> &middot; x<sup>10</sup> и введите показатель степени:',
+            answers: ['2']
+        },
+
+        // Вопросы 36-45: Вычисления сложных выражений
+        {
+            id: 36,
+            type: 'text',
+            text: 'Найдите значение выражения: (2<sup>3</sup>)<sup>2</sup> : 2<sup>4</sup>',
+            answers: ['4']
+        },
+        {
+            id: 37,
+            type: 'text',
+            text: 'Найдите значение выражения: 100<sup>4</sup> : (2<sup>4</sup> &middot; 5<sup>4</sup>)',
+            answers: ['10000', '10 000']
+        },
+        {
+            id: 38,
+            type: 'text',
+            text: 'Вычислите: (1/3)<sup>-2</sup> - 3<sup>2</sup>',
+            answers: ['0']
+        },
+        {
+            id: 39,
+            type: 'radio',
+            text: 'Вычислите: 4<sup>-1</sup> + (1/2)<sup>2</sup>',
+            options: ['0', '0,5', '1', '0,25'],
+            correctIndex: 1
+        },
+        {
+            id: 40,
+            type: 'text',
+            text: 'Вычислите: (-1)<sup>10</sup> + (-1)<sup>11</sup>',
+            answers: ['0']
+        },
+        {
+            id: 41,
+            type: 'radio',
+            text: 'Найдите значение выражения: (6<sup>4</sup> &middot; 3<sup>2</sup>) : 18<sup>3</sup>',
+            options: ['1', '2', '3', '6'],
+            correctIndex: 1
+        },
+        {
+            id: 42,
+            type: 'text',
+            text: 'Вычислите: 25<sup>-2</sup> &middot; 5<sup>5</sup>',
+            answers: ['5']
+        },
+        {
+            id: 43,
+            type: 'text',
+            text: 'Найдите частное: 9<sup>5</sup> : 27<sup>3</sup>',
+            answers: ['3']
+        },
+        {
+            id: 44,
+            type: 'text',
+            text: 'Вычислите: (-0,5)<sup>-3</sup>',
+            answers: ['-8']
+        },
+        {
+            id: 45,
+            type: 'text',
+            text: 'Найдите значение выражения: (8<sup>5</sup> &middot; 4<sup>-2</sup>) : 32<sup>2</sup>',
+            answers: ['2']
+        },
+
+        // Вопросы 46-50: Задания повышенного уровня
+        {
+            id: 46,
+            type: 'radio',
+            text: 'Представьте сумму 2 &middot; 16<sup>n</sup> + 2<sup>n</sup> &middot; 8<sup>n</sup> + 2<sup>4n</sup> в виде степени с основанием 2:',
+            options: ['2<sup>4n+1</sup>', '2<sup>16n</sup>', '2<sup>4n+2</sup>', '4<sup>4n</sup>'],
+            correctIndex: 2
+        },
+        {
+            id: 47,
+            type: 'text',
+            text: 'Вычислите: (-1/2)<sup>-10</sup> &middot; 4<sup>-3</sup> + (0,2)<sup>-4</sup> &middot; 25<sup>-2</sup>',
+            answers: ['17']
+        },
+        {
+            id: 48,
+            type: 'text',
+            text: 'Масса одного ящика бананов 1,5 &middot; 10<sup>1</sup> кг, а всего на складе 2 &middot; 10<sup>3</sup> ящиков. Найдите порядок числа, выражающего общую массу яблок в стандартном виде.',
+            answers: ['4']
+        },
+        {
+            id: 49,
+            type: 'text',
+            text: 'Упростите выражение (a<sup>5</sup>)<sup>-2</sup> &middot; (a<sup>-13</sup>)<sup>-1</sup> : a<sup>7</sup>. Какой показатель степени получится у переменной a?',
+            answers: ['-4']
+        },
+        {
+            id: 50,
+            type: 'radio',
+            text: 'Найдите значение выражения: (24<sup>4</sup> &middot; 6<sup>3</sup> &middot; 12<sup>2</sup>) : (48<sup>3</sup> &middot; 3<sup>4</sup> &middot; 18)',
+            options: ['32', '16', '64', '128'],
+            correctIndex: 2
+        }
+    ];
+
+    const container = document.getElementById('questions-container');
+    const userAnswers = new Array(questions.length).fill(null);
+    let score = 0;
+
+    // Функция для генерации HTML каждого вопроса
+    function renderQuestions() {
+        questions.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `question-card-${q.id}`;
+
+            let contentHTML = `
+                <div class="question-header">
+                    <div class="question-number">${q.id}</div>
+                    <div>${q.text}</div>
+                </div>
+                <div class="options-container">
+            `;
+
+            if (q.type === 'radio') {
+                q.options.forEach((opt, optIndex) => {
+                    contentHTML += `
+                        <label class="option-label">
+                            <input type="radio" name="q${q.id}" value="${optIndex}">
+                            ${opt}
+                        </label>
+                    `;
+                });
+            } else if (q.type === 'text') {
+                contentHTML += `
+                    <input type="text" id="input-q${q.id}" placeholder="Введите ответ...">
+                `;
+            }
+
+            contentHTML += `
+                </div>
+                <button id="btn-check-${q.id}" onclick="checkAnswer(${index})">Проверить</button>
+                <div id="feedback-${q.id}" class="feedback"></div>
+            `;
+
+            card.innerHTML = contentHTML;
+            container.appendChild(card);
+        });
+    }
+
+    // Функция проверки ответа для каждого вопроса
+    window.checkAnswer = function(index) {
+        const q = questions[index];
+        const feedbackEl = document.getElementById(`feedback-${q.id}`);
+        let isCorrect = false;
+        let answered = false;
+
+        if (q.type === 'radio') {
+            const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+            if (selected) {
+                answered = true;
+                if (parseInt(selected.value) === q.correctIndex) {
+                    isCorrect = true;
+                }
+            } else {
+                alert('Пожалуйста, выберите вариант ответа.');
+                return;
+            }
+        } else if (q.type === 'text') {
+            const inputEl = document.getElementById(`input-q${q.id}`);
+            const val = inputEl.value.trim().toLowerCase();
+            if (val !== '') {
+                answered = true;
+                // Сравниваем с учетом возможных пробелов и замен запятой на точку
+                const normalizedVal = val.replace(/\s+/g, '').replace(',', '.');
+                isCorrect = q.answers.some(ans => {
+                    const normalizedAns = ans.replace(/\s+/g, '').replace(',', '.').toLowerCase();
+                    return normalizedVal === normalizedAns;
+                });
+            } else {
+                alert('Пожалуйста, введите ответ.');
+                return;
+            }
+        }
+
+        if (answered) {
+            userAnswers[index] = isCorrect;
+            
+            if (isCorrect) {
+                feedbackEl.textContent = 'Верно! Отличная работа.';
+                feedbackEl.className = 'feedback correct';
+            } else {
+                feedbackEl.textContent = 'Неверно. Попробуйте еще раз или переходите к следующему вопросу.';
+                feedbackEl.className = 'feedback incorrect';
+            }
+            
+            // После каждой попытки можно изменить ответ и проверить его снова.
+            // Общий результат можно пересчитать по последним проверенным ответам.
+            document.getElementById('result-display').style.display = 'none';
+        }
+    };
+
+    // Функция подсчета общего результата
+    document.getElementById('final-btn').addEventListener('click', () => {
+        let answeredCount = 0;
+        let currentScore = 0;
+
+        userAnswers.forEach(ans => {
+            if (ans !== null) answeredCount++;
+            if (ans === true) currentScore++;
+        });
+
+        if (answeredCount < questions.length) {
+            const confirmMsg = `Вы ответили только на ${answeredCount} из ${questions.length} вопросов. Уверены, что хотите завершить?`;
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+        }
+
+        const resultEl = document.getElementById('result-display');
+        const percentage = Math.round((currentScore / questions.length) * 100);
+        
+        let gradeText = '';
+        if (percentage >= 90) gradeText = 'Отлично! Вы превосходно усвоили материал.';
+        else if (percentage >= 70) gradeText = 'Хорошо! Твердые знания, но есть что повторить.';
+        else if (percentage >= 50) gradeText = 'Удовлетворительно. Рекомендуется повторить правила.';
+        else gradeText = 'Нужно еще потренироваться. Повторите главу 1 учебника.';
+
+        resultEl.innerHTML = `
+            Ваш результат: <span style="color: var(--primary); font-size: 2rem;">${currentScore} из ${questions.length}</span><br>
+            <span style="font-size: 1.2rem; color: var(--text-muted); display: block; margin-top: 10px;">${percentage}% правильных ответов</span>
+            <p style="margin-top: 20px; font-weight: normal; font-size: 1.1rem;">${gradeText}</p>
+        `;
+        resultEl.style.display = 'block';
+
+        // Скроллим к результату
+        resultEl.scrollIntoView({ behavior: 'smooth' });
+        
+
+    });
+
+    // Запуск рендера при загрузке
+    renderQuestions();
+
+</script>
+
+</body>
+</html>
