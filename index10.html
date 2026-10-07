@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Десятичные дроби (6 класс)</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f39c12;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg: #f4f7f6;
+            --text: #2c3e50;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 25px 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        h1 { margin: 0; font-size: 2.2em; }
+        h2 { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 5px; margin-top: 30px;}
+        h3 { color: var(--secondary); margin-bottom: 10px; }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 0 15px 50px 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .rule-box {
+            background-color: #e8f4f8;
+            border-left: 6px solid var(--primary);
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 1.1em;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 20px;
+        }
+        
+        .examples-grid div {
+            background: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .examples-grid span.note {
+            display: block;
+            font-size: 0.85em;
+            color: #7f8c8d;
+            margin-top: 4px;
+        }
+
+        /* Стили для математических дробей без интернета */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 4px;
+            line-height: 1.2;
+            font-weight: bold;
+        }
+        .frac .top { border-bottom: 2px solid var(--text); padding: 0 2px; }
+        .frac .bottom { padding: 0 2px; }
+
+        /* Мини-тренажеры */
+        .mini-trainer {
+            background-color: #fdfae3;
+            border: 2px dashed var(--secondary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        
+        .task-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+
+        .task-row input {
+            width: 90px;
+            padding: 6px;
+            font-size: 1em;
+            text-align: center;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        
+        .task-row input:focus { outline: none; border-color: var(--primary); }
+
+        .task-row button {
+            padding: 6px 15px;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        
+        .task-row button:hover { background-color: #27ae60; }
+        .task-feedback { font-weight: bold; margin-left: 10px; font-size: 0.95em; }
+
+        /* Квиз */
+        .quiz-header {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 12px;
+            margin: 50px 0 30px 0;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--secondary);
+        }
+        .options-list { list-style: none; padding: 0; }
+        .option-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .option-item:hover { background-color: #f7f9fa; }
+        .option-item input { margin-right: 15px; transform: scale(1.2); }
+        
+        .correct-ans { background-color: #d4edda !important; border-color: #c3e6cb !important; }
+        .wrong-ans { background-color: #f8d7da !important; border-color: #f5c6cb !important; }
+        .explanation {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            font-size: 0.95em;
+            border-left: 4px solid var(--primary);
+        }
+
+        #result-box {
+            display: none;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: white;
+            background-color: var(--success);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.4);
+        }
+
+        .finish-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            font-size: 1.4em;
+            font-weight: bold;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+        .finish-btn:hover { background-color: #34495e; }
+
+        @media(max-width: 768px) {
+            .examples-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Математика: Десятичные дроби</h1>
+        <p style="font-size: 1.2em;">Полный интерактивный учебник и тренажер для 6 класса</p>
+    </header>
+
+    <div class="container">
+
+        <!-- РАЗДЕЛ 1 -->
+        <div class="card">
+            <h2>1. Что такое десятичная дробь?</h2>
+            <p>Десятичная дробь — это другой, более удобный способ записи обыкновенных дробей, у которых в знаменателе (внизу) стоят круглые числа: 10, 100, 1000, 10000 и так далее. Мы просто избавляемся от черты дроби и используем запятую!</p>
+            
+            <div class="rule-box">
+                💡 <b>ГЛАВНОЕ ПРАВИЛО:</b> Посчитай, сколько нулей стоит в знаменателе обыкновенной дроби. Ровно столько же цифр должно стоять после запятой в десятичной дроби!
+            </div>
+            
+            <p>Если цифр в числителе (наверху) меньше, чем нужно знаков после запятой, мы добавляем нули <b>перед</b> числом.</p>
+
+            <h3>10 примеров (от простых к хитрым):</h3>
+            <div class="examples-grid">
+                <div>1) <span class="frac"><span class="top">7</span><span class="bottom">10</span></span> = <b>0,7</b> <span class="note">Один ноль — одна цифра после запятой.</span></div>
+                <div>2) <span class="frac"><span class="top">45</span><span class="bottom">100</span></span> = <b>0,45</b> <span class="note">Два нуля — две цифры после запятой.</span></div>
+                <div>3) <span class="frac"><span class="top">8</span><span class="bottom">100</span></span> = <b>0,08</b> <span class="note">Два нуля, но цифра одна. Пишем ноль перед восьмеркой!</span></div>
+                <div>4) <span class="frac"><span class="top">125</span><span class="bottom">1000</span></span> = <b>0,125</b> <span class="note">Три нуля — три цифры после запятой.</span></div>
+                <div>5) <span class="frac"><span class="top">5</span><span class="bottom">1000</span></span> = <b>0,005</b> <span class="note">Коварный пример: нужны 3 цифры, дописываем два нуля.</span></div>
+                <div>6) 3 <span class="frac"><span class="top">14</span><span class="bottom">100</span></span> = <b>3,14</b> <span class="note">Если есть целая часть, она пишется до запятой.</span></div>
+                <div>7) <span class="frac"><span class="top">1</span><span class="bottom">2</span></span> = <b>0,5</b> <span class="note">Умножаем верх и низ на 5, чтобы внизу стало 10 (5/10).</span></div>
+                <div>8) <span class="frac"><span class="top">3</span><span class="bottom">4</span></span> = <b>0,75</b> <span class="note">Умножаем на 25, получаем 75/100.</span></div>
+                <div>9) <span class="frac"><span class="top">1</span><span class="bottom">5</span></span> = <b>0,2</b> <span class="note">Умножаем на 2, получаем 2/10.</span></div>
+                <div>10) <span class="frac"><span class="top">7</span><span class="bottom">20</span></span> = <b>0,35</b> <span class="note">Умножаем на 5, получаем 35/100.</span></div>
+            </div>
+            
+            <div class="mini-trainer">
+                <h3>Самостоятельная работа №1: Перевод в десятичную дробь</h3>
+                <div class="task-row">
+                    <span>1) <span class="frac"><span class="top">6</span><span class="bottom">10</span></span> = </span>
+                    <input type="text" id="t1-1" placeholder="0,6">
+                    <button onclick="checkMini('t1-1', 0.6)">Проверить</button>
+                    <span class="task-feedback" id="res-t1-1"></span>
+                </div>
+                <div class="task-row">
+                    <span>2) <span class="frac"><span class="top">13</span><span class="bottom">100</span></span> = </span>
+                    <input type="text" id="t1-2">
+                    <button onclick="checkMini('t1-2', 0.13)">Проверить</button>
+                    <span class="task-feedback" id="res-t1-2"></span>
+                </div>
+                <div class="task-row">
+                    <span>3) <span class="frac"><span class="top">4</span><span class="bottom">100</span></span> = </span>
+                    <input type="text" id="t1-3">
+                    <button onclick="checkMini('t1-3', 0.04)">Проверить</button>
+                    <span class="task-feedback" id="res-t1-3"></span>
+                </div>
+                <div class="task-row">
+                    <span>4) <span class="frac"><span class="top">1</span><span class="bottom">4</span></span> = </span>
+                    <input type="text" id="t1-4">
+                    <button onclick="checkMini('t1-4', 0.25)">Проверить</button>
+                    <span class="task-feedback" id="res-t1-4"></span>
+                </div>
+                <div class="task-row">
+                    <span>5) <span class="frac"><span class="top">2</span><span class="bottom">5</span></span> = </span>
+                    <input type="text" id="t1-5">
+                    <button onclick="checkMini('t1-5', 0.4)">Проверить</button>
+                    <span class="task-feedback" id="res-t1-5"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- РАЗДЕЛ 2 -->
+        <div class="card">
+            <h2>2. Сложение десятичных дробей</h2>
+            <p>Складывать десятичные дроби так же легко, как обычные числа в столбик, если запомнить всего одно золотое правило.</p>
+            
+            <div class="rule-box">
+                💡 <b>ГЛАВНОЕ ПРАВИЛО:</b> ЗАПЯТАЯ ПОД ЗАПЯТОЙ!<br>
+                Записывай числа в столбик так, чтобы запятая строго совпадала с запятой. Если у одного числа знаков после запятой меньше, смело дописывай ему нули в конец — число от этого не изменится (0,5 — это то же самое, что 0,50 или 0,500). Целое число — это число с запятой на конце (5 = 5,0).
+            </div>
+
+            <h3>10 примеров сложения:</h3>
+            <div class="examples-grid">
+                <div>1) <b>2,3 + 1,4 = 3,7</b> <span class="note">Просто складываем десятые с десятыми, целые с целыми.</span></div>
+                <div>2) <b>0,5 + 0,5 = 1</b> <span class="note">Получается 1,0, но ноль на конце можно отбросить.</span></div>
+                <div>3) <b>3,2 + 1,45 = 4,65</b> <span class="note">Уравниваем знаки: 3,20 + 1,45.</span></div>
+                <div>4) <b>5 + 2,3 = 7,3</b> <span class="note">Превращаем 5 в 5,0 и складываем: 5,0 + 2,3.</span></div>
+                <div>5) <b>0,004 + 0,02 = 0,024</b> <span class="note">Уравниваем: 0,004 + 0,020. Запятая под запятой!</span></div>
+                <div>6) <b>12,5 + 0,75 = 13,25</b> <span class="note">12,50 + 0,75. Единица переходит в целую часть.</span></div>
+                <div>7) <b>0,9 + 0,1 = 1</b> <span class="note">Получается 1,0 -> 1.</span></div>
+                <div>8) <b>9,99 + 0,01 = 10</b> <span class="note">Переход через разряды. Итог: 10,00 -> 10.</span></div>
+                <div>9) <b>100,1 + 9,9 = 110</b> <span class="note">Запятая под запятой. Итог: 110,0 -> 110.</span></div>
+                <div>10) <b>0,123 + 0,877 = 1</b> <span class="note">Взаимодополняющие дроби. Итог: 1,000 -> 1.</span></div>
+            </div>
+            
+            <div class="mini-trainer">
+                <h3>Самостоятельная работа №2: Сложение</h3>
+                <div class="task-row">
+                    <span>1) 2,3 + 1,4 = </span>
+                    <input type="text" id="t2-1">
+                    <button onclick="checkMini('t2-1', 3.7)">Проверить</button>
+                    <span class="task-feedback" id="res-t2-1"></span>
+                </div>
+                <div class="task-row">
+                    <span>2) 3 + 1,2 = </span>
+                    <input type="text" id="t2-2">
+                    <button onclick="checkMini('t2-2', 4.2)">Проверить</button>
+                    <span class="task-feedback" id="res-t2-2"></span>
+                </div>
+                <div class="task-row">
+                    <span>3) 0,4 + 0,05 = </span>
+                    <input type="text" id="t2-3">
+                    <button onclick="checkMini('t2-3', 0.45)">Проверить</button>
+                    <span class="task-feedback" id="res-t2-3"></span>
+                </div>
+                <div class="task-row">
+                    <span>4) 5,9 + 2,2 = </span>
+                    <input type="text" id="t2-4">
+                    <button onclick="checkMini('t2-4', 8.1)">Проверить</button>
+                    <span class="task-feedback" id="res-t2-4"></span>
+                </div>
+                <div class="task-row">
+                    <span>5) 0,99 + 0,01 = </span>
+                    <input type="text" id="t2-5">
+                    <button onclick="checkMini('t2-5', 1)">Проверить</button>
+                    <span class="task-feedback" id="res-t2-5"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- РАЗДЕЛ 3 -->
+        <div class="card">
+            <h2>3. Вычитание десятичных дробей</h2>
+            <p>Вычитание работает абсолютно по тем же законам, что и сложение. И здесь тоже работает главное правило!</p>
+            
+            <div class="rule-box">
+                💡 <b>ГЛАВНОЕ ПРАВИЛО:</b> Запятая под запятой! Если у верхнего числа не хватает знаков после запятой, ОБЯЗАТЕЛЬНО допиши нули, чтобы можно было "занять" десяток, как при обычном вычитании.
+            </div>
+
+            <h3>10 примеров вычитания:</h3>
+            <div class="examples-grid">
+                <div>1) <b>5,8 - 2,3 = 3,5</b> <span class="note">Просто вычитаем столбиком.</span></div>
+                <div>2) <b>4,5 - 1,6 = 2,9</b> <span class="note">Занимаем десяток: от 15 отнимаем 6.</span></div>
+                <div>3) <b>3,2 - 1,85 = 1,35</b> <span class="note">Важно: пишем 3,20 - 1,85. Занимаем!</span></div>
+                <div>4) <b>5 - 2,3 = 2,7</b> <span class="note">Из целого числа: 5,0 - 2,3.</span></div>
+                <div>5) <b>1 - 0,9 = 0,1</b> <span class="note">Как 10 - 9, но с запятой.</span></div>
+                <div>6) <b>10 - 0,01 = 9,99</b> <span class="note">Пишем 10,00 - 0,01.</span></div>
+                <div>7) <b>0,05 - 0,005 = 0,045</b> <span class="note">Уравниваем: 0,050 - 0,005.</span></div>
+                <div>8) <b>12,34 - 1,2 = 11,14</b> <span class="note">Уравниваем: 12,34 - 1,20.</span></div>
+                <div>9) <b>100 - 99,9 = 0,1</b> <span class="note">Пишем 100,0 - 99,9.</span></div>
+                <div>10) <b>3,004 - 1,04 = 1,964</b> <span class="note">Уравниваем: 3,004 - 1,040.</span></div>
+            </div>
+            
+            <div class="mini-trainer">
+                <h3>Самостоятельная работа №3: Вычитание</h3>
+                <div class="task-row">
+                    <span>1) 4,5 - 1,2 = </span>
+                    <input type="text" id="t3-1">
+                    <button onclick="checkMini('t3-1', 3.3)">Проверить</button>
+                    <span class="task-feedback" id="res-t3-1"></span>
+                </div>
+                <div class="task-row">
+                    <span>2) 5 - 1,5 = </span>
+                    <input type="text" id="t3-2">
+                    <button onclick="checkMini('t3-2', 3.5)">Проверить</button>
+                    <span class="task-feedback" id="res-t3-2"></span>
+                </div>
+                <div class="task-row">
+                    <span>3) 3,4 - 1,25 = </span>
+                    <input type="text" id="t3-3">
+                    <button onclick="checkMini('t3-3', 2.15)">Проверить</button>
+                    <span class="task-feedback" id="res-t3-3"></span>
+                </div>
+                <div class="task-row">
+                    <span>4) 1 - 0,1 = </span>
+                    <input type="text" id="t3-4">
+                    <button onclick="checkMini('t3-4', 0.9)">Проверить</button>
+                    <span class="task-feedback" id="res-t3-4"></span>
+                </div>
+                <div class="task-row">
+                    <span>5) 2,05 - 1,01 = </span>
+                    <input type="text" id="t3-5">
+                    <button onclick="checkMini('t3-5', 1.04)">Проверить</button>
+                    <span class="task-feedback" id="res-t3-5"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- РАЗДЕЛ 4 -->
+        <div class="card">
+            <h2>4. Умножение десятичных дробей</h2>
+            <p>При умножении про правило "запятая под запятой" нужно ЗАБЫТЬ! Мы умножаем числа так, будто запятых вообще нет.</p>
+            
+            <div class="rule-box">
+                💡 <b>ПРАВИЛО УМНОЖЕНИЯ:</b> <br>
+                1. Умножь числа, не обращая внимания на запятые (например, 0,2 × 0,3 считай как 2 × 3 = 6).<br>
+                2. Посчитай, сколько ВСЕГО знаков после запятых было в обоих исходных числах вместе.<br>
+                3. В ответе отдели запятой справа налево ровно такое же количество знаков!
+            </div>
+            
+            <p><b>Особый случай (умножение на 10, 100, 1000...):</b> Запятая просто "переезжает" <b>вправо</b> на столько шагов, сколько нулей у круглого числа.</p>
+
+            <h3>10 примеров умножения:</h3>
+            <div class="examples-grid">
+                <div>1) <b>0,2 × 3 = 0,6</b> <span class="note">2×3=6. У 0,2 один знак, отделяем один знак.</span></div>
+                <div>2) <b>0,2 × 0,3 = 0,06</b> <span class="note">2×3=6. Всего 2 знака, пишем ноль перед шестеркой.</span></div>
+                <div>3) <b>1,5 × 2 = 3</b> <span class="note">15×2=30. Отделяем 1 знак = 3,0 (ноль отбрасываем).</span></div>
+                <div>4) <b>0,04 × 0,5 = 0,02</b> <span class="note">4×5=20. Всего 3 знака = 0,020 -> 0,02.</span></div>
+                <div>5) <b>1,1 × 1,1 = 1,21</b> <span class="note">11×11=121. Всего 2 знака.</span></div>
+                <div>6) <b>0,1 × 0,1 = 0,01</b> <span class="note">1×1=1. Всего 2 знака. Одна сотая!</span></div>
+                <div>7) <b>2,5 × 10 = 25</b> <span class="note">У 10 один ноль. Сдвигаем запятую на 1 знак вправо.</span></div>
+                <div>8) <b>0,03 × 100 = 3</b> <span class="note">Два нуля — сдвигаем на 2 знака вправо.</span></div>
+                <div>9) <b>5 × 0,002 = 0,01</b> <span class="note">5×2=10. Всего 3 знака = 0,010 -> 0,01.</span></div>
+                <div>10) <b>1,25 × 0,8 = 1</b> <span class="note">125×8=1000. Всего 3 знака: 1,000 -> 1.</span></div>
+            </div>
+            
+            <div class="mini-trainer">
+                <h3>Самостоятельная работа №4: Умножение</h3>
+                <div class="task-row">
+                    <span>1) 0,3 × 2 = </span>
+                    <input type="text" id="t4-1">
+                    <button onclick="checkMini('t4-1', 0.6)">Проверить</button>
+                    <span class="task-feedback" id="res-t4-1"></span>
+                </div>
+                <div class="task-row">
+                    <span>2) 0,4 × 0,5 = </span>
+                    <input type="text" id="t4-2">
+                    <button onclick="checkMini('t4-2', 0.2)">Проверить</button>
+                    <span class="task-feedback" id="res-t4-2"></span>
+                </div>
+                <div class="task-row">
+                    <span>3) 1,2 × 3 = </span>
+                    <input type="text" id="t4-3">
+                    <button onclick="checkMini('t4-3', 3.6)">Проверить</button>
+                    <span class="task-feedback" id="res-t4-3"></span>
+                </div>
+                <div class="task-row">
+                    <span>4) 0,05 × 10 = </span>
+                    <input type="text" id="t4-4">
+                    <button onclick="checkMini('t4-4', 0.5)">Проверить</button>
+                    <span class="task-feedback" id="res-t4-4"></span>
+                </div>
+                <div class="task-row">
+                    <span>5) 0,1 × 0,1 = </span>
+                    <input type="text" id="t4-5">
+                    <button onclick="checkMini('t4-5', 0.01)">Проверить</button>
+                    <span class="task-feedback" id="res-t4-5"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- РАЗДЕЛ 5 -->
+        <div class="card">
+            <h2>5. Деление десятичных дробей</h2>
+            <p>Делить дробь на целое число мы умеем — просто делим столбиком, а когда заканчивается целая часть, ставим в ответе запятую. А вот делить НА дробь математика запрещает!</p>
+            
+            <div class="rule-box">
+                💡 <b>ПРАВИЛО ДЕЛЕНИЯ:</b> Делитель (число, на которое делят) должен быть ЦЕЛЫМ! <br>
+                Чтобы избавиться от запятой в делителе, перенеси ее <b>вправо</b> в обоих числах (и в делимом, и в делителе) на одинаковое количество знаков.
+            </div>
+
+            <p><b>Особый случай (деление на 10, 100, 1000...):</b> Число становится меньше, поэтому запятая "уезжает" <b>влево</b>.</p>
+
+            <h3>10 примеров деления:</h3>
+            <div class="examples-grid">
+                <div>1) <b>6,4 : 2 = 3,2</b> <span class="note">Делим на целое: 6:2=3 (ставим запятую), 4:2=2.</span></div>
+                <div>2) <b>3,5 : 0,5 = 7</b> <span class="note">Сдвигаем запятую на 1 знак вправо: 35 : 5 = 7.</span></div>
+                <div>3) <b>0,8 : 0,4 = 2</b> <span class="note">Сдвигаем вправо: 8 : 4 = 2.</span></div>
+                <div>4) <b>1 : 0,2 = 5</b> <span class="note">У единицы тоже двигаем запятую: 1,0 -> 10 : 2 = 5.</span></div>
+                <div>5) <b>0,06 : 0,02 = 3</b> <span class="note">Сдвигаем на 2 знака: 6 : 2 = 3.</span></div>
+                <div>6) <b>2,5 : 0,05 = 50</b> <span class="note">Сдвигаем на 2 знака: 250 : 5 = 50. Коварно!</span></div>
+                <div>7) <b>45,6 : 10 = 4,56</b> <span class="note">Делим на 10 - запятая едет на 1 шаг ВЛЕВО.</span></div>
+                <div>8) <b>12 : 100 = 0,12</b> <span class="note">На 100 - запятая едет на 2 шага влево (12,0 -> 0,12).</span></div>
+                <div>9) <b>0,9 : 3 = 0,3</b> <span class="note">Целая часть 0 на 3 не делится, ставим 0, ...</span></div>
+                <div>10) <b>1 : 4 = 0,25</b> <span class="note">Дописываем нули к единице (1,00 : 4) и делим столбиком.</span></div>
+            </div>
+            
+            <div class="mini-trainer">
+                <h3>Самостоятельная работа №5: Деление</h3>
+                <div class="task-row">
+                    <span>1) 4,8 : 2 = </span>
+                    <input type="text" id="t5-1">
+                    <button onclick="checkMini('t5-1', 2.4)">Проверить</button>
+                    <span class="task-feedback" id="res-t5-1"></span>
+                </div>
+                <div class="task-row">
+                    <span>2) 3,6 : 0,6 = </span>
+                    <input type="text" id="t5-2">
+                    <button onclick="checkMini('t5-2', 6)">Проверить</button>
+                    <span class="task-feedback" id="res-t5-2"></span>
+                </div>
+                <div class="task-row">
+                    <span>3) 5 : 0,5 = </span>
+                    <input type="text" id="t5-3">
+                    <button onclick="checkMini('t5-3', 10)">Проверить</button>
+                    <span class="task-feedback" id="res-t5-3"></span>
+                </div>
+                <div class="task-row">
+                    <span>4) 12,5 : 10 = </span>
+                    <input type="text" id="t5-4">
+                    <button onclick="checkMini('t5-4', 1.25)">Проверить</button>
+                    <span class="task-feedback" id="res-t5-4"></span>
+                </div>
+                <div class="task-row">
+                    <span>5) 0,1 : 0,1 = </span>
+                    <input type="text" id="t5-5">
+                    <button onclick="checkMini('t5-5', 1)">Проверить</button>
+                    <span class="task-feedback" id="res-t5-5"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ИТОГОВЫЙ ТЕСТ -->
+        <div class="quiz-header">
+            <h2>🏆 Итоговый тест (20 вопросов)</h2>
+            <p style="font-size: 1.1em; margin: 0;">Закрепляем все пройденные правила. Не торопись и будь внимателен!</p>
+        </div>
+
+        <div id="result-box"></div>
+        <div id="quiz-container"></div>
+        
+        <button class="finish-btn" onclick="checkQuiz()">Завершить тест и узнать оценку</button>
+
+    </div>
+
+    <script>
+        // Функция проверки мини-тренажеров
+        function checkMini(inputId, correctValue) {
+            const inputField = document.getElementById(inputId);
+            const resSpan = document.getElementById('res-' + inputId);
+            // Заменяем запятую на точку для программного сравнения чисел
+            let userVal = parseFloat(inputField.value.replace(',', '.'));
+            
+            if (isNaN(userVal)) {
+                resSpan.textContent = "Введи число!";
+                resSpan.style.color = "orange";
+                return;
+            }
+
+            if (userVal === correctValue) {
+                resSpan.textContent = "✅ Верно!";
+                resSpan.style.color = "green";
+                inputField.style.borderColor = "green";
+            } else {
+                resSpan.textContent = "❌ Подумай еще!";
+                resSpan.style.color = "red";
+                inputField.style.borderColor = "red";
+            }
+        }
+
+        // Данные для финального квиза
+        const quizData = [
+            {
+                q: "1. Как записывается дробь <span class='frac'><span class='top'>3</span><span class='bottom'>10</span></span> в виде десятичной?",
+                options: ["0,03", "0,3", "3,10", "3,0"],
+                correct: 1,
+                exp: "Один ноль в знаменателе — одна цифра после запятой. Ответ: 0,3."
+            },
+            {
+                q: "2. Переведи <span class='frac'><span class='top'>25</span><span class='bottom'>100</span></span> в десятичную дробь.",
+                options: ["0,025", "2,5", "0,25", "25,100"],
+                correct: 2,
+                exp: "Два нуля — две цифры после запятой. Ответ: 0,25."
+            },
+            {
+                q: "3. Как записать <span class='frac'><span class='top'>7</span><span class='bottom'>100</span></span> в виде десятичной дроби?",
+                options: ["0,7", "0,07", "7,00", "0,007"],
+                correct: 1,
+                exp: "Два нуля в знаменателе, значит нужно два знака после запятой. Перед семеркой ставим ноль: 0,07."
+            },
+            {
+                q: "4. Переведи обыкновенную дробь <span class='frac'><span class='top'>1</span><span class='bottom'>2</span></span> в десятичную.",
+                options: ["1,2", "0,12", "0,5", "0,2"],
+                correct: 2,
+                exp: "Умножаем числитель и знаменатель на 5, получаем <span class='frac'><span class='top'>5</span><span class='bottom'>10</span></span>, что равно 0,5."
+            },
+            {
+                q: "5. Какое главное правило при сложении и вычитании десятичных дробей в столбик?",
+                options: ["Выравнивать по правому краю", "Убирать запятые", "Запятая должна быть под запятой", "Складывать только целые части"],
+                correct: 2,
+                exp: "Запятая всегда пишется строго под запятой!"
+            },
+            {
+                q: "6. Вычисли: 1,5 + 2,4 =",
+                options: ["3,9", "4,9", "39", "0,39"],
+                correct: 0,
+                exp: "1,5 + 2,4 = 3,9."
+            },
+            {
+                q: "7. Вычисли: 3,2 + 1,85 =",
+                options: ["4,105", "5,05", "4,87", "5,5"],
+                correct: 1,
+                exp: "Уравниваем знаки: 3,20 + 1,85 = 5,05."
+            },
+            {
+                q: "8. Вычисли: 5,8 - 2,3 =",
+                options: ["3,5", "7,5", "3,8", "2,5"],
+                correct: 0,
+                exp: "5,8 - 2,3 = 3,5."
+            },
+            {
+                q: "9. Вычисли: 4 - 1,5 =",
+                options: ["3,5", "2,5", "5,5", "4,15"],
+                correct: 1,
+                exp: "Записываем 4 как 4,0. Затем 4,0 - 1,5 = 2,5."
+            },
+            {
+                q: "10. Какое правило используется при умножении десятичных дробей?",
+                options: ["Умножаем только целые части", "Умножаем не глядя на запятые, а потом отделяем знаки в ответе", "Обязательно пишем запятую под запятой", "Умножаем только числа после запятой"],
+                correct: 1,
+                exp: "При умножении выравнивать запятые не нужно. Умножаем как обычные числа, а потом считаем общее количество знаков после запятой."
+            },
+            {
+                q: "11. Вычисли: 0,3 × 2 =",
+                options: ["0,5", "6", "0,06", "0,6"],
+                correct: 3,
+                exp: "3 × 2 = 6. У числа 0,3 один знак после запятой. Отделяем один знак: 0,6."
+            },
+            {
+                q: "12. Вычисли: 0,2 × 0,4 =",
+                options: ["0,8", "0,08", "8", "0,008"],
+                correct: 1,
+                exp: "2 × 4 = 8. Всего два знака после запятой (один у 0,2 и один у 0,4). Ответ: 0,08."
+            },
+            {
+                q: "13. Умножение на 10. Вычисли: 1,5 × 10 =",
+                options: ["0,15", "10,5", "15", "150"],
+                correct: 2,
+                exp: "При умножении на 10 запятая сдвигается на 1 знак ВПРАВО. Получаем 15."
+            },
+            {
+                q: "14. Что нужно сделать перед тем, как разделить на десятичную дробь (например, 3,5 : 0,5)?",
+                options: ["Просто убрать запятые", "Перенести запятую вправо в делителе и делимом", "Добавить нули слева", "Разделить отдельно целые и дробные части"],
+                correct: 1,
+                exp: "Делитель должен стать целым числом, поэтому мы переносим запятую вправо в обоих числах."
+            },
+            {
+                q: "15. Вычисли: 4,8 : 2 =",
+                options: ["2,4", "24", "0,24", "2,8"],
+                correct: 0,
+                exp: "Делим как обычно: 4 : 2 = 2, 8 : 2 = 4. Ответ 2,4."
+            },
+            {
+                q: "16. Вычисли: 3,5 : 0,5 =",
+                options: ["0,7", "70", "7", "3"],
+                correct: 2,
+                exp: "Переносим запятую на 1 знак вправо. Получаем 35 : 5 = 7."
+            },
+            {
+                q: "17. Деление на 10. Вычисли: 23,4 : 10 =",
+                options: ["234", "2,34", "0,234", "203,4"],
+                correct: 1,
+                exp: "При делении на 10 запятая сдвигается на 1 знак ВЛЕВО. Ответ: 2,34."
+            },
+            {
+                q: "18. Что больше: 0,5 или 0,49?",
+                options: ["0,5", "0,49", "Они равны", "Зависит от задачи"],
+                correct: 0,
+                exp: "Уравняем знаки: сравниваем 0,50 и 0,49. 50 больше, чем 49. Поэтому 0,5 больше."
+            },
+            {
+                q: "19. Сравни числа: 1,2 и 1,20",
+                options: ["1,2 больше", "1,20 больше", "Они равны", "Сравнить невозможно"],
+                correct: 2,
+                exp: "Нули в конце десятичной дроби не меняют ее значения, эти числа равны."
+            },
+            {
+                q: "20. Вычисли: 0,1 × 0,1 =",
+                options: ["0,1", "0,2", "0,01", "1"],
+                correct: 2,
+                exp: "1 × 1 = 1. У нас два числа по одному знаку после запятой. Значит нужно отделить два знака. Получаем 0,01."
+            }
+        ];
+
+        const quizContainer = document.getElementById('quiz-container');
+
+        // Генерация вопросов квиза
+        quizData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `quiz-q${index}`;
+            
+            const title = document.createElement('h3');
+            title.innerHTML = item.q;
+            card.appendChild(title);
+
+            const ul = document.createElement('ul');
+            ul.className = 'options-list';
+
+            item.options.forEach((optText, optIndex) => {
+                const li = document.createElement('li');
+                li.className = 'option-item';
+                li.id = `q${index}-opt${optIndex}`;
+                
+                const label = document.createElement('label');
+                label.style.cursor = 'pointer';
+                label.style.display = 'block';
+                label.style.width = '100%';
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = `quiz${index}`;
+                radio.value = optIndex;
+
+                label.appendChild(radio);
+                label.insertAdjacentHTML('beforeend', optText);
+                li.appendChild(label);
+                
+                li.onclick = () => radio.click();
+
+                ul.appendChild(li);
+            });
+
+            card.appendChild(ul);
+
+            const expDiv = document.createElement('div');
+            expDiv.className = 'explanation';
+            expDiv.id = `exp${index}`;
+            expDiv.innerHTML = `<strong>Объяснение:</strong> ${item.exp}`;
+            card.appendChild(expDiv);
+
+            quizContainer.appendChild(card);
+        });
+
+        // Проверка всего квиза разом
+        function checkQuiz() {
+            let score = 0;
+            let firstErrorIndex = -1;
+
+            quizData.forEach((item, index) => {
+                const selected = document.querySelector(`input[name="quiz${index}"]:checked`);
+                
+                // Очистка стилей на случай повторного нажатия
+                for(let i=0; i<item.options.length; i++){
+                    document.getElementById(`q${index}-opt${i}`).classList.remove('correct-ans', 'wrong-ans');
+                }
+
+                if (selected) {
+                    const selVal = parseInt(selected.value);
+                    if (selVal === item.correct) {
+                        score++;
+                        document.getElementById(`q${index}-opt${selVal}`).classList.add('correct-ans');
+                    } else {
+                        document.getElementById(`q${index}-opt${selVal}`).classList.add('wrong-ans');
+                        document.getElementById(`q${index}-opt${item.correct}`).classList.add('correct-ans');
+                        if(firstErrorIndex === -1) firstErrorIndex = index;
+                    }
+                } else {
+                    document.getElementById(`q${index}-opt${item.correct}`).classList.add('correct-ans');
+                    if(firstErrorIndex === -1) firstErrorIndex = index;
+                }
+
+                // Показываем пояснение
+                document.getElementById(`exp${index}`).style.display = 'block';
+                // Блокируем инпуты
+                document.querySelectorAll(`input[name="quiz${index}"]`).forEach(r => r.disabled = true);
+            });
+
+            const resBox = document.getElementById('result-box');
+            resBox.style.display = 'block';
+            
+            let message = "";
+            if(score === 20) message = "Идеально! Ты настоящий мастер десятичных дробей! 🥇";
+            else if(score >= 15) message = "Отличная работа! Ты очень хорошо усвоил материал. 🥈";
+            else if(score >= 10) message = "Неплохо, но есть что повторить. Загляни еще раз в теорию! 🥉";
+            else message = "Пока сложновато. Обязательно прочитай правила и попробуй снова! 📚";
+
+            resBox.innerHTML = `Твой результат: ${score} из 20<br><span style="font-size:0.65em; font-weight:normal;">${message}</span>`;
+            
+            // Если есть ошибки, скроллим к результату, чтобы ученик увидел балл,
+            // а потом он сможет прокрутить вверх и посмотреть ошибки.
+            resBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>
