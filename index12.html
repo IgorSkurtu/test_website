@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Скорость и Время (4 класс)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f9ff;
+            background-image: radial-gradient(#bae6fd 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+        /* Убираем стрелочки у input type="number" */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .task-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Анимация для модального окна */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-animate {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 pb-20">
+
+    <div class="max-w-4xl mx-auto pt-10 px-4">
+        
+        <header class="text-center mb-10 bg-white p-6 rounded-3xl shadow-lg border-4 border-sky-300 relative overflow-hidden">
+            <div class="absolute -top-4 -left-4 text-6xl opacity-20 transform -rotate-12">🚗</div>
+            <div class="absolute -bottom-4 -right-4 text-6xl opacity-20 transform rotate-12">⏱️</div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-sky-600 mb-4 drop-shadow-sm">
+                Тренажер по Математике
+            </h1>
+            <p class="text-xl md:text-2xl font-bold text-slate-600">
+                Ищем <span class="text-orange-500">Скорость (v)</span>, <span class="text-emerald-500">Время (t)</span> и <span class="text-violet-500">Путь (s)</span>
+            </p>
+            <div class="mt-4 inline-block bg-amber-100 text-amber-800 px-4 py-2 rounded-xl font-bold text-sm">
+                50 заданий • 4 класс
+            </div>
+        </header>
+
+        <div id="tasks-container" class="space-y-4">
+            <!-- Задания будут сгенерированы через JavaScript -->
+        </div>
+
+        <div class="mt-12 text-center">
+            <button id="final-check-btn" onclick="checkAllTasks()" class="bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-white text-2xl md:text-3xl font-extrabold py-6 px-12 rounded-full shadow-[0_8px_0_rgb(55,48,163)] hover:shadow-[0_4px_0_rgb(55,48,163)] hover:translate-y-1 transition-all w-full md:w-auto">
+                🏁 Узнать общий результат!
+            </button>
+        </div>
+    </div>
+
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+        <div class="bg-white rounded-3xl p-8 md:p-12 max-w-lg w-full text-center shadow-2xl border-8 border-sky-400 modal-animate">
+            <h2 class="text-4xl font-extrabold text-sky-600 mb-6">Результаты</h2>
+            <div class="text-6xl mb-6" id="modal-emoji">🏆</div>
+            <p class="text-2xl font-bold text-slate-700 mb-2">Ты решил правильно:</p>
+            <p class="text-5xl font-extrabold text-emerald-500 mb-8">
+                <span id="score-correct">0</span> <span class="text-3xl text-slate-500">из 50</span>
+            </p>
+            <p id="modal-message" class="text-xl font-semibold text-slate-600 mb-8"></p>
+            <button onclick="closeModal()" class="bg-sky-500 hover:bg-sky-400 text-white font-bold py-3 px-8 rounded-xl text-xl w-full transition-colors">
+                Закрыть
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_TASKS = 50;
+        const tasks = [];
+
+        // Вспомогательная функция для генерации случайного числа в диапазоне
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Параметры для генерации красивых чисел (4 класс)
+        const times = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const speeds = [5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100];
+        const units = [
+            { s: 'км', t: 'ч', v: 'км/ч' },
+            { s: 'м', t: 'с', v: 'м/с' },
+            { s: 'м', t: 'мин', v: 'м/мин' }
+        ];
+
+        function generateTasks() {
+            for (let i = 0; i < TOTAL_TASKS; i++) {
+                // Берем случайное время и случайную скорость, путь вычисляем (гарантирует деление без остатка)
+                const t = times[getRandomInt(0, times.length - 1)];
+                const v = speeds[getRandomInt(0, speeds.length - 1)];
+                const s = v * t; 
+                
+                const unit = units[getRandomInt(0, units.length - 1)];
+                
+                // Случайно выбираем, что искать: скорость (v), время (t) или путь (s)
+                const taskTypeRoll = Math.random();
+
+                let questionText = '';
+                let correctAnswer = 0;
+                let answerUnit = '';
+                let targetType = ''; // 'v', 't' или 's'
+
+                if (taskTypeRoll < 0.33) {
+                    targetType = 'v';
+                    questionText = `Путь (<b>s</b>) = ${s} ${unit.s}, Время (<b>t</b>) = ${t} ${unit.t}. Найди скорость (<b>v</b>).`;
+                    correctAnswer = v;
+                    answerUnit = unit.v;
+                } else if (taskTypeRoll < 0.66) {
+                    targetType = 't';
+                    questionText = `Путь (<b>s</b>) = ${s} ${unit.s}, Скорость (<b>v</b>) = ${v} ${unit.v}. Найди время (<b>t</b>).`;
+                    correctAnswer = t;
+                    answerUnit = unit.t;
+                } else {
+                    targetType = 's';
+                    questionText = `Скорость (<b>v</b>) = ${v} ${unit.v}, Время (<b>t</b>) = ${t} ${unit.t}. Найди путь (<b>s</b>).`;
+                    correctAnswer = s;
+                    answerUnit = unit.s;
+                }
+
+                tasks.push({
+                    id: i,
+                    text: questionText,
+                    correctAnswer: correctAnswer,
+                    unit: answerUnit,
+                    targetType: targetType
+                });
+            }
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasks-container');
+            container.innerHTML = '';
+
+            tasks.forEach((task, index) => {
+                let badgeColor = '';
+                let badgeText = '';
+
+                if (task.targetType === 'v') {
+                    badgeColor = 'bg-orange-100 text-orange-700 border-orange-200';
+                    badgeText = 'Ищем v = s : t';
+                } else if (task.targetType === 't') {
+                    badgeColor = 'bg-emerald-100 text-emerald-700 border-emerald-200';
+                    badgeText = 'Ищем t = s : v';
+                } else {
+                    badgeColor = 'bg-violet-100 text-violet-700 border-violet-200';
+                    badgeText = 'Ищем s = v * t';
+                }
+
+                const taskHtml = `
+                    <div class="task-card bg-white border-2 border-slate-200 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative">
+                        
+                        <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-3 w-full">
+                            <div class="flex items-center gap-3">
+                                <span class="flex items-center justify-center bg-slate-100 text-slate-500 font-black text-xl rounded-full w-10 h-10 shrink-0">
+                                    ${index + 1}
+                                </span>
+                                <span class="text-xs font-bold border-2 px-2 py-1 rounded-lg ${badgeColor} hidden lg:block whitespace-nowrap">
+                                    ${badgeText}
+                                </span>
+                            </div>
+                            <span class="text-lg md:text-xl font-medium text-slate-700 leading-snug">
+                                ${task.text}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-3 w-full md:w-auto justify-end bg-slate-50 md:bg-transparent p-3 md:p-0 rounded-xl">
+                            <div class="flex items-center relative">
+                                <span class="absolute -left-6 font-bold text-slate-400 hidden sm:block">${task.targetType} =</span>
+                                <input type="number" id="input-${task.id}" 
+                                    class="w-20 md:w-24 text-center text-xl font-bold text-sky-700 border-2 border-sky-200 bg-white p-2 rounded-xl focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100 transition-all"
+                                    placeholder="?" onkeydown="if(event.key === 'Enter') checkSingleTask(${task.id})">
+                            </div>
+                            <span class="text-lg font-bold text-slate-400 w-12 md:w-16 whitespace-nowrap shrink-0">${task.unit}</span>
+                            
+                            <button onclick="checkSingleTask(${task.id})" class="bg-amber-400 hover:bg-amber-500 text-white font-bold py-2 px-4 md:px-6 rounded-xl shadow-[0_4px_0_rgb(180,83,9)] hover:shadow-[0_2px_0_rgb(180,83,9)] hover:translate-y-[2px] transition-all active:shadow-none active:translate-y-[4px] shrink-0">
+                                Проверить
+                            </button>
+                            
+                            <div id="status-${task.id}" class="w-10 flex justify-center items-center text-2xl shrink-0">
+                                <!-- Здесь будет иконка галочки или крестика -->
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', taskHtml);
+            });
+        }
+
+        function checkSingleTask(taskId) {
+            const inputEl = document.getElementById(`input-${taskId}`);
+            const statusEl = document.getElementById(`status-${taskId}`);
+            const cardEl = inputEl.closest('.task-card');
+            const userAnswer = parseInt(inputEl.value.trim(), 10);
+            const task = tasks.find(t => t.id === taskId);
+
+            if (isNaN(userAnswer)) {
+                // Если поле пустое или не число
+                statusEl.innerHTML = '<span class="text-amber-500" title="Введи число!">⚠️</span>';
+                cardEl.classList.remove('border-emerald-400', 'bg-emerald-50', 'border-red-400', 'bg-red-50');
+                cardEl.classList.add('border-amber-400');
+                return;
+            }
+
+            if (userAnswer === task.correctAnswer) {
+                // Правильно
+                statusEl.innerHTML = '✅';
+                cardEl.classList.remove('border-slate-200', 'border-red-400', 'bg-red-50', 'border-amber-400');
+                cardEl.classList.add('border-emerald-400', 'bg-emerald-50');
+                inputEl.classList.add('bg-emerald-100', 'border-emerald-400', 'text-emerald-800');
+                inputEl.classList.remove('bg-red-100', 'border-red-400', 'text-red-800');
+            } else {
+                // Неправильно
+                statusEl.innerHTML = '❌';
+                cardEl.classList.remove('border-slate-200', 'border-emerald-400', 'bg-emerald-50', 'border-amber-400');
+                cardEl.classList.add('border-red-400', 'bg-red-50');
+                inputEl.classList.add('bg-red-100', 'border-red-400', 'text-red-800');
+                inputEl.classList.remove('bg-emerald-100', 'border-emerald-400', 'text-emerald-800');
+            }
+        }
+
+        function checkAllTasks() {
+            let correctCount = 0;
+
+            // Проходимся по всем заданиям, вызывая проверку для каждого
+            tasks.forEach(task => {
+                checkSingleTask(task.id);
+                
+                const inputEl = document.getElementById(`input-${task.id}`);
+                const userAnswer = parseInt(inputEl.value.trim(), 10);
+                
+                if (!isNaN(userAnswer) && userAnswer === task.correctAnswer) {
+                    correctCount++;
+                }
+            });
+
+            showResultModal(correctCount);
+        }
+
+        function showResultModal(score) {
+            const modal = document.getElementById('result-modal');
+            const scoreEl = document.getElementById('score-correct');
+            const msgEl = document.getElementById('modal-message');
+            const emojiEl = document.getElementById('modal-emoji');
+
+            scoreEl.textContent = score;
+
+            if (score === TOTAL_TASKS) {
+                emojiEl.textContent = '🏅';
+                msgEl.textContent = 'Невероятно! Ты настоящий математический гений! Все ответы верны!';
+            } else if (score >= 40) {
+                emojiEl.textContent = '🌟';
+                msgEl.textContent = 'Отличная работа! Ты очень хорошо знаешь формулы скорости и времени!';
+            } else if (score >= 25) {
+                emojiEl.textContent = '👍';
+                msgEl.textContent = 'Неплохой результат! Но стоит еще немного потренироваться.';
+            } else {
+                emojiEl.textContent = '💪';
+                msgEl.textContent = 'Ошибки - это шаг к успеху. Повтори правила и попробуй исправить красные карточки!';
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('result-modal');
+            modal.classList.add('hidden');
+        }
+
+        window.onload = () => {
+            generateTasks();
+            renderTasks();
+        };
+    </script>
+</body>
+</html>
