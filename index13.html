@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Деление в столбик (5 класс)</title>
+    
+    <!-- Подключаем Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Подключаем шрифты (опционально, для красоты интерфейса и моноширинный для примеров) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Мягкий светлый фон */
+        }
+        
+        /* Стили для тетради в клеточку */
+        .bg-graph-paper {
+            background-color: #ffffff;
+            background-image:
+                linear-gradient(rgba(59, 130, 246, 0.25) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.25) 1px, transparent 1px);
+            background-size: 24px 24px; /* Размер клетки */
+            background-position: center top;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Моноширинный шрифт для точного выравнивания чисел */
+        .math-pre {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 18px;
+            line-height: 24px; /* Должно совпадать с высотой клетки */
+            margin: 0;
+            padding: 24px; /* Отступы, кратные клетке */
+            color: #1e293b;
+            overflow-x: auto;
+        }
+
+        .correct-input {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #166534 !important;
+        }
+
+        .wrong-input {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+            40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 pb-16">
+
+    <header class="bg-blue-600 text-white p-6 shadow-md mb-8">
+        <div class="max-w-6xl mx-auto flex items-center gap-4">
+            <!-- Иконка совы (SVG) -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2c1.7 0 3 1.3 3 3v1h1c1.7 0 3 1.3 3 3v4c0 1.7-1.3 3-3 3h-1v2c0 2.2-1.8 4-4 4h-2c-2.2 0-4-1.8-4-4v-2H5c-1.7 0-3-1.3-3-3V9c0-1.7 1.3-3 3-3h1V5c0-1.7 1.3-3 3-3h6z"></path>
+                <circle cx="9" cy="11" r="1.5"></circle>
+                <circle cx="15" cy="11" r="1.5"></circle>
+                <path d="M11 15h2"></path>
+            </svg>
+            <div>
+                <h1 class="text-3xl font-bold">Тренажер: Деление в столбик (5 класс)</h1>
+                <p class="text-blue-100 mt-1">Четырех- и пятизначные числа на дву- и трехзначные (без остатка)</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4">
+        
+        <section class="mb-12">
+            <div class="flex items-center gap-2 mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <h2 class="text-2xl font-bold text-gray-800">Разбор примеров</h2>
+            </div>
+            <p class="text-gray-600 mb-6">Внимательно изучи, как оформляется деление в столбик. Обрати внимание, как числа подписываются строго друг под другом.</p>
+            
+            <div id="examples-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Сюда будут динамически добавлены примеры -->
+            </div>
+        </section>
+
+        <section class="mb-12 border-t-2 border-gray-200 pt-10">
+            <div class="flex items-center gap-2 mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <h2 class="text-2xl font-bold text-gray-800">Самостоятельное решение</h2>
+            </div>
+            <p class="text-gray-600 mb-6">Реши 20 примеров. Пиши вычисления на черновике, а сюда вписывай ответ. Ты можешь проверять каждый ответ кнопкой <b>«Проверить»</b>. Ошибся? Ничего страшного, пробуй еще раз!</p>
+            
+            <!-- Индикатор прогресса -->
+            <div class="bg-gray-200 rounded-full h-4 mb-8 overflow-hidden relative">
+                <div id="progress-bar" class="bg-green-500 h-4 w-0 transition-all duration-500 rounded-full"></div>
+                <div class="absolute inset-0 flex justify-center items-center text-[10px] font-bold text-gray-700" id="progress-text">0 / 20</div>
+            </div>
+
+            <div id="practice-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Сюда будут добавлены карточки с заданиями -->
+            </div>
+
+            <div class="mt-12 text-center">
+                <button id="finish-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl shadow-lg transition-transform transform hover:scale-105 text-lg">
+                    Завершить и узнать результат
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <div id="result-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex justify-center items-center backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center relative border-4 border-blue-500">
+            <h2 class="text-3xl font-bold mb-4 text-gray-800">Твой результат!</h2>
+            
+            <div id="score-circle" class="w-32 h-32 mx-auto rounded-full border-8 flex items-center justify-center text-4xl font-bold mb-6">
+                <!-- Значение будет вставлено через JS -->
+            </div>
+            
+            <p id="result-message" class="text-lg text-gray-600 mb-6"></p>
+            
+            <button id="close-modal-btn" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-lg w-full transition-colors">
+                Вернуться к тренажеру
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 10 примеров деления в столбик, форматированных пробелами для отображения в тетрадной сетке
+        const examples = [
+            { id: 1, text: `
+  1248 |12
+ -12   |---
+  --   |104
+    48
+   -48
+    --
+     0
+` },
+            { id: 2, text: `
+  4056 |13
+ -39   |---
+  --   |312
+   15
+  -13
+   --
+    26
+   -26
+    --
+     0
+` },
+            { id: 3, text: `
+  11232 |24
+ -96    |---
+  --    |468
+  163
+ -144
+  ---
+   192
+  -192
+   ---
+     0
+` },
+            { id: 4, text: `
+  25300 |25
+ -25    |----
+  --    |1012
+    30
+   -25
+    --
+     50
+    -50
+     --
+      0
+` },
+            { id: 5, text: `
+  3456 |144
+ -288  |---
+  ---  |24
+   576
+  -576
+   ---
+     0
+` },
+            { id: 6, text: `
+  7812 |252
+ -756  |---
+  ---  |31
+   252
+  -252
+   ---
+     0
+` },
+            { id: 7, text: `
+  18144 |324
+ -1620  |---
+  ----  |56
+   1944
+  -1944
+   ----
+      0
+` },
+            { id: 8, text: `
+  45600 |150
+ -450   |---
+  ---   |304
+    600
+   -600
+    ---
+      0
+` },
+            { id: 9, text: `
+  8528 |16
+ -80   |---
+  --   |533
+   52
+  -48
+   --
+    48
+   -48
+    --
+     0
+` },
+            { id: 10, text: `
+  52416 |104
+ -520   |---
+  ---   |504
+    416
+   -416
+    ---
+      0
+` }
+        ];
+
+        // 20 примеров для самостоятельного решения
+        const practiceData = [
+            { a: 2808, b: 12, ans: 234 },
+            { a: 5616, b: 18, ans: 312 },
+            { a: 14508, b: 34, ans: 426 },
+            { a: 31200, b: 25, ans: 1248 },
+            { a: 5184, b: 144, ans: 36 },
+            { a: 8820, b: 252, ans: 35 },
+            { a: 24864, b: 336, ans: 74 },
+            { a: 48000, b: 150, ans: 320 },
+            { a: 9568, b: 16, ans: 598 },
+            { a: 57408, b: 112, ans: 512 },
+            { a: 3456, b: 12, ans: 288 },
+            { a: 6864, b: 22, ans: 312 },
+            { a: 17952, b: 34, ans: 528 },
+            { a: 37500, b: 25, ans: 1500 },
+            { a: 7776, b: 144, ans: 54 },
+            { a: 9324, b: 252, ans: 37 },
+            { a: 31584, b: 336, ans: 94 },
+            { a: 52500, b: 150, ans: 350 },
+            { a: 12512, b: 16, ans: 782 },
+            { a: 69664, b: 112, ans: 622 }
+        ];
+
+        // Состояние решения
+        let solvedCount = 0;
+        let userResults = new Array(20).fill(false); // Хранит true, если решено правильно
+
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // 1. Отрисовка примеров
+            const examplesContainer = document.getElementById("examples-container");
+            examples.forEach(ex => {
+                // Извлекаем само выражение из первой строки для заголовка карточки
+                const firstLineParts = ex.text.trim().split('|');
+                const dividend = firstLineParts[0].trim();
+                const divisor = firstLineParts[1].trim();
+                
+                const card = document.createElement("div");
+                card.className = "bg-white p-1 rounded-xl shadow-sm border border-gray-200 overflow-hidden";
+                card.innerHTML = `
+                    <div class="bg-blue-50 px-4 py-2 border-b border-gray-200 font-bold text-gray-700 flex justify-between">
+                        <span>Пример №${ex.id}</span>
+                        <span>${dividend} : ${divisor}</span>
+                    </div>
+                    <div class="bg-graph-paper">
+                        <pre class="math-pre">${ex.text.replace(/^\n/, '')}</pre>
+                    </div>
+                `;
+                examplesContainer.appendChild(card);
+            });
+
+            // 2. Отрисовка самостоятельных заданий
+            const practiceContainer = document.getElementById("practice-container");
+            
+            practiceData.forEach((prob, index) => {
+                const card = document.createElement("div");
+                card.className = "bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col gap-3 transition-colors duration-300 relative";
+                card.id = `practice-card-${index}`;
+                
+                card.innerHTML = `
+                    <div class="font-bold text-gray-500 text-sm">Задание ${index + 1}</div>
+                    <div class="text-xl font-semibold text-gray-800 flex flex-wrap items-center gap-2">
+                        <span>${prob.a} : ${prob.b} = </span>
+                    </div>
+                    <div class="mt-auto flex flex-col gap-2 relative">
+                        <input type="number" id="input-${index}" class="w-full border-2 border-gray-300 rounded-lg p-2 text-xl font-bold text-center outline-none focus:border-blue-500 transition-colors" placeholder="Ответ">
+                        
+                        <button id="btn-${index}" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 rounded-lg transition-colors border border-gray-300">
+                            Проверить
+                        </button>
+
+                        <!-- Иконка правильного ответа (скрыта изначально) -->
+                        <div id="success-icon-${index}" class="hidden absolute top-2 right-2 text-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                `;
+                
+                practiceContainer.appendChild(card);
+
+                // 3. Логика проверки
+                const inputEl = document.getElementById(`input-${index}`);
+                const btnEl = document.getElementById(`btn-${index}`);
+                const cardEl = document.getElementById(`practice-card-${index}`);
+                const successIcon = document.getElementById(`success-icon-${index}`);
+
+                const checkAnswer = () => {
+                    // Если уже решено верно, ничего не делаем
+                    if (userResults[index]) return;
+
+                    const userValue = parseInt(inputEl.value, 10);
+                    
+                    if (isNaN(userValue)) return; // пустое поле игнорируем
+
+                    if (userValue === prob.ans) {
+                        // Правильно
+                        userResults[index] = true;
+                        inputEl.classList.remove('wrong-input', 'border-gray-300', 'focus:border-blue-500');
+                        inputEl.classList.add('correct-input');
+                        inputEl.disabled = true; // Блокируем ввод
+                        
+                        btnEl.classList.add('hidden'); // Прячем кнопку
+                        successIcon.classList.remove('hidden'); // Показываем галочку
+                        cardEl.classList.add('bg-green-50', 'border-green-300');
+                        
+                        updateProgress();
+                    } else {
+                        // Неправильно (красная вспышка)
+                        inputEl.classList.remove('wrong-input');
+                        // Небольшая задержка, чтобы анимация перезапускалась при повторном клике
+                        setTimeout(() => {
+                            inputEl.classList.add('wrong-input');
+                        }, 10);
+                        // Очищать не будем, чтобы ученик видел, где ошибся, и мог исправить цифру
+                    }
+                };
+
+                btnEl.addEventListener('click', checkAnswer);
+                
+                // Проверка по нажатию Enter
+                inputEl.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        checkAnswer();
+                    }
+                });
+            });
+
+            const updateProgress = () => {
+                solvedCount = userResults.filter(Boolean).length;
+                const percent = (solvedCount / 20) * 100;
+                
+                document.getElementById('progress-bar').style.width = `${percent}%`;
+                document.getElementById('progress-text').innerText = `${solvedCount} / 20`;
+            };
+
+            // Логика кнопки "Завершить работу"
+            const finishBtn = document.getElementById('finish-btn');
+            const modal = document.getElementById('result-modal');
+            const closeBtn = document.getElementById('close-modal-btn');
+            const scoreCircle = document.getElementById('score-circle');
+            const resultMessage = document.getElementById('result-message');
+
+            finishBtn.addEventListener('click', () => {
+                const finalScore = userResults.filter(Boolean).length;
+                let grade = "";
+                let message = "";
+                let circleColor = "";
+
+                // Оценивание
+                if (finalScore >= 19) {
+                    grade = "5";
+                    message = "Отличная работа! Ты великолепно справляешься с делением в столбик.";
+                    circleColor = "border-green-500 text-green-600";
+                } else if (finalScore >= 15) {
+                    grade = "4";
+                    message = "Хороший результат! Но есть небольшие недочеты. Стоит быть чуть внимательнее.";
+                    circleColor = "border-blue-500 text-blue-600";
+                } else if (finalScore >= 10) {
+                    grade = "3";
+                    message = "Ты на правильном пути, но нужно больше практики. Посмотри разбор примеров еще раз.";
+                    circleColor = "border-yellow-500 text-yellow-600";
+                } else {
+                    grade = "2";
+                    message = "Теме нужно уделить больше времени. Не расстраивайся, тренируйся, и всё получится!";
+                    circleColor = "border-red-500 text-red-600";
+                }
+
+                // Сброс классов кружка
+                scoreCircle.className = `w-32 h-32 mx-auto rounded-full border-8 flex items-center justify-center text-5xl font-bold mb-6 ${circleColor}`;
+                
+                scoreCircle.innerHTML = grade;
+                resultMessage.innerHTML = `<b>Верно решено: ${finalScore} из 20</b><br><br>${message}`;
+                
+                modal.classList.remove('hidden');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
