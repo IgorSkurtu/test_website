@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Задачи на части (5 класс)</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px 15px 60px 15px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.25);
+        }
+
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 17px;
+            opacity: 0.95;
+        }
+
+        .section-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border);
+        }
+
+        .theory-card {
+            border-left: 6px solid var(--primary);
+        }
+
+        h2 {
+            color: #1e3a8a;
+            margin-top: 0;
+            font-size: 22px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #1e40af;
+            font-size: 19px;
+            margin-top: 22px;
+            margin-bottom: 10px;
+        }
+
+        .secret-box {
+            background-color: var(--warning-light);
+            border: 2px dashed var(--warning);
+            border-radius: 12px;
+            padding: 18px;
+            margin: 20px 0;
+            font-size: 17px;
+        }
+
+        .secret-box strong {
+            color: #92400e;
+        }
+
+        /* Визуализация коробочек-частей */
+        .visual-demo {
+            background: #f1f5f9;
+            padding: 18px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+
+        .visual-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .visual-label {
+            min-width: 140px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .part-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 40px;
+            background: #3b82f6;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+
+        .part-box.green { background: #10b981; }
+        .part-box.orange { background: #f59e0b; }
+        .part-box.purple { background: #8b5cf6; }
+        .part-box.diff {
+            background: #ef4444;
+            border: 2px dashed #fff;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .example-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .step-list {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+        }
+
+        .step-list li {
+            margin-bottom: 8px;
+        }
+
+        /* Блок уровня */
+        .level-banner {
+            background: #1e293b;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin: 40px 0 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .level-banner h2 {
+            color: white;
+            border: none;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+        }
+
+        .level-badge {
+            background: #3b82f6;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Карточка задачи */
+        .task-card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border);
+            transition: border-color 0.2s;
+        }
+
+        .task-card.solved {
+            border-color: var(--success);
+            background-color: #f0fdf4;
+        }
+
+        .task-card.wrong {
+            border-color: var(--danger);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .task-num {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 17px;
+            background: var(--primary-light);
+            padding: 4px 12px;
+            border-radius: 8px;
+        }
+
+        .task-status {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .task-text {
+            font-size: 17px;
+            margin-bottom: 16px;
+        }
+
+        .task-visual {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            padding: 10px 14px;
+            font-size: 17px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            width: 140px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary);
+        }
+
+        .unit-label {
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-right: 10px;
+        }
+
+        button {
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-check {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-check:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-hint {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-hint:hover {
+            background-color: #e2e8f0;
+        }
+
+        .feedback {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            display: none;
+        }
+
+        .feedback.correct {
+            display: block;
+            background-color: var(--success-light);
+            color: #14532d;
+            border: 1px solid #86efac;
+        }
+
+        .feedback.incorrect {
+            display: block;
+            background-color: var(--danger-light);
+            color: #7f1d1d;
+            border: 1px solid #fca5a5;
+        }
+
+        .solution-box {
+            margin-top: 12px;
+            padding: 15px;
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            font-size: 15px;
+            display: none;
+        }
+
+        /* Финальный блок */
+        .final-section {
+            text-align: center;
+            background: white;
+            padding: 35px 25px;
+            border-radius: 16px;
+            border: 3px solid var(--primary);
+            margin-top: 40px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-final {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: white;
+            font-size: 19px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-final:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(22, 163, 74, 0.4);
+        }
+
+        #final-result {
+            margin-top: 25px;
+            display: none;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+
+        .score-big {
+            font-size: 36px;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .unanswered-list {
+            margin-top: 12px;
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>📦 Задачи на части: от простого к сложному</h1>
+        <p>Понятный тренажер для 5 класса • Без сложных уравнений • Неограниченное число попыток</p>
+    </header>
+
+    <!-- БЛОК ТЕОРИИ 1: ЧТО ТАКОЕ ЧАСТЬ -->
+    <div class="section-card theory-card">
+        <h2>🔑 Главный секрет темы: что такое «часть»?</h2>
+        <p>Когда в задаче говорят: <em>«купили 2 части яблок и 3 части груш»</em>, многие путаются, потому что не понимают, что это за «часть» такая.</p>
+        <p>Представь, что <strong>1 часть — это одна одинаковая мерная коробочка</strong> (или одинаковый стаканчик, или пакет). Во всех коробочках лежит <strong>одинаковое</strong> количество килограммов, граммов или штук!</p>
+
+        <div class="visual-demo">
+            <div class="visual-row">
+                <span class="visual-label">Яблоки (2 части):</span>
+                <div class="part-box">? кг</div>
+                <div class="part-box">? кг</div>
+            </div>
+            <div class="visual-row">
+                <span class="visual-label">Груши (3 части):</span>
+                <div class="part-box green">? кг</div>
+                <div class="part-box green">? кг</div>
+                <div class="part-box green">? кг</div>
+            </div>
+        </div>
+
+        <div class="secret-box">
+            <strong>💡 Золотое правило решения ЛЮБОЙ задачи на части:</strong><br>
+            Не пытайся сразу угадать ответ! Твоя главная цель — <strong>узнать, сколько лежит в ОДНОЙ коробочке (в 1 части)</strong>. Как только ты узнаешь вес одной коробочки, задача решится за 5 секунд!
+        </div>
+    </div>
+
+    <!-- БЛОК ТЕОРИИ 2: ДВА ГЛАВНЫХ ТИПА ЗАДАЧ -->
+    <div class="section-card theory-card">
+        <h2>🧭 Три ступеньки и одна опасная ловушка</h2>
+        <p>В 5 классе все задачи на части делятся на 3 вида. Очень важно не путать <strong>Тип 2</strong> и <strong>Тип 3</strong>!</p>
+
+        <h3>Тип 1. Самый простой: мы уже знаем 1 часть или один предмет</h3>
+        <div class="example-box">
+            <strong>Пример 1:</strong> Для каши взяли 2 части крупы и 3 части воды. Крупы взяли 400 г. Сколько граммов воды взяли?
+            <ol class="step-list">
+                <li>Нарисуем в уме: крупа — это 2 коробочки, и вместе они весят 400 г.</li>
+                <li>Узнаем <strong>1 часть (одну коробочку)</strong>: 400 : 2 = <strong>200 г</strong>.</li>
+                <li>Воды взяли 3 такие же коробочки: 200 · 3 = <strong>600 г</strong>.</li>
+            </ol>
+        </div>
+
+        <h3>Тип 2. Дано слово «ВСЕГО» (или «ВМЕСТЕ») — складываем части!</h3>
+        <p>Если в задаче дан <strong>общий вес</strong> всех продуктов, мы должны посчитать, сколько <strong>всего коробочек</strong> перед нами.</p>
+        <div class="example-box">
+            <strong>Пример 2:</strong> Для смузи взяли 2 части бананов и 3 части клубники. <strong>Всего</strong> получилось 500 г смузи. Сколько граммов клубники взяли?
+            <div class="visual-demo" style="background: white;">
+                <div class="visual-row">
+                    <span class="visual-label">Все 500 г смузи:</span>
+                    <div class="part-box">Б</div>
+                    <div class="part-box">Б</div>
+                    <span>+</span>
+                    <div class="part-box green">К</div>
+                    <div class="part-box green">К</div>
+                    <div class="part-box green">К</div>
+                    <span>= <strong>5 коробочек</strong></span>
+                </div>
+            </div>
+            <ol class="step-list">
+                <li>Сколько <strong>всего частей</strong> (коробочек)? 2 + 3 = <strong>5 частей</strong>.</li>
+                <li>Сколько весит <strong>1 часть</strong> (делим общий вес на все части)? 500 : 5 = <strong>100 г</strong>.</li>
+                <li>Сколько взяли клубники (3 части)? 100 · 3 = <strong>300 г</strong>.</li>
+            </ol>
+        </div>
+
+        <h3>Тип 3. ⚠️ Осторожно, ловушка! Слова «НА СКОЛЬКО БОЛЬШЕ / МЕНЬШЕ» — вычитаем части!</h3>
+        <p>А вот здесь ошибаются чаще всего! Если в задаче сказано: <em>«груш на 6 кг больше, чем яблок»</em>, <strong>складывать части НЕЛЬЗЯ!</strong> Ведь 6 кг — это не все фрукты, это только <strong>лишние коробочки</strong>!</p>
+        <div class="example-box" style="background: #fef2f2; border-color: #fecaca;">
+            <strong>Пример 3:</strong> В корзине 2 части яблок и 5 частей груш. Груш <strong>на 6 кг больше</strong>, чем яблок. Сколько килограммов яблок в корзине?
+            <div class="visual-demo" style="background: white;">
+                <div class="visual-row">
+                    <span class="visual-label">Яблоки (2 ч.):</span>
+                    <div class="part-box">Я</div>
+                    <div class="part-box">Я</div>
+                </div>
+                <div class="visual-row">
+                    <span class="visual-label">Груши (5 ч.):</span>
+                    <div class="part-box green">Г</div>
+                    <div class="part-box green">Г</div>
+                    <div class="part-box diff">Г</div>
+                    <div class="part-box diff">Г</div>
+                    <div class="part-box diff">Г</div>
+                    <span style="color: #dc2626; font-weight: bold;">← Вот эти 3 лишние коробочки и весят 6 кг!</span>
+                </div>
+            </div>
+            <ol class="step-list">
+                <li>На сколько частей груш больше, чем яблок (находим <strong>разницу частей</strong>)? 5 − 2 = <strong>3 лишние части</strong>.</li>
+                <li>Эти 3 лишние части весят 6 кг. Найдем <strong>1 часть</strong>: 6 : 3 = <strong>2 кг</strong>.</li>
+                <li>Сколько килограммов яблок (2 части)? 2 · 2 = <strong>4 кг</strong>.</li>
+            </ol>
+        </div>
+
+        <h3>Тип 4. Слова «В 3 РАЗА БОЛЬШЕ» — прячут части!</h3>
+        <p>Иногда слово «часть» вообще не пишут! Пишут так: <em>«В кружке в 3 раза меньше воды, чем в чайнике»</em>. Как быть?</p>
+        <p><strong>Правило простое:</strong> то, чего <strong>МЕНЬШЕ</strong>, мы всегда берем за <strong>1 часть</strong> (1 коробочку). А то, чего в 3 раза больше — это <strong>3 такие же части</strong> (3 коробочки)! И задача сразу превращается в обычную!</p>
+    </div>
+
+    <!-- УРОВЕНЬ 1 -->
+    <div class="level-banner">
+        <h2>🌱 Уровень 1. Разминка: учимся работать с одной частью</h2>
+        <span class="level-badge">Задания 1–5</span>
+    </div>
+
+    <!-- Задачи 1-20 рендерятся ниже -->
+    <div id="tasks-container"></div>
+
+    <!-- ФИНАЛЬНАЯ ПРОВЕРКА -->
+    <div class="final-section">
+        <h2>🏁 Финишная прямая!</h2>
+        <p>Когда решишь все 20 задач, нажми на большую зеленую кнопку, чтобы подвести общий итог.</p>
+        <button class="btn-final" onclick="checkAllResults()">Проверить общий результат</button>
+        <div id="final-result"></div>
+    </div>
+</div>
+
+<script>
+const tasksData = [
+    // УРОВЕНЬ 1 (1-5)
+    {
+        id: 1,
+        level: 1,
+        text: "Для ягодного морса взяли <strong>1 часть</strong> меда и <strong>4 части</strong> воды. Меда взяли <strong>50 граммов</strong>. Сколько граммов воды понадобилось?",
+        visual: "Мед: [50 г]  |  Вода: [ ? ] [ ? ] [ ? ] [ ? ]",
+        answer: 200,
+        unit: "г",
+        hint: "Мед — это 1 часть, значит 1 коробочка уже равна 50 г! А воды взяли 4 такие же коробочки.",
+        solution: "1) 1 часть уже известна — это 50 г.<br>2) Воды 4 части: 50 · 4 = <strong>200 (г)</strong>."
+    },
+    {
+        id: 2,
+        level: 1,
+        text: "Для фруктового салата взяли <strong>2 части</strong> киви и <strong>3 части</strong> бананов. Киви взяли <strong>100 граммов</strong>. Сколько граммов весит <strong>ОДНА часть</strong>?",
+        visual: "Киви (2 части): [ ? ] [ ? ] = 100 г",
+        answer: 50,
+        unit: "г",
+        hint: "Две одинаковые коробочки с киви вместе весят 100 г. Как узнать вес одной коробочки?",
+        solution: "Разделим общий вес киви на количество его частей:<br>100 : 2 = <strong>50 (г)</strong> — весит 1 часть."
+    },
+    {
+        id: 3,
+        level: 1,
+        text: "А теперь продолжим предыдущую задачу! Для салата взяли <strong>2 части</strong> киви и <strong>3 части</strong> бананов. Киви взяли <strong>100 граммов</strong>. Сколько граммов <strong>бананов</strong> положили в салат?",
+        visual: "Киви (2 ч.): [50 г] [50 г] = 100 г  |  Бананы (3 ч.): [ ? ] [ ? ] [ ? ]",
+        answer: 150,
+        unit: "г",
+        hint: "Сначала найди 1 часть (100 : 2 = 50 г), а потом умножь на 3 части бананов.",
+        solution: "1) 100 : 2 = 50 (г) — весит 1 часть.<br>2) 50 · 3 = <strong>150 (г)</strong> — весят 3 части бананов."
+    },
+    {
+        id: 4,
+        level: 1,
+        text: "Для приготовления гречневой каши берут <strong>2 части</strong> гречки и <strong>4 части</strong> воды. Воды налили <strong>600 граммов</strong>. Сколько граммов гречки нужно взять?",
+        visual: "Вода (4 ч.): [ ? ] [ ? ] [ ? ] [ ? ] = 600 г  |  Гречка (2 ч.): [ ? ] [ ? ]",
+        answer: 300,
+        unit: "г",
+        hint: "4 коробочки воды весят 600 г. Сначала узнай вес 1 коробочки (600 : 4), а затем вес 2 коробочек гречки.",
+        solution: "1) 600 : 4 = 150 (г) — приходится на 1 часть.<br>2) 150 · 2 = <strong>300 (г)</strong> — нужно взять гречки."
+    },
+    {
+        id: 5,
+        level: 1,
+        text: "Чтобы заварить лесной чай, смешивают <strong>2 части</strong> мяты, <strong>3 части</strong> ромашки и <strong>5 частей</strong> шиповника. Ромашки взяли <strong>30 граммов</strong>. Сколько <strong>ВСЕГО граммов</strong> трав в этом сборе?",
+        visual: "Мята: 2 ч. | Ромашка: 3 ч. (30 г) | Шиповник: 5 ч.",
+        answer: 100,
+        unit: "г",
+        hint: "Ромашка — это 3 части (30 г). Значит 1 часть = 30 : 3 = 10 г. Посчитай, сколько всего частей всех трав, и умножь на 10 г.",
+        solution: "1) 30 : 3 = 10 (г) — весит 1 часть.<br>2) 2 + 3 + 5 = 10 (частей) — всего в сборе.<br>3) 10 · 10 = <strong>100 (г)</strong> — весит весь сбор."
+    },
+
+    // УРОВЕНЬ 2: ИЗВЕСТНО «ВСЕГО» (6-10)
+    {
+        id: 6,
+        level: 2,
+        levelTitle: "🧺 Уровень 2. Известно, сколько «ВСЕГО»: складываем части!",
+        levelBadge: "Задания 6–10",
+        text: "Для ягодного варенья берут <strong>2 части</strong> малины и <strong>3 части</strong> сахара. <strong>Всего</strong> получилось <strong>10 кг</strong> смеси. Сколько килограммов малины взяли?",
+        visual: "Малина: [М][М] + Сахар: [С][С][С] = ВСЕГО 10 кг (5 коробочек)",
+        answer: 4,
+        unit: "кг",
+        hint: "Раз дано слово «ВСЕГО», сначала сложи части: 2 + 3 = 5 частей. Эти 5 частей весят 10 кг. Найди 1 часть, а потом 2 части малины!",
+        solution: "1) 2 + 3 = 5 (частей) — всего в варенье.<br>2) 10 : 5 = 2 (кг) — весит 1 часть.<br>3) 2 · 2 = <strong>4 (кг)</strong> — взяли малины."
+    },
+    {
+        id: 7,
+        level: 2,
+        text: "В коробке лежат синие и зеленые карандаши. Синих — <strong>1 часть</strong>, а зеленых — <strong>4 части</strong>. <strong>Всего</strong> в коробке <strong>25 карандашей</strong>. Сколько зеленых карандашей в коробке?",
+        visual: "Синие: [С] + Зеленые: [З][З][З][З] = ВСЕГО 25 шт.",
+        answer: 20,
+        unit: "шт.",
+        hint: "1) Сколько всего частей? (1 + 4). 2) Сколько карандашей в 1 части? (25 раздели на сумму частей). 3) Умножь на 4 части зеленых!",
+        solution: "1) 1 + 4 = 5 (частей) — всего.<br>2) 25 : 5 = 5 (карандашей) — в 1 части.<br>3) 5 · 4 = <strong>20 (карандашей)</strong> — зеленых."
+    },
+    {
+        id: 8,
+        level: 2,
+        text: "Веревку длиной <strong>28 метров</strong> разрезали на два куска так, что первый кусок составил <strong>3 части</strong>, а второй — <strong>4 части</strong>. Найдите длину <strong>большего</strong> куска.",
+        visual: "1-й кусок: 3 части  |  2-й кусок: 4 части  |  Вся веревка: 28 м",
+        answer: 16,
+        unit: "м",
+        hint: "Вся веревка — это 3 + 4 = 7 частей. Найди длину 1 части (28 : 7), а затем умножь на 4 (ведь больший кусок содержит 4 части).",
+        solution: "1) 3 + 4 = 7 (частей) — вся веревка.<br>2) 28 : 7 = 4 (м) — длина 1 части.<br>3) Больший кусок состоит из 4 частей: 4 · 4 = <strong>16 (м)</strong>."
+    },
+    {
+        id: 9,
+        level: 2,
+        text: "Для строительного раствора смешивают <strong>1 часть</strong> цемента, <strong>2 части</strong> воды и <strong>5 частей</strong> песка. Сколько килограммов <strong>песка</strong> нужно взять, чтобы получить <strong>40 кг</strong> раствора?",
+        visual: "Цемент (1 ч.) + Вода (2 ч.) + Песок (5 ч.) = ВСЕГО 40 кг",
+        answer: 25,
+        unit: "кг",
+        hint: "Сложи все три вида частей: 1 + 2 + 5. Раздели 40 кг на общее число частей, а потом умножь на 5 частей песка.",
+        solution: "1) 1 + 2 + 5 = 8 (частей) — всего в растворе.<br>2) 40 : 8 = 5 (кг) — масса 1 части.<br>3) 5 · 5 = <strong>25 (кг)</strong> — нужно взять песка."
+    },
+    {
+        id: 10,
+        level: 2,
+        text: "Для праздничного напитка смешали <strong>4 части</strong> яблочного сока, <strong>3 части</strong> апельсинового и <strong>2 части</strong> вишневого. <strong>Всего</strong> получилось <strong>1800 мл</strong> напитка. Сколько миллилитров <strong>апельсинового</strong> сока налили?",
+        visual: "Яблочный (4 ч.) + Апельсиновый (3 ч.) + Вишневый (2 ч.) = 1800 мл",
+        answer: 600,
+        unit: "мл",
+        hint: "Сложи все части (4 + 3 + 2 = 9). Найди 1 часть (1800 : 9) и умножь на 3 части апельсинового сока.",
+        solution: "1) 4 + 3 + 2 = 9 (частей) — всего.<br>2) 1800 : 9 = 200 (мл) — в 1 части.<br>3) 200 · 3 = <strong>600 (мл)</strong> — апельсинового сока."
+    },
+
+    // УРОВЕНЬ 3: ИЗВЕСТНА РАЗНИЦА (11-15)
+    {
+        id: 11,
+        level: 3,
+        levelTitle: "⚡ Уровень 3. Ловушка «НА СКОЛЬКО БОЛЬШЕ / МЕНЬШЕ»: вычитаем части!",
+        levelBadge: "Задания 11–15",
+        text: "Для компота взяли <strong>5 частей</strong> воды и <strong>2 части</strong> ягод. Воды взяли <strong>на 6 литров больше</strong>, чем ягод. Сколько литров составляет <strong>ОДНА часть</strong>?",
+        visual: "Ягоды (2 ч.): [Я][Я]  |  Вода (5 ч.): [В][В] + [В][В][В] (вот эти 3 лишние части = 6 л!)",
+        answer: 2,
+        unit: "л",
+        hint: "Внимание! Не складывай части! Найди, на сколько частей воды больше, чем ягод (5 − 2 = 3 части). Эти 3 лишние части и равны 6 литрам!",
+        solution: "1) 5 − 2 = 3 (части) — на столько частей воды больше.<br>2) 6 : 3 = <strong>2 (л)</strong> — в 1 части."
+    },
+    {
+        id: 12,
+        level: 3,
+        text: "Для ореховой смеси взяли <strong>2 части</strong> миндаля и <strong>5 частей</strong> фундука. Миндаля оказалось <strong>на 150 граммов меньше</strong>, чем фундука. Сколько граммов <strong>миндаля</strong> в смеси?",
+        visual: "Миндаль: 2 части  |  Фундук: 5 частей (разница = 150 г)",
+        answer: 100,
+        unit: "г",
+        hint: "1) На сколько частей миндаля меньше? (5 − 2 = 3 части). 2) Значит 3 части весят 150 г. Найди 1 часть (150 : 3). 3) Умножь на 2 части миндаля!",
+        solution: "1) 5 − 2 = 3 (части) — разница в частях.<br>2) 150 : 3 = 50 (г) — весит 1 часть.<br>3) 50 · 2 = <strong>100 (г)</strong> — масса миндаля."
+    },
+    {
+        id: 13,
+        level: 3,
+        text: "При пайке используют сплав из <strong>2 частей</strong> свинца и <strong>5 частей</strong> олова. В куске сплава олова <strong>на 300 граммов больше</strong>, чем свинца. Сколько <strong>ВСЕГО граммов</strong> весит весь этот кусок сплава?",
+        visual: "Свинец: 2 ч. | Олово: 5 ч. (Олова на 300 г больше). Найти: ВЕСЬ сплав.",
+        answer: 700,
+        unit: "г",
+        hint: "Сначала через разницу найди 1 часть: 5 − 2 = 3 части (это 300 г), значит 1 часть = 100 г. А теперь внимание на вопрос: сколько весит ВЕСЬ сплав? В нем 2 + 5 = 7 частей!",
+        solution: "1) 5 − 2 = 3 (части) — на столько олова больше.<br>2) 300 : 3 = 100 (г) — весит 1 часть.<br>3) 2 + 5 = 7 (частей) — весь сплав целиком.<br>4) 100 · 7 = <strong>700 (г)</strong> — масса всего сплава."
+    },
+    {
+        id: 14,
+        level: 3,
+        text: "Для теста берут <strong>6 частей</strong> муки и <strong>2 части</strong> масла. Масла взяли <strong>на 400 граммов меньше</strong>, чем муки. Сколько граммов <strong>муки</strong> взяли для теста?",
+        visual: "Мука: 6 частей  |  Масло: 2 части (масла на 400 г меньше)",
+        answer: 600,
+        unit: "г",
+        hint: "Найди разницу в частях (6 − 2 = 4 части). Раздели 400 г на эти 4 части, чтобы узнать 1 часть. Затем умножь на 6 частей муки.",
+        solution: "1) 6 − 2 = 4 (части) — разница между мукой и маслом.<br>2) 400 : 4 = 100 (г) — весит 1 часть.<br>3) 100 · 6 = <strong>600 (г)</strong> — взяли муки."
+    },
+    {
+        id: 15,
+        level: 3,
+        text: "Для домашнего лимонада смешивают <strong>7 частей</strong> воды, <strong>2 части</strong> лимонного сока и <strong>1 часть</strong> сиропа. Воды налили <strong>на 1000 мл больше, чем лимонного сока</strong>. Сколько <strong>ВСЕГО миллилитров</strong> лимонада получилось?",
+        visual: "Вода (7 ч.) − Сок (2 ч.) = 1000 мл. Всего: Вода (7) + Сок (2) + Сироп (1).",
+        answer: 2000,
+        unit: "мл",
+        hint: "Сравниваются только вода (7 ч.) и сок (2 ч.): 7 − 2 = 5 частей (это 1000 мл). Значит 1 часть = 200 мл. А всего в лимонаде 7 + 2 + 1 = 10 частей!",
+        solution: "1) 7 − 2 = 5 (частей) — на столько частей воды больше, чем сока.<br>2) 1000 : 5 = 200 (мл) — объем 1 части.<br>3) 7 + 2 + 1 = 10 (частей) — весь лимонад.<br>4) 200 · 10 = <strong>2000 (мл)</strong> — получилось лимонада."
+    },
+
+    // УРОВЕНЬ 4: СКРЫТЫЕ ЧАСТИ (16-20)
+    {
+        id: 16,
+        level: 4,
+        levelTitle: "🏆 Уровень 4. Скрытые части: фразы «В несколько раз больше / меньше»",
+        levelBadge: "Задания 16–20",
+        text: "На двух полках стоит <strong>36 книг</strong>. На первой полке книг <strong>в 2 раза больше</strong>, чем на второй. Сколько книг стоит на <strong>второй</strong> (меньшей) полке?",
+        visual: "2-я полка (меньшая): [1 часть]  |  1-я полка (в 2 раза >): [1 ч.][1 ч.]  |  ВСЕГО: 36 книг",
+        answer: 12,
+        unit: "кн.",
+        hint: "То, чего МЕНЬШЕ (вторая полка), берем за 1 часть. Тогда первая полка — это 2 части. Всего 1 + 2 = 3 части. Раздели 36 на 3!",
+        solution: "1) Пусть на второй полке 1 часть книг, тогда на первой — 2 части.<br>2) 1 + 2 = 3 (части) — всего на двух полках.<br>3) 36 : 3 = <strong>12 (книг)</strong> — на второй полке (1 часть)."
+    },
+    {
+        id: 17,
+        level: 4,
+        text: "В кружке купец купил груши и яблоки, <strong>всего 20 кг</strong>. Яблок было <strong>в 3 раза больше</strong>, чем груш. Сколько килограммов <strong>яблок</strong> он купил?",
+        visual: "Груши: 1 часть  |  Яблоки: 3 части  |  ВСЕГО: 20 кг",
+        answer: 15,
+        unit: "кг",
+        hint: "Груш меньше — это 1 часть. Яблок в 3 раза больше — это 3 части. Всего 1 + 3 = 4 части (20 кг). Найди 1 часть (груши), а потом умножь на 3 (яблоки)!",
+        solution: "1) Груши — 1 часть, яблоки — 3 части.<br>2) 1 + 3 = 4 (части) — всего фруктов.<br>3) 20 : 4 = 5 (кг) — 1 часть (груши).<br>4) 5 · 3 = <strong>15 (кг)</strong> — яблок."
+    },
+    {
+        id: 18,
+        level: 4,
+        text: "Блокнот дороже ручки <strong>в 4 раза</strong>. При этом ручка <strong>на 60 рублей дешевле</strong> блокнота. Сколько рублей стоит <strong>блокнот</strong>?",
+        visual: "Ручка: [1 ч.]  |  Блокнот: [1 ч.][1 ч.][1 ч.][1 ч.] (разница в 3 части = 60 руб.)",
+        answer: 80,
+        unit: "руб.",
+        hint: "Ручка — 1 часть, блокнот — 4 части. Ручка дешевле на 60 руб., значит разница между ними: 4 − 1 = 3 части! Найди 1 часть (60 : 3) и умножь на 4.",
+        solution: "1) Ручка — 1 часть, блокнот — 4 части.<br>2) 4 − 1 = 3 (части) — на столько частей ручка дешевле.<br>3) 60 : 3 = 20 (руб.) — стоит ручка (1 часть).<br>4) 20 · 4 = <strong>80 (руб.)</strong> — стоит блокнот."
+    },
+    {
+        id: 19,
+        level: 4,
+        text: "Папе и сыну вместе <strong>45 лет</strong>, причем папа <strong>в 4 раза старше</strong> сына. Сколько лет <strong>папе</strong>?",
+        visual: "Сын: 1 часть  |  Папа: 4 части  |  ВМЕСТЕ: 45 лет",
+        answer: 36,
+        unit: "лет",
+        hint: "Сын младше — его возраст 1 часть. Папа — 4 части. Вместе им 1 + 4 = 5 частей (45 лет). Узнай возраст сына (1 часть) и умножь на 4!",
+        solution: "1) Возраст сына — 1 часть, возраст папы — 4 части.<br>2) 1 + 4 = 5 (частей) — их общий возраст.<br>3) 45 : 5 = 9 (лет) — сыну (1 часть).<br>4) 9 · 4 = <strong>36 (лет)</strong> — папе."
+    },
+    {
+        id: 20,
+        level: 4,
+        text: "В саду растут яблони, груши и сливы — <strong>всего 42 дерева</strong>. Груш <strong>в 2 раза больше</strong>, чем слив, а яблонь <strong>в 3 раза больше</strong>, чем слив. Сколько <strong>яблонь</strong> растет в саду?",
+        visual: "Сливы: 1 часть | Груши: 2 части | Яблони: 3 части | ВСЕГО: 42 дерева",
+        answer: 21,
+        unit: "дер.",
+        hint: "Меньше всего слив — пусть сливы будут 1 частью! Тогда груши — 2 части, а яблони — 3 части. Сложи все части (1 + 2 + 3), найди 1 часть и умножь на 3!",
+        solution: "1) Сливы — 1 часть, груши — 2 части, яблони — 3 части.<br>2) 1 + 2 + 3 = 6 (частей) — все деревья в саду.<br>3) 42 : 6 = 7 (деревьев) — 1 часть (сливы).<br>4) 7 · 3 = <strong>21 (яблоня)</strong> — растет в саду."
+    }
+];
+
+// Состояние решенных задач
+const solvedState = {};
+
+function renderTasks() {
+    const container = document.getElementById('tasks-container');
+    let html = '';
+
+    tasksData.forEach(task => {
+        if (task.levelTitle) {
+            html += `
+                <div class="level-banner">
+                    <h2>${task.levelTitle}</h2>
+                    <span class="level-badge">${task.levelBadge}</span>
+                </div>
+            `;
+        }
+
+        html += `
+            <div class="task-card" id="card-${task.id}">
+                <div class="task-header">
+                    <span class="task-num">Задание №${task.id}</span>
+                    <span class="task-status" id="status-${task.id}">Не решено</span>
+                </div>
+                <div class="task-text">${task.text}</div>
+                <div class="task-visual">📐 <strong>Схема-подсказка:</strong> ${task.visual}</div>
+                <div class="input-group">
+                    <input type="number" id="input-${task.id}" placeholder="Твой ответ" onkeydown="if(event.key==='Enter') checkTask(${task.id})">
+                    <span class="unit-label">${task.unit}</span>
+                    <button class="btn-check" onclick="checkTask(${task.id})">Проверить</button>
+                    <button class="btn-hint" onclick="toggleSolution(${task.id})">Показать полное решение</button>
+                </div>
+                <div class="feedback" id="feedback-${task.id}"></div>
+                <div class="solution-box" id="solution-${task.id}">
+                    <strong>📝 Пошаговый разбор:</strong><br>${task.solution}
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+function checkTask(id) {
+    const task = tasksData.find(t => t.id === id);
+    const inputEl = document.getElementById(`input-${id}`);
+    const feedbackEl = document.getElementById(`feedback-${id}`);
+    const cardEl = document.getElementById(`card-${id}`);
+    const statusEl = document.getElementById(`status-${id}`);
+
+    const userVal = parseInt(inputEl.value.trim(), 10);
+
+    if (isNaN(userVal)) {
+        feedbackEl.className = 'feedback incorrect';
+        feedbackEl.innerHTML = '⚠️ Пожалуйста, введи число в поле ответа!';
+        return;
+    }
+
+    if (userVal === task.answer) {
+        solvedState[id] = true;
+        cardEl.className = 'task-card solved';
+        statusEl.innerHTML = '✅ Решено верно!';
+        statusEl.style.color = '#16a34a';
+        feedbackEl.className = 'feedback correct';
+        feedbackEl.innerHTML = `🎉 <strong>Отлично! Правильный ответ: ${task.answer} ${task.unit}</strong> Молодец, ты верно нашел одну часть!`;
+    } else {
+        solvedState[id] = false;
+        cardEl.className = 'task-card wrong';
+        statusEl.innerHTML = '❌ Попробуй еще раз';
+        statusEl.style.color = '#dc2626';
+        feedbackEl.className = 'feedback incorrect';
+        feedbackEl.innerHTML = `🤔 <strong>Пока неверно. Попробуй еще раз!</strong><br>💡 <em>Подсказка:</em> ${task.hint}`;
+    }
+}
+
+function toggleSolution(id) {
+    const solEl = document.getElementById(`solution-${id}`);
+    if (solEl.style.display === 'block') {
+        solEl.style.display = 'none';
+    } else {
+        solEl.style.display = 'block';
+    }
+}
+
+function checkAllResults() {
+    let correctCount = 0;
+    const notSolvedIds = [];
+
+    tasksData.forEach(task => {
+        const inputEl = document.getElementById(`input-${task.id}`);
+        const userVal = parseInt(inputEl.value.trim(), 10);
+        if (userVal === task.answer) {
+            correctCount++;
+            // Автоматически подсвечиваем верные, если ученик ввел, но забыл нажать "Проверить"
+            if (!solvedState[task.id]) {
+                checkTask(task.id);
+            }
+        } else {
+            notSolvedIds.push(task.id);
+        }
+    });
+
+    const resultBox = document.getElementById('final-result');
+    resultBox.style.display = 'block';
+
+    let message = '';
+    let bgColor = '';
+    let borderColor = '';
+
+    if (correctCount === 20) {
+        bgColor = '#dcfce7';
+        borderColor = '#22c55e';
+        message = `🏆 <strong>БЛЕСТЯЩЕ! Все 20 из 20 задач решены верно!</strong><br>Ты полностью разобрался с темой «Задачи на части» и готов к любой контрольной работе!`;
+    } else if (correctCount >= 15) {
+        bgColor = '#fef9c3';
+        borderColor = '#eab308';
+        message = `👍 <strong>Очень хороший результат!</strong> Ты отлично понял тему, осталось доделать совсем чуть-чуть.`;
+    } else if (correctCount >= 8) {
+        bgColor = '#ffedd5';
+        borderColor = '#f97316';
+        message = `💪 <strong>Неплохое начало!</strong> Половина пути пройдена. Посмотри подсказки к оставшимся задачам и попробуй решить их снова.`;
+    } else {
+        bgColor = '#fee2e2';
+        borderColor = '#ef4444';
+        message = `🌱 <strong>Давай разберемся вместе!</strong> Перечитай примеры в начале страницы и начни с первого уровня, пользуясь кнопкой «Показать полное решение».`;
+    }
+
+    let unansweredHtml = '';
+    if (notSolvedIds.length > 0) {
+        unansweredHtml = `<div class="unanswered-list">Осталось правильно решить задания №: <strong>${notSolvedIds.join(', ')}</strong></div>`;
+    }
+
+    resultBox.style.backgroundColor = bgColor;
+    resultBox.style.border = `2px solid ${borderColor}`;
+    resultBox.innerHTML = `
+        <div>Твой результат:</div>
+        <div class="score-big">${correctCount} из 20</div>
+        <div>${message}</div>
+        ${unansweredHtml}
+    `;
+
+    resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Инициализация при загрузке
+renderTasks();
+</script>
+
+</body>
+</html>

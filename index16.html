@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Степень числа с натуральным показателем (5 класс)</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --success: #16a34a;
+            --success-bg: #dcfce7;
+            --error: #dc2626;
+            --error-bg: #fee2e2;
+            --warning: #d97706;
+            --warning-bg: #fef3c7;
+            --text: #1e293b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px 15px 60px 15px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.3);
+        }
+
+        header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 17px;
+            opacity: 0.95;
+        }
+
+        .section-box {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        h2 {
+            color: #1e40af;
+            margin-top: 0;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+
+        h3 {
+            color: #0f172a;
+            margin-top: 22px;
+            margin-bottom: 10px;
+            font-size: 19px;
+        }
+
+        .rule-card {
+            background-color: #eff6ff;
+            border-left: 5px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        .warning-card {
+            background-color: var(--warning-bg);
+            border-left: 5px solid var(--warning);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        .example-card {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-left: 5px solid var(--success);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        .math-big {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1e3a8a;
+            background: #ffffff;
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 8px;
+            border: 2px solid #bfdbfe;
+            margin: 8px 0;
+        }
+
+        table.math-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        table.math-table th, table.math-table td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 8px;
+        }
+
+        table.math-table th {
+            background-color: var(--primary-light);
+            color: #1e3a8a;
+            font-weight: bold;
+        }
+
+        table.math-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .level-banner {
+            background: #1e293b;
+            color: #ffffff;
+            padding: 14px 22px;
+            border-radius: 12px;
+            margin: 35px 0 20px 0;
+            font-size: 19px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .level-badge {
+            background: #3b82f6;
+            color: white;
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .task-card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e2e8f0;
+            transition: border-color 0.2s;
+        }
+
+        .task-card.correct {
+            border-color: var(--success);
+            background-color: #faffpc;
+        }
+
+        .task-card.incorrect {
+            border-color: var(--error);
+        }
+
+        .task-header {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 16px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .task-question {
+            font-size: 18px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .task-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        input[type="text"], select {
+            font-size: 17px;
+            padding: 10px 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        input[type="text"] {
+            width: 140px;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-check {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-check:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-check:active {
+            transform: scale(0.98);
+        }
+
+        .feedback {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            display: none;
+        }
+
+        .feedback.correct {
+            display: block;
+            background-color: var(--success-bg);
+            color: #14532d;
+            border: 1px solid #86efac;
+        }
+
+        .feedback.incorrect {
+            display: block;
+            background-color: var(--error-bg);
+            color: #7f1d1d;
+            border: 1px solid #fca5a5;
+        }
+
+        .final-box {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+            text-align: center;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+            border: 3px solid var(--primary);
+        }
+
+        .btn-final {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: white;
+            border: none;
+            padding: 16px 36px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+            transition: transform 0.15s;
+            margin: 10px;
+        }
+
+        .btn-final:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background-color: #64748b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .btn-reset:hover {
+            background-color: #475569;
+        }
+
+        #final-result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 18px;
+            display: none;
+            text-align: left;
+        }
+
+        sup {
+            font-size: 0.72em;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline;
+            top: -0.5em;
+            font-weight: bold;
+        }
+
+        .inline-label {
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            .table-wrap {
+                overflow-x: auto;
+            }
+            .level-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Тренажер по математике (5 класс)</h1>
+        <p>§ 10. Степень числа с натуральным показателем</p>
+    </header>
+
+    <!-- БЛОК ТЕОРИИ -->
+    <section class="section-box">
+        <h2>📚 Часть 1. Теория: всё, что нужно знать</h2>
+
+        <p>Ты уже знаешь, что сумму нескольких одинаковых слагаемых можно заменить умножением: <br>
+        <strong>3 + 3 + 3 + 3 = 3 · 4</strong>.</p>
+        <p>А как записать короче <strong>произведение нескольких одинаковых множителей</strong>? Для этого в математике придумали новое действие — <strong>возведение в степень</strong>.</p>
+
+        <div class="rule-card">
+            <strong>Главное правило:</strong><br>
+            Степенью числа <strong>a</strong> с натуральным показателем <strong>n</strong> (большим 1) называют произведение <strong>n</strong> множителей, каждый из которых равен <strong>a</strong>.<br>
+            <div class="math-big">a<sup>n</sup> = a · a · a · ... · a &nbsp;(n множителей)</div>
+            <br>
+            • Число <strong>a</strong> называют <strong>основанием степени</strong> (оно показывает, какое число перемножают само на себя).<br>
+            • Число <strong>n</strong> называют <strong>показателем степени</strong> (оно показывает, сколько одинаковых множителей взяли).<br>
+            • Принято считать, что первая степень любого числа равна самому числу: <strong>a<sup>1</sup> = a</strong> (например, <strong>7<sup>1</sup> = 7</strong>).
+        </div>
+
+        <h3>🗣 Как правильно читать степени?</h3>
+        <ul>
+            <li>Запись <strong>3<sup>4</sup></strong> читают так: «три в четвёртой степени», или «три в степени четыре», или «четвёртая степень числа 3».</li>
+            <li><strong>Вторая степень</strong> числа имеет особое название — <strong>квадрат числа</strong>. Например, <strong>10<sup>2</sup></strong> читают «десять в квадрате» или «квадрат числа 10».</li>
+            <li><strong>Третья степень</strong> числа называется <strong>кубом числа</strong>. Например, <strong>5<sup>3</sup></strong> читают «пять в кубе» или «куб числа 5».</li>
+        </ul>
+
+        <div class="warning-card">
+            <strong>⚠️ Осторожно! Частая ошибка пятиклассников:</strong><br>
+            Никогда не путай возведение в степень и обычное умножение на показатель!<br>
+            • <strong>4<sup>3</sup></strong> — это <strong>4 · 4 · 4 = 64</strong> (а НЕ 4 · 3 = 12!)<br>
+            • <strong>8<sup>2</sup></strong> — это <strong>8 · 8 = 64</strong> (а НЕ 8 · 2 = 16!)<br>
+            • Запомни особые случаи с единицей и нулём: <strong>1<sup>n</sup> = 1</strong> (единица в любой степени равна 1, так как 1 · 1 · ... · 1 = 1) и <strong>0<sup>n</sup> = 0</strong> (нуль в любой натуральной степени равен 0).
+        </div>
+
+        <h3>📊 Таблица квадратов и кубов первых 10 натуральных чисел</h3>
+        <p>Эту таблицу из учебника очень полезно знать наизусть — она помогает считать молниеносно!</p>
+        <div class="table-wrap">
+            <table class="math-table">
+                <tr>
+                    <th>a</th>
+                    <td><strong>1</strong></td>
+                    <td><strong>2</strong></td>
+                    <td><strong>3</strong></td>
+                    <td><strong>4</strong></td>
+                    <td><strong>5</strong></td>
+                    <td><strong>6</strong></td>
+                    <td><strong>7</strong></td>
+                    <td><strong>8</strong></td>
+                    <td><strong>9</strong></td>
+                    <td><strong>10</strong></td>
+                </tr>
+                <tr>
+                    <th>a<sup>2</sup> (квадрат)</th>
+                    <td>1</td>
+                    <td>4</td>
+                    <td>9</td>
+                    <td>16</td>
+                    <td>25</td>
+                    <td>36</td>
+                    <td>49</td>
+                    <td>64</td>
+                    <td>81</td>
+                    <td>100</td>
+                </tr>
+                <tr>
+                    <th>a<sup>3</sup> (куб)</th>
+                    <td>1</td>
+                    <td>8</td>
+                    <td>27</td>
+                    <td>64</td>
+                    <td>125</td>
+                    <td>216</td>
+                    <td>343</td>
+                    <td>512</td>
+                    <td>729</td>
+                    <td>1000</td>
+                </tr>
+            </table>
+        </div>
+        <p><em>Полезно также знать квадраты чисел от 11 до 20 (с форзаца учебника):</em><br>
+        <strong>11<sup>2</sup> = 121</strong>, <strong>12<sup>2</sup> = 144</strong>, <strong>13<sup>2</sup> = 169</strong>, <strong>14<sup>2</sup> = 196</strong>, <strong>15<sup>2</sup> = 225</strong>, <strong>16<sup>2</sup> = 256</strong>, <strong>17<sup>2</sup> = 289</strong>, <strong>18<sup>2</sup> = 324</strong>, <strong>19<sup>2</sup> = 361</strong>, <strong>20<sup>2</sup> = 400</strong>.</p>
+
+        <h3>🔢 Порядок выполнения действий</h3>
+        <div class="rule-card">
+            Если в числовом выражении <strong>нет скобок</strong> и есть степень с натуральным показателем, то <strong>сначала выполняют возведение в степень</strong>, а уже потом — умножение, деление, сложение и вычитание.<br>
+            Если в выражении <strong>есть скобки</strong>, то сначала выполняют действия в скобках.
+        </div>
+
+        <h3>🔟 Степени числа 10 и разрядные слагаемые</h3>
+        <p>Заметь, как легко устроены степени числа 10: показатель степени равен количеству нулей после единицы!</p>
+        <ul>
+            <li><strong>10<sup>1</sup> = 10</strong> (1 нуль)</li>
+            <li><strong>10<sup>2</sup> = 10 · 10 = 100</strong> (2 нуля — сотня)</li>
+            <li><strong>10<sup>3</sup> = 10 · 10 · 10 = 1000</strong> (3 нуля — тысяча)</li>
+            <li><strong>10<sup>4</sup> = 10 000</strong> (4 нуля — десяток тысяч)</li>
+            <li><strong>10<sup>5</sup> = 100 000</strong> (5 нулей — сотня тысяч)</li>
+            <li><strong>10<sup>6</sup> = 1 000 000</strong> (6 нулей — миллион)</li>
+            <li><strong>10<sup>9</sup> = 1 000 000 000</strong> (9 нулей — миллиард)</li>
+        </ul>
+        <p>Благодаря этому любое натуральное число можно записать в виде <strong>суммы разрядных слагаемых с помощью степеней числа 10</strong>.</p>
+    </section>
+
+    <!-- БЛОК РАЗОБРАННЫХ ПРИМЕРОВ -->
+    <section class="section-box">
+        <h2>🔍 Часть 2. Разбор примеров (Учимся решать)</h2>
+
+        <div class="example-card">
+            <strong>Пример 1. Запишите произведение 5 · 5 · 5 · 5 в виде степени и найдите её значение.</strong><br>
+            <em>Рассуждаем:</em> Множитель равен 5 — значит, основание степени равно 5. Множитель 5 повторяется 4 раза — значит, показатель степени равен 4.<br>
+            Записываем: <strong>5 · 5 · 5 · 5 = 5<sup>4</sup></strong>.<br>
+            Вычисляем по шагам: 5 · 5 = 25; 25 · 5 = 125; 125 · 5 = <strong>625</strong>.<br>
+            <em>Ответ:</em> 5<sup>4</sup> = 625.
+        </div>
+
+        <div class="example-card">
+            <strong>Пример 2. Вычислите степень с круглым основанием: 40<sup>2</sup> и 500<sup>2</sup>.</strong><br>
+            <em>Рассуждаем:</em><br>
+            • <strong>40<sup>2</sup></strong> = 40 · 40 = <strong>1600</strong> (умножаем 4 · 4 = 16 и приписываем два нуля).<br>
+            • <strong>500<sup>2</sup></strong> = 500 · 500 = <strong>250 000</strong> (умножаем 5 · 5 = 25 и приписываем четыре нуля).
+        </div>
+
+        <div class="example-card">
+            <strong>Пример 3. Представьте число 53 421 в виде суммы разрядных слагаемых с помощью степеней числа 10.</strong><br>
+            <em>Решение:</em><br>
+            53 421 = 50 000 + 3000 + 400 + 20 + 1 =<br>
+            = 5 · 10 000 + 3 · 1000 + 4 · 100 + 2 · 10 + 1 =<br>
+            = <strong>5 · 10<sup>4</sup> + 3 · 10<sup>3</sup> + 4 · 10<sup>2</sup> + 2 · 10 + 1</strong>.
+        </div>
+
+        <div class="example-card">
+            <strong>Пример 4. Найдите значение выражения: 5<sup>2</sup> – 3<sup>2</sup> + 12 : 4.</strong><br>
+            <em>Решение по действиям:</em><br>
+            1) Сначала выполняем возведение в степень: <strong>5<sup>2</sup> = 25</strong> и <strong>3<sup>2</sup> = 9</strong>.<br>
+            Подставляем в выражение: <strong>25 – 9 + 12 : 4</strong>.<br>
+            2) Теперь выполняем деление: <strong>12 : 4 = 3</strong>.<br>
+            3) Выполняем вычитание и сложение слева направо: <strong>25 – 9 + 3 = 16 + 3 = 19</strong>.<br>
+            <em>Ответ:</em> 19.
+        </div>
+
+        <div class="example-card">
+            <strong>Пример 5. Какой цифрой оканчивается куб числа 327 (то есть 327<sup>3</sup>), если не вычислять всё число целиком?</strong><br>
+            <em>Секрет решения:</em> Последняя цифра произведения зависит только от последних цифр множителей! Число 327 оканчивается цифрой <strong>7</strong>.<br>
+            Возведём в куб последнюю цифру: <strong>7<sup>3</sup> = 7 · 7 · 7 = 49 · 7 = 343</strong>.<br>
+            Число 343 оканчивается цифрой <strong>3</strong>, значит, и 327<sup>3</sup> оканчивается цифрой <strong>3</strong>!
+        </div>
+    </section>
+
+    <!-- БЛОК ТРЕНАЖЕРА: 20 ЗАДАНИЙ -->
+    <h2 style="text-align: center; font-size: 26px; margin-top: 40px;">🎯 Часть 3. Практический тренажер (20 заданий)</h2>
+    <p style="text-align: center; color: #475569; margin-bottom: 25px;">Выполняй задания по порядку от простого к сложному. В каждом задании можно нажать «Проверить» сколько угодно раз. При перезагрузке страницы твои ответы сохранятся!</p>
+
+    <!-- УРОВЕНЬ 1 -->
+    <div class="level-banner">
+        <span>Уровень 1. Понимание смысла степени (Задания 1–4)</span>
+        <span class="level-badge">Простой старт</span>
+    </div>
+
+    <!-- Задание 1 -->
+    <div class="task-card" id="card-1">
+        <div class="task-header">Задание 1</div>
+        <div class="task-question">
+            Запишите произведение <strong>7 · 7 · 7 · 7 · 7</strong> в виде степени. Укажите основание и показатель этой степени:
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">Основание степени:</span>
+            <input type="text" id="q1_base" placeholder="Число">
+            <span class="inline-label">Показатель степени:</span>
+            <input type="text" id="q1_exp" placeholder="Число">
+            <button class="btn-check" onclick="checkTask(1)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-1"></div>
+    </div>
+
+    <!-- Задание 2 -->
+    <div class="task-card" id="card-2">
+        <div class="task-header">Задание 2</div>
+        <div class="task-question">
+            Как правильно записать словами выражение <strong>4<sup>2</sup></strong> и чему оно равно?
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">4<sup>2</sup> читается как «четыре в</span>
+            <select id="q2_word">
+                <option value="">-- выберите --</option>
+                <option value="квадрате">квадрате</option>
+                <option value="кубе">кубе</option>
+                <option value="четвёртой степени">четвёртой степени</option>
+            </select>
+            <span class="inline-label">» и равно:</span>
+            <input type="text" id="q2_val" placeholder="Ответ">
+            <button class="btn-check" onclick="checkTask(2)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-2"></div>
+    </div>
+
+    <!-- Задание 3 -->
+    <div class="task-card" id="card-3">
+        <div class="task-header">Задание 3</div>
+        <div class="task-question">
+            Как правильно записать словами выражение <strong>5<sup>3</sup></strong> и чему оно равно?
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">5<sup>3</sup> читается как «пять в</span>
+            <select id="q3_word">
+                <option value="">-- выберите --</option>
+                <option value="квадрате">квадрате</option>
+                <option value="кубе">кубе</option>
+                <option value="пятой степени">пятой степени</option>
+            </select>
+            <span class="inline-label">» и равно:</span>
+            <input type="text" id="q3_val" placeholder="Ответ">
+            <button class="btn-check" onclick="checkTask(3)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-3"></div>
+    </div>
+
+    <!-- Задание 4 -->
+    <div class="task-card" id="card-4">
+        <div class="task-header">Задание 4</div>
+        <div class="task-question">
+            Вычислите степени особых чисел (вспомните свойства 1, 0 и первой степени числа):
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">1<sup>8</sup> =</span>
+            <input type="text" id="q4_1" style="width: 90px;">
+            <span class="inline-label">&nbsp; 0<sup>5</sup> =</span>
+            <input type="text" id="q4_2" style="width: 90px;">
+            <span class="inline-label">&nbsp; 15<sup>1</sup> =</span>
+            <input type="text" id="q4_3" style="width: 90px;">
+            <button class="btn-check" onclick="checkTask(4)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-4"></div>
+    </div>
+
+    <!-- УРОВЕНЬ 2 -->
+    <div class="level-banner">
+        <span>Уровень 2. Вычисление степеней и сравнение (Задания 5–9)</span>
+        <span class="level-badge">Базовый навык</span>
+    </div>
+
+    <!-- Задание 5 -->
+    <div class="task-card" id="card-5">
+        <div class="task-header">Задание 5</div>
+        <div class="task-question">
+            Представьте степень в виде произведения в уме (или на черновике) и вычислите:
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">2<sup>5</sup> =</span>
+            <input type="text" id="q5_1" style="width: 100px;">
+            <span class="inline-label">&nbsp; 3<sup>4</sup> =</span>
+            <input type="text" id="q5_2" style="width: 100px;">
+            <button class="btn-check" onclick="checkTask(5)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-5"></div>
+    </div>
+
+    <!-- Задание 6 -->
+    <div class="task-card" id="card-6">
+        <div class="task-header">Задание 6</div>
+        <div class="task-question">
+            Вычислите квадраты и кубы круглых чисел (будьте внимательны с количеством нулей!):
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">40<sup>2</sup> =</span>
+            <input type="text" id="q6_1" style="width: 120px;">
+            <span class="inline-label">&nbsp; 20<sup>3</sup> =</span>
+            <input type="text" id="q6_2" style="width: 120px;">
+            <button class="btn-check" onclick="checkTask(6)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-6"></div>
+    </div>
+
+    <!-- Задание 7 -->
+    <div class="task-card" id="card-7">
+        <div class="task-header">Задание 7</div>
+        <div class="task-question">
+            Не путайте степень и произведение! Вычислите оба выражения и выберите верный знак сравнения:
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">4<sup>3</sup> =</span>
+            <input type="text" id="q7_1" style="width: 90px;">
+            <span class="inline-label">, а 4 · 3 =</span>
+            <input type="text" id="q7_2" style="width: 90px;">
+            <span class="inline-label">. Значит, 4<sup>3</sup></span>
+            <select id="q7_sign">
+                <option value="">?</option>
+                <option value=">">&gt;</option>
+                <option value="<">&lt;</option>
+                <option value="=">=</option>
+            </select>
+            <span class="inline-label">4 · 3</span>
+            <button class="btn-check" onclick="checkTask(7)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-7"></div>
+    </div>
+
+    <!-- Задание 8 -->
+    <div class="task-card" id="card-8">
+        <div class="task-header">Задание 8</div>
+        <div class="task-question">
+            Поставьте вместо вопроса знак <strong>&gt;</strong>, <strong>&lt;</strong> или <strong>=</strong>, чтобы получилось верное утверждение (№ 217, 233 из учебника):
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">а) 2<sup>4</sup></span>
+            <select id="q8_1">
+                <option value="">?</option>
+                <option value=">">&gt;</option>
+                <option value="<">&lt;</option>
+                <option value="=">=</option>
+            </select>
+            <span class="inline-label">4<sup>2</sup> &nbsp;&nbsp;&nbsp; б) 2<sup>5</sup></span>
+            <select id="q8_2">
+                <option value="">?</option>
+                <option value=">">&gt;</option>
+                <option value="<">&lt;</option>
+                <option value="=">=</option>
+            </select>
+            <span class="inline-label">5<sup>2</sup> &nbsp;&nbsp;&nbsp; в) 3<sup>4</sup></span>
+            <select id="q8_3">
+                <option value="">?</option>
+                <option value=">">&gt;</option>
+                <option value="<">&lt;</option>
+                <option value="=">=</option>
+            </select>
+            <span class="inline-label">4<sup>3</sup></span>
+            <button class="btn-check" onclick="checkTask(8)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-8"></div>
+    </div>
+
+    <!-- Задание 9 -->
+    <div class="task-card" id="card-9">
+        <div class="task-header">Задание 9</div>
+        <div class="task-question">
+            Найдите натуральное число (№ 223 из учебника):
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">а) квадрат которого равен 64:</span>
+            <input type="text" id="q9_1" style="width: 90px;">
+            <span class="inline-label">&nbsp; б) куб которого равен 27 000:</span>
+            <input type="text" id="q9_2" style="width: 110px;">
+            <button class="btn-check" onclick="checkTask(9)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-9"></div>
+    </div>
+
+    <!-- УРОВЕНЬ 3 -->
+    <div class="level-banner">
+        <span>Уровень 3. Степени числа 10 и разрядные слагаемые (Задания 10–12)</span>
+        <span class="level-badge">Средний уровень</span>
+    </div>
+
+    <!-- Задание 10 -->
+    <div class="task-card" id="card-10">
+        <div class="task-header">Задание 10</div>
+        <div class="task-question">
+            Представьте числа <strong>100 000</strong> (сто тысяч) и <strong>1 000 000 000</strong> (один миллиард) в виде степени с основанием 10. Укажите показатели степеней:
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">100 000 = 10 в степени</span>
+            <input type="text" id="q10_1" style="width: 80px;">
+            <span class="inline-label">&nbsp; 1 000 000 000 = 10 в степени</span>
+            <input type="text" id="q10_2" style="width: 80px;">
+            <button class="btn-check" onclick="checkTask(10)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-10"></div>
+    </div>
+
+    <!-- Задание 11 -->
+    <div class="task-card" id="card-11">
+        <div class="task-header">Задание 11</div>
+        <div class="task-question">
+            Запишите число, представленное в виде суммы разрядных слагаемых (№ 219 а из учебника):<br>
+            <strong>3 · 10<sup>4</sup> + 5 · 10<sup>3</sup> + 7 · 10<sup>2</sup> + 9 · 10 + 1</strong>
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">Ответ:</span>
+            <input type="text" id="q11_1" placeholder="Введите число">
+            <button class="btn-check" onclick="checkTask(11)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-11"></div>
+    </div>
+
+    <!-- Задание 12 -->
+    <div class="task-card" id="card-12">
+        <div class="task-header">Задание 12</div>
+        <div class="task-question">
+            Запишите число, представленное в виде суммы разрядных слагаемых (обратите внимание на пропущенные разряды!):<br>
+            <strong>5 · 10<sup>5</sup> + 2 · 10<sup>4</sup> + 8 · 10<sup>3</sup> + 0 · 10<sup>2</sup> + 1 · 10 + 6</strong>
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">Ответ:</span>
+            <input type="text" id="q12_1" placeholder="Введите число">
+            <button class="btn-check" onclick="checkTask(12)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-12"></div>
+    </div>
+
+    <!-- УРОВЕНЬ 4 -->
+    <div class="level-banner">
+        <span>Уровень 4. Порядок действий в выражениях со степенями (Задания 13–17)</span>
+        <span class="level-badge">Уверенный уровень</span>
+    </div>
+
+    <!-- Задание 13 -->
+    <div class="task-card" id="card-13">
+        <div class="task-header">Задание 13</div>
+        <div class="task-question">
+            Почувствуйте разницу в порядке действий! Вычислите все три выражения (№ 237 а, б, в из учебника):
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">а) (7 + 3)<sup>2</sup> =</span>
+            <input type="text" id="q13_1" style="width: 90px;">
+            <span class="inline-label">&nbsp; б) 7 + 3<sup>2</sup> =</span>
+            <input type="text" id="q13_2" style="width: 90px;">
+            <span class="inline-label">&nbsp; в) 7<sup>2</sup> + 3<sup>2</sup> =</span>
+            <input type="text" id="q13_3" style="width: 90px;">
+            <button class="btn-check" onclick="checkTask(13)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-13"></div>
+    </div>
+
+    <!-- Задание 14 -->
+    <div class="task-card" id="card-14">
+        <div class="task-header">Задание 14</div>
+        <div class="task-question">
+            Выполните действия, соблюдая их порядок (№ 221 ж из учебника):<br>
+            <strong>5<sup>3</sup> · 8 + 9<sup>2</sup></strong>
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">Ответ:</span>
+            <input type="text" id="q14_1" placeholder="Ответ">
+            <button class="btn-check" onclick="checkTask(14)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-14"></div>
+    </div>
+
+    <!-- Задание 15 -->
+    <div class="task-card" id="card-15">
+        <div class="task-header">Задание 15</div>
+        <div class="task-question">
+            Выполните действия со скобками и степенями (№ 221 г из учебника):<br>
+            <strong>(4<sup>3</sup> – 8) : (15 – 2<sup>3</sup>)</strong>
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">Ответ:</span>
+            <input type="text" id="q15_1" placeholder="Ответ">
+            <button class="btn-check" onclick="checkTask(15)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-15"></div>
+    </div>
+
+    <!-- Задание 16 -->
+    <div class="task-card" id="card-16">
+        <div class="task-header">Задание 16</div>
+        <div class="task-question">
+            Вычислите значение выражения (№ 224 а из учебника, используйте таблицу квадратов):<br>
+            <strong>15<sup>2</sup> + 12<sup>2</sup> · 3</strong>
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">Ответ:</span>
+            <input type="text" id="q16_1" placeholder="Ответ">
+            <button class="btn-check" onclick="checkTask(16)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-16"></div>
+    </div>
+
+    <!-- Задание 17 -->
+    <div class="task-card" id="card-17">
+        <div class="task-header">Задание 17</div>
+        <div class="task-question">
+            Выполните действия (№ 239 в из учебника):<br>
+            <strong>5<sup>3</sup> · 36 + (5 · 10<sup>2</sup> – 306)</strong>
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">Ответ:</span>
+            <input type="text" id="q17_1" placeholder="Ответ">
+            <button class="btn-check" onclick="checkTask(17)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-17"></div>
+    </div>
+
+    <!-- УРОВЕНЬ 5 -->
+    <div class="level-banner">
+        <span>Уровень 5. Задачи повышенной сложности и смекалка (Задания 18–20)</span>
+        <span class="level-badge">Профи 5 класса</span>
+    </div>
+
+    <!-- Задание 18 -->
+    <div class="task-card" id="card-18">
+        <div class="task-header">Задание 18</div>
+        <div class="task-question">
+            Не вычисляя всё число целиком, определите, <strong>какой цифрой оканчивается</strong> результат (№ 225 из учебника):
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">а) квадрат числа 17 (то есть 17<sup>2</sup>) оканчивается цифрой:</span>
+            <input type="text" id="q18_1" style="width: 70px;">
+            <span class="inline-label">&nbsp; б) куб числа 123 (то есть 123<sup>3</sup>) оканчивается цифрой:</span>
+            <input type="text" id="q18_2" style="width: 70px;">
+            <button class="btn-check" onclick="checkTask(18)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-18"></div>
+    </div>
+
+    <!-- Задание 19 -->
+    <div class="task-card" id="card-19">
+        <div class="task-header">Задание 19</div>
+        <div class="task-question">
+            Вычислите <strong>приближённое значение степени 27<sup>2</sup></strong>, предварительно округлив основание степени (27) до старшего разряда (до десятков), как в № 226 а из учебника:
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">27 ≈</span>
+            <input type="text" id="q19_1" style="width: 90px;" placeholder="Округл.">
+            <span class="inline-label">, значит 27<sup>2</sup> ≈</span>
+            <input type="text" id="q19_2" style="width: 110px;" placeholder="Квадрат">
+            <button class="btn-check" onclick="checkTask(19)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-19"></div>
+    </div>
+
+    <!-- Задание 20 -->
+    <div class="task-card" id="card-20">
+        <div class="task-header">Задание 20 (Супер-босс)</div>
+        <div class="task-question">
+            Найдите значение выражения со степенями (№ 221 и из учебника):<br>
+            <strong>3<sup>2</sup> · 3<sup>3</sup> – 3<sup>5</sup></strong>
+        </div>
+        <div class="task-controls">
+            <span class="inline-label">Ответ:</span>
+            <input type="text" id="q20_1" placeholder="Ответ">
+            <button class="btn-check" onclick="checkTask(20)">Проверить</button>
+        </div>
+        <div class="feedback" id="fb-20"></div>
+    </div>
+
+    <!-- ФИНАЛЬНЫЙ БЛОК -->
+    <div class="final-box">
+        <h2>🏆 Итоговая проверка знаний</h2>
+        <p>Когда ответишь на все 20 заданий, нажми на большую зелёную кнопку, чтобы узнать свой общий результат и оценку!</p>
+        <button class="btn-final" onclick="checkAllTasks()">Проверить общий результат</button>
+        <button class="btn-reset" onclick="resetAllTasks()">Очистить все ответы</button>
+        <div id="final-result"></div>
+    </div>
+
+</div>
+
+<script>
+    // Список всех полей ввода для автосохранения в localStorage
+    const inputIds = [
+        'q1_base', 'q1_exp',
+        'q2_word', 'q2_val',
+        'q3_word', 'q3_val',
+        'q4_1', 'q4_2', 'q4_3',
+        'q5_1', 'q5_2',
+        'q6_1', 'q6_2',
+        'q7_1', 'q7_2', 'q7_sign',
+        'q8_1', 'q8_2', 'q8_3',
+        'q9_1', 'q9_2',
+        'q10_1', 'q10_2',
+        'q11_1',
+        'q12_1',
+        'q13_1', 'q13_2', 'q13_3',
+        'q14_1',
+        'q15_1',
+        'q16_1',
+        'q17_1',
+        'q18_1', 'q18_2',
+        'q19_1', 'q19_2',
+        'q20_1'
+    ];
+
+    // Функция очистки пробелов при вводе чисел (например, "528 016" -> "528016")
+    function cleanVal(id) {
+        const el = document.getElementById(id);
+        if (!el) return '';
+        return el.value.replace(/\s+/g, '').replace(',', '.').trim().toLowerCase();
+    }
+
+    // Загрузка сохраненных ответов при открытии или перезагрузке страницы
+    window.addEventListener('DOMContentLoaded', () => {
+        inputIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                const saved = localStorage.getItem('math5_pow_' + id);
+                if (saved !== null) {
+                    el.value = saved;
+                }
+                el.addEventListener('input', () => {
+                    localStorage.setItem('math5_pow_' + id, el.value);
+                });
+                el.addEventListener('change', () => {
+                    localStorage.setItem('math5_pow_' + id, el.value);
+                });
+            }
+        });
+    });
+
+    // Логика проверки каждого из 20 заданий
+    function evaluateTask(num) {
+        switch (num) {
+            case 1: {
+                const b = cleanVal('q1_base');
+                const e = cleanVal('q1_exp');
+                const ok = (b === '7' && e === '5');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Верно! 7 · 7 · 7 · 7 · 7 = 7<sup>5</sup>. Основание равно 7, а показатель равен 5.'
+                        : '❌ Пока неверно. Посмотри: какое число перемножается? Это основание (7). Сколько раз оно взято множителем? Это показатель (5).'
+                };
+            }
+            case 2: {
+                const w = document.getElementById('q2_word').value;
+                const v = cleanVal('q2_val');
+                const ok = (w === 'квадрате' && v === '16');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Отлично! Вторая степень называется квадратом: 4<sup>2</sup> = 4 · 4 = 16.'
+                        : '❌ Ошибка. Вспомни: вторая степень числа называется «квадрат», а 4<sup>2</sup> = 4 · 4 = 16 (не путай с 4 · 2 = 8!).'
+                };
+            }
+            case 3: {
+                const w = document.getElementById('q3_word').value;
+                const v = cleanVal('q3_val');
+                const ok = (w === 'кубе' && v === '125');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Правильно! Третья степень называется кубом: 5<sup>3</sup> = 5 · 5 · 5 = 125.'
+                        : '❌ Ошибка. Третья степень числа называется «куб», а 5<sup>3</sup> = 5 · 5 · 5 = 125 (не путай с 5 · 3 = 15!).'
+                };
+            }
+            case 4: {
+                const v1 = cleanVal('q4_1');
+                const v2 = cleanVal('q4_2');
+                const v3 = cleanVal('q4_3');
+                const ok = (v1 === '1' && v2 === '0' && v3 === '15');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Молодец! 1 в любой степени — это 1; 0 в любой натуральной степени — это 0; а первая степень любого числа равна самому числу (15<sup>1</sup> = 15).'
+                        : '❌ Проверь ещё раз! Помни: 1 · 1 · ... · 1 = 1 (а не 8!), 0 · 0 · ... · 0 = 0, а a<sup>1</sup> = a.'
+                };
+            }
+            case 5: {
+                const v1 = cleanVal('q5_1');
+                const v2 = cleanVal('q5_2');
+                const ok = (v1 === '32' && v2 === '81');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Верно! 2<sup>5</sup> = 2 · 2 · 2 · 2 · 2 = 32, а 3<sup>4</sup> = 3 · 3 · 3 · 3 = 81.'
+                        : '❌ Не совсем так. Перемножь аккуратно: 2<sup>5</sup> = 2 · 2 · 2 · 2 · 2 (пять двоек), а 3<sup>4</sup> = 3 · 3 · 3 · 3 (четыре тройки).'
+                };
+            }
+            case 6: {
+                const v1 = cleanVal('q6_1');
+                const v2 = cleanVal('q6_2');
+                const ok = (v1 === '1600' && v2 === '8000');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Блестяще! 40<sup>2</sup> = 40 · 40 = 1600, а 20<sup>3</sup> = 20 · 20 · 20 = 8000.'
+                        : '❌ Проверь количество нулей и умножение! 40<sup>2</sup> = 40 · 40, а 20<sup>3</sup> = 20 · 20 · 20 (три множителя, значит в конце будет 3 нуля, а 2<sup>3</sup> = 8).'
+                };
+            }
+            case 7: {
+                const v1 = cleanVal('q7_1');
+                const v2 = cleanVal('q7_2');
+                const s = document.getElementById('q7_sign').value;
+                const ok = (v1 === '64' && v2 === '12' && s === '>');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Абсолютно верно! 4<sup>3</sup> = 64, а 4 · 3 = 12. Конечно, 64 &gt; 12.'
+                        : '❌ Подсказка: 4<sup>3</sup> = 4 · 4 · 4 = 64, а 4 · 3 = 12. Сравни полученные числа!'
+                };
+            }
+            case 8: {
+                const s1 = document.getElementById('q8_1').value;
+                const s2 = document.getElementById('q8_2').value;
+                const s3 = document.getElementById('q8_3').value;
+                const ok = (s1 === '=' && s2 === '>' && s3 === '>');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Всё правильно! а) 2<sup>4</sup> = 16 и 4<sup>2</sup> = 16 (они равны!); б) 2<sup>5</sup> = 32 &gt; 5<sup>2</sup> = 25; в) 3<sup>4</sup> = 81 &gt; 4<sup>3</sup> = 64.'
+                        : '❌ Давай посчитаем вместе: а) 2<sup>4</sup> = 16, а 4<sup>2</sup> = 16; б) 2<sup>5</sup> = 32, а 5<sup>2</sup> = 25; в) 3<sup>4</sup> = 81, а 4<sup>3</sup> = 64. Поставь верные знаки!'
+                };
+            }
+            case 9: {
+                const v1 = cleanVal('q9_1');
+                const v2 = cleanVal('q9_2');
+                const ok = (v1 === '8' && v2 === '30');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Отлично! 8<sup>2</sup> = 64, а 30<sup>3</sup> = 30 · 30 · 30 = 27 000.'
+                        : '❌ Подсказка: а) какое число при умножении само на себя даёт 64? б) какое число в кубе даёт 27, а три нуля в конце дают десяток (то есть число оканчивается на 0)?'
+                };
+            }
+            case 10: {
+                const v1 = cleanVal('q10_1');
+                const v2 = cleanVal('q10_2');
+                const ok = (v1 === '5' && v2 === '9');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Верно! У числа 100 000 пять нулей (10<sup>5</sup>), а у миллиарда — девять нулей (10<sup>9</sup>).'
+                        : '❌ Посчитай количество нулей после единицы: сколько нулей в записи числа, таков и показатель степени числа 10!'
+                };
+            }
+            case 11: {
+                const v1 = cleanVal('q11_1');
+                const ok = (v1 === '35791');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Правильно! 30 000 + 5000 + 700 + 90 + 1 = 35 791.'
+                        : '❌ Ошибка. Вычисли по шагам: 3 · 10 000 + 5 · 1000 + 7 · 100 + 9 · 10 + 1.'
+                };
+            }
+            case 12: {
+                const v1 = cleanVal('q12_1');
+                const ok = (v1 === '528016');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Супер! Ты внимательно заметил нуль в разряде сотен: 528 016.'
+                        : '❌ Будь внимателен! 5 · 100 000 + 2 · 10 000 + 8 · 1000 + 0 · 100 + 1 · 10 + 6 = 528 016 (в разряде сотен стоит цифра 0).'
+                };
+            }
+            case 13: {
+                const v1 = cleanVal('q13_1');
+                const v2 = cleanVal('q13_2');
+                const v3 = cleanVal('q13_3');
+                const ok = (v1 === '100' && v2 === '16' && v3 === '58');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Великолепно! а) (7 + 3)<sup>2</sup> = 10<sup>2</sup> = 100; б) 7 + 3<sup>2</sup> = 7 + 9 = 16; в) 7<sup>2</sup> + 3<sup>2</sup> = 49 + 9 = 58.'
+                        : '❌ Проверь порядок действий: а) сначала в скобках 7 + 3 = 10, затем 10<sup>2</sup>; б) сначала 3<sup>2</sup> = 9, затем 7 + 9; в) сначала 7<sup>2</sup> = 49 и 3<sup>2</sup> = 9, затем сложение.'
+                };
+            }
+            case 14: {
+                const v1 = cleanVal('q14_1');
+                const ok = (v1 === '1081');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Точно в цель! 1) 5<sup>3</sup> = 125; 2) 9<sup>2</sup> = 81; 3) 125 · 8 = 1000; 4) 1000 + 81 = 1081.'
+                        : '❌ Давай по шагам: 1) найди 5<sup>3</sup> = 125 и 9<sup>2</sup> = 81; 2) умножь 125 · 8 = 1000; 3) прибавь 81.'
+                };
+            }
+            case 15: {
+                const v1 = cleanVal('q15_1');
+                const ok = (v1 === '8');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Отлично! Первая скобка: 64 – 8 = 56. Вторая скобка: 15 – 8 = 7. Деление: 56 : 7 = 8.'
+                        : '❌ Посчитаем по действиям: в первой скобке 4<sup>3</sup> – 8 = 64 – 8 = 56. Во второй скобке 15 – 2<sup>3</sup> = 15 – 8 = 7. Теперь раздели 56 на 7!'
+                };
+            }
+            case 16: {
+                const v1 = cleanVal('q16_1');
+                const ok = (v1 === '657');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Молодец! 15<sup>2</sup> = 225, 12<sup>2</sup> = 144. Сначала умножение: 144 · 3 = 432. Затем сложение: 225 + 432 = 657.'
+                        : '❌ Подсказка: 1) по таблице квадратов 15<sup>2</sup> = 225, а 12<sup>2</sup> = 144; 2) выполни умножение 144 · 3 = 432; 3) сложи 225 + 432.'
+                };
+            }
+            case 17: {
+                const v1 = cleanVal('q17_1');
+                const ok = (v1 === '4694');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Превосходно! В скобках: 5 · 100 – 306 = 194. Слева: 125 · 36 = 4500. Сумма: 4500 + 194 = 4694.'
+                        : '❌ Разберём по шагам: 1) в скобках 10<sup>2</sup> = 100, 5 · 100 – 306 = 194; 2) вне скобок 5<sup>3</sup> = 125, а 125 · 36 = 4500; 3) сложи 4500 + 194.'
+                };
+            }
+            case 18: {
+                const v1 = cleanVal('q18_1');
+                const v2 = cleanVal('q18_2');
+                const ok = (v1 === '9' && v2 === '7');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Умница! а) 7<sup>2</sup> = 49 (оканчивается на 9); б) 3<sup>3</sup> = 27 (оканчивается на 7).'
+                        : '❌ Секрет прост: смотри только на последнюю цифру основания! а) У числа 17 последняя цифра 7, а 7<sup>2</sup> = 49 (какая последняя цифра?); б) у числа 123 последняя цифра 3, а 3<sup>3</sup> = 27 (какая последняя цифра?).'
+                };
+            }
+            case 19: {
+                const v1 = cleanVal('q19_1');
+                const v2 = cleanVal('q19_2');
+                const ok = (v1 === '30' && v2 === '900');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Правильно! 27 при округлении до десятков даёт 30, а 30<sup>2</sup> = 30 · 30 = 900.'
+                        : '❌ Округли число 27 до десятков (после цифры 2 идёт 7, значит увеличиваем 2 на единицу — получаем 30). А затем возведи 30 в квадрат: 30 · 30!'
+                };
+            }
+            case 20: {
+                const v1 = cleanVal('q20_1');
+                const ok = (v1 === '0');
+                return {
+                    ok,
+                    msg: ok
+                        ? '✅ Браво! 3<sup>2</sup> · 3<sup>3</sup> = 9 · 27 = 243 (или пять троек в произведении, то есть 3<sup>5</sup> = 243). А 243 – 243 = 0!'
+                        : '❌ Посчитай внимательно: 3<sup>2</sup> = 9, 3<sup>3</sup> = 27, а их произведение 9 · 27 = 243. При этом 3<sup>5</sup> = 3 · 3 · 3 · 3 · 3 = 243. Чему равна разность 243 – 243?'
+                };
+            }
+        }
+    }
+
+    // Проверка одного конкретного задания по кнопке
+    function checkTask(num) {
+        const res = evaluateTask(num);
+        const card = document.getElementById('card-' + num);
+        const fb = document.getElementById('fb-' + num);
+
+        card.classList.remove('correct', 'incorrect');
+        fb.classList.remove('correct', 'incorrect');
+
+        if (res.ok) {
+            card.classList.add('correct');
+            fb.classList.add('correct');
+        } else {
+            card.classList.add('incorrect');
+            fb.classList.add('incorrect');
+        }
+        fb.innerHTML = res.msg;
+    }
+
+    // Финальная кнопка проверки всех 20 заданий
+    function checkAllTasks() {
+        let correctCount = 0;
+        let wrongNumbers = [];
+
+        for (let i = 1; i <= 20; i++) {
+            const res = evaluateTask(i);
+            checkTask(i);
+            if (res.ok) {
+                correctCount++;
+            } else {
+                wrongNumbers.push(i);
+            }
+        }
+
+        const finalBox = document.getElementById('final-result');
+        finalBox.style.display = 'block';
+
+        let gradeText = '';
+        let bgColor = '';
+        let borderColor = '';
+
+        if (correctCount === 20) {
+            gradeText = '🌟 Блестящий результат! 20 из 20! Тема «Степень числа с натуральным показателем» усвоена на 10 баллов (5+)!';
+            bgColor = '#dcfce7';
+            borderColor = '#16a34a';
+        } else if (correctCount >= 16) {
+            gradeText = '👍 Отличный результат! Ты очень хорошо разобрался в теме, осталось исправить всего несколько мелких неточностей.';
+            bgColor = '#dbeafe';
+            borderColor = '#2563eb';
+        } else if (correctCount >= 10) {
+            gradeText = '🙂 Хорошая попытка! Базовые задания получаются, но стоит внимательно прочитать подсказки к заданиям с ошибками и попробовать снова.';
+            bgColor = '#fef3c7';
+            borderColor = '#d97706';
+        } else {
+            gradeText = '💪 Не сдавайся! Перечитай теоретический блок и разбор примеров в начале страницы, а затем исправь задания по подсказкам.';
+            bgColor = '#fee2e2';
+            borderColor = '#dc2626';
+        }
+
+        finalBox.style.backgroundColor = bgColor;
+        finalBox.style.border = '2px solid ' + borderColor;
+
+        let html = `<div style="font-size: 22px; font-weight: bold; margin-bottom: 10px;">Правильных ответов: ${correctCount} из 20 (${Math.round(correctCount / 20 * 100)}%)</div>`;
+        html += `<p style="margin: 8px 0;">${gradeText}</p>`;
+
+        if (wrongNumbers.length > 0) {
+            html += `<p style="margin: 8px 0 0 0;"><strong>Задания, которые нужно доработать:</strong> № ${wrongNumbers.join(', ')}. Поднимись к ним, прочитай подсказки и нажми «Проверить» ещё раз — количество попыток не ограничено!</p>`;
+        }
+
+        finalBox.innerHTML = html;
+        finalBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Сброс всех ответов по желанию пользователя
+    function resetAllTasks() {
+        if (!confirm('Вы действительно хотите очистить все введённые ответы и начать заново?')) {
+            return;
+        }
+        inputIds.forEach(id => {
+            localStorage.removeItem('math5_pow_' + id);
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        for (let i = 1; i <= 20; i++) {
+            const card = document.getElementById('card-' + i);
+            const fb = document.getElementById('fb-' + i);
+            card.classList.remove('correct', 'incorrect');
+            fb.classList.remove('correct', 'incorrect');
+            fb.style.display = 'none';
+            fb.innerHTML = '';
+        }
+        const finalBox = document.getElementById('final-result');
+        finalBox.style.display = 'none';
+        finalBox.innerHTML = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
